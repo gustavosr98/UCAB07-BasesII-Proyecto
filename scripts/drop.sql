@@ -1,11 +1,13 @@
 -- * NOTA - ORDEN CONTRARIO DE CREACION
+DROP TABLE Proveedor_Vehiculo;
+DROP TABLE Modelo_Vehiculo;
 
 -- PARA CREAR HABITACIONES
 DROP TABLE Habitacion;
 DROP TABLE Alojamiento;
 
 -- PARA CREAR VUELOS
-DROP TABLE Vuelos;
+DROP TABLE Vuelo;
 DROP TABLE Trayecto;
 DROP TABLE Aeropuerto;
 DROP TABLE Lugar;
