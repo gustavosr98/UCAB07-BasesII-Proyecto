@@ -1,18 +1,31 @@
 -- * NOTA - ORDEN CONTRARIO DE CREACION
+
+-- CLIENTES
+DROP TABLE Tarjeta;
+DROP TABLE Usuario;
+DROP TABLE Cliente;
+
+-- SEGUROS
+DROP TABLE Seguro;
+DROP TABLE Aseguradora;
+
+-- VEHICULOS
+DROP TABLE Sucursal;
+DROP TABLE Vehiculo;
 DROP TABLE Proveedor_Vehiculo;
 DROP TABLE Modelo_Vehiculo;
 
--- PARA CREAR HABITACIONES
+-- HABITACIONES
 DROP TABLE Habitacion;
 DROP TABLE Alojamiento;
 
--- PARA CREAR VUELOS
+-- VUELOS
 DROP TABLE Vuelo;
 DROP TABLE Trayecto;
 DROP TABLE Aeropuerto;
 DROP TABLE Lugar;
 
--- PARA CREAR AVIONES
+-- AVIONES
 DROP TABLE Asiento;
 DROP TABLE Clase_Aerolinea;
 DROP TABLE Clase;
