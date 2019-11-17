@@ -1,5 +1,16 @@
 -- * NOTA - ORDEN CONTRARIO DE CREACION
 
+-- OTROS
+DROP TABLE Conversion;
+
+-- PAGOS
+DROP TABLE Historico_Milla;
+DROP TABLE Pago;
+
+-- RESERVACION
+DROP TABLE Reserva;
+DROP TABLE Reservacion;
+
 -- CLIENTES
 DROP TABLE Tarjeta;
 DROP TABLE Usuario;
