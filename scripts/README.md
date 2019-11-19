@@ -1,6 +1,6 @@
 # SCRIPTS
 
-Here we are going to store the database initialization scripts.
+Here we are going to store the database initialization scripts
 
 - Create table scripts
 - Relationships scripts
