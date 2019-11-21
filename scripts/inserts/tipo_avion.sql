@@ -1,5 +1,3 @@
-CREATE DIRECTORY DIR_IMG_PROYECTO AS 'C:/ProyectoBD';
-
 INSERT INTO Tipo_Avion (
 	id,nombre,modelo,foto,velocidad_max,
 	alcance_max,altitud_max,evergadura,
