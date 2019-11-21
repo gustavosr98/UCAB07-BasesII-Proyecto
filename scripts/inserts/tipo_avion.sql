@@ -6,7 +6,7 @@ INSERT INTO Tipo_Avion (
 	ancho_interior_cabina,altura_interior_cabina) 
 VALUES (
 	DEFAULT,'Boeing','717-200',
-	BFILENAME('DIR_IMG_PROYECTO','Tipo_Avion/01-Boeing-717-200.jpg'),
+	BFILENAME('DIR_IMG_PROYECTO','Tipo_Avion/01-Boeing_717-200.jpg'),
 	UNIDAD('VELOCIDAD','MACH',0.656787),
 	UNIDAD('LONGITUD','KILOMETRO',3815),
 	UNIDAD('LONGITUD','KILOMETRO',12.100),
@@ -21,7 +21,7 @@ INSERT INTO Tipo_Avion (
 	ancho_interior_cabina,altura_interior_cabina) 
 VALUES (
 	DEFAULT,'Airbus A340','-200',
-	BFILENAME('DIR_IMG_PROYECTO','Tipo_Avion/01-Boeing-717-200.jpg'),
+	BFILENAME('DIR_IMG_PROYECTO','Tipo_Avion/02-Airbus_A340-200.jpg'),
 	UNIDAD('VELOCIDAD','MACH',0.86),
 	UNIDAD('LONGITUD','KILOMETRO',14100),
 	UNIDAD('LONGITUD','KILOMETRO',12.500),
@@ -36,7 +36,7 @@ INSERT INTO Tipo_Avion (
 	ancho_interior_cabina,altura_interior_cabina) 
 VALUES (
 	DEFAULT,'McDonnell Douglas','MD-80',
-	BFILENAME('DIR_IMG_PROYECTO','Tipo_Avion/01-Boeing-717-200.jpg'),
+	BFILENAME('DIR_IMG_PROYECTO','Tipo_Avion/03-MD-80.jpg'),
 	UNIDAD('VELOCIDAD','MACH',0.8),
 	UNIDAD('LONGITUD','KILOMETRO',3300),
 	UNIDAD('LONGITUD','KILOMETRO',11.7),
@@ -51,7 +51,7 @@ INSERT INTO Tipo_Avion (
 	ancho_interior_cabina,altura_interior_cabina) 
 VALUES (
 	DEFAULT,'Embraer E-Jet','E170',
-	BFILENAME('DIR_IMG_PROYECTO','Tipo_Avion/01-Boeing-717-200.jpg'),
+	BFILENAME('DIR_IMG_PROYECTO','Tipo_Avion/04-Embraer-E170.jpg'),
 	UNIDAD('VELOCIDAD','MACH',0.82),
 	UNIDAD('LONGITUD','KILOMETRO',3982),
 	UNIDAD('LONGITUD','KILOMETRO',12.3),
@@ -66,7 +66,7 @@ INSERT INTO Tipo_Avion (
 	ancho_interior_cabina,altura_interior_cabina) 
 VALUES (
 	DEFAULT,'Boeing','747-8',
-	BFILENAME('DIR_IMG_PROYECTO','Tipo_Avion/01-Boeing-717-200.jpg'),
+	BFILENAME('DIR_IMG_PROYECTO','Tipo_Avion/05-Boeing-747-8.jpg'),
 	UNIDAD('VELOCIDAD','MACH',0.86),
 	UNIDAD('LONGITUD','KILOMETRO',5462),
 	UNIDAD('LONGITUD','KILOMETRO',11.3),
@@ -81,7 +81,7 @@ INSERT INTO Tipo_Avion (
 	ancho_interior_cabina,altura_interior_cabina) 
 VALUES (
 	DEFAULT,'Boeing','VC-25A',
-	BFILENAME('DIR_IMG_PROYECTO','Tipo_Avion/01-Boeing-717-200.jpg'),
+	BFILENAME('DIR_IMG_PROYECTO','Tipo_Avion/06-Boeing-VC-25A.jpg'),
 	UNIDAD('VELOCIDAD','MACH',0.92),
 	UNIDAD('LONGITUD','KILOMETRO',13000),
 	UNIDAD('LONGITUD','KILOMETRO',13),
@@ -95,8 +95,23 @@ INSERT INTO Tipo_Avion (
 	alcance_max,altitud_max,evergadura,
 	ancho_interior_cabina,altura_interior_cabina) 
 VALUES (
+	DEFAULT,'Boeing','747SP',
+	BFILENAME('DIR_IMG_PROYECTO','Tipo_Avion/07-Boeing-747SP.jpg'),
+	UNIDAD('VELOCIDAD','MACH',0.92),
+	UNIDAD('LONGITUD','KILOMETRO',13700),
+	UNIDAD('LONGITUD','KILOMETRO',10.8),
+	UNIDAD('LONGITUD','METRO',59.4),
+	UNIDAD('LONGITUD','METRO',5.41),
+	UNIDAD('LONGITUD','METRO',2.07)	
+);
+
+INSERT INTO Tipo_Avion (
+	id,nombre,modelo,foto,velocidad_max,
+	alcance_max,altitud_max,evergadura,
+	ancho_interior_cabina,altura_interior_cabina) 
+VALUES (
 	DEFAULT,'Embraer','Phenom 100',
-	BFILENAME('DIR_IMG_PROYECTO','Tipo_Avion/01-Boeing-717-200.jpg'),
+	BFILENAME('DIR_IMG_PROYECTO','Tipo_Avion/08-Embraer-Phenom-100.jpg'),
 	UNIDAD('VELOCIDAD','MACH',0.7),
 	UNIDAD('LONGITUD','KILOMETRO',2182),
 	UNIDAD('LONGITUD','KILOMETRO',12.497),
@@ -111,7 +126,7 @@ INSERT INTO Tipo_Avion (
 	ancho_interior_cabina,altura_interior_cabina) 
 VALUES (
 	DEFAULT,'ICON','A5',
-	BFILENAME('DIR_IMG_PROYECTO','Tipo_Avion/01-Boeing-717-200.jpg'),
+	BFILENAME('DIR_IMG_PROYECTO','Tipo_Avion/09-ICON-A5.jpg'),
 	UNIDAD('VELOCIDAD','MACH',0.142533),
 	UNIDAD('LONGITUD','KILOMETRO',791),
 	UNIDAD('LONGITUD','KILOMETRO',6),
@@ -126,7 +141,7 @@ INSERT INTO Tipo_Avion (
 	ancho_interior_cabina,altura_interior_cabina) 
 VALUES (
 	DEFAULT,'Bombardier','CRJ200',
-	BFILENAME('DIR_IMG_PROYECTO','Tipo_Avion/01-Boeing-717-200.jpg'),
+	BFILENAME('DIR_IMG_PROYECTO','Tipo_Avion/10-Bombardier-CRJ200.jpg'),
 	UNIDAD('VELOCIDAD','MACH',0.81),
 	UNIDAD('LONGITUD','KILOMETRO',3056),
 	UNIDAD('LONGITUD','KILOMETRO',12.496),
@@ -141,7 +156,7 @@ INSERT INTO Tipo_Avion (
 	ancho_interior_cabina,altura_interior_cabina) 
 VALUES (
 	DEFAULT,'Ilyushin','Il-96',
-	BFILENAME('DIR_IMG_PROYECTO','Tipo_Avion/01-Boeing-717-200.jpg'),
+	BFILENAME('DIR_IMG_PROYECTO','Tipo_Avion/11-Ilyushin-Il96.jpg'),
 	UNIDAD('VELOCIDAD','MACH',0.84),
 	UNIDAD('LONGITUD','KILOMETRO',13500),
 	UNIDAD('LONGITUD','KILOMETRO',13.1),
@@ -156,7 +171,7 @@ INSERT INTO Tipo_Avion (
 	ancho_interior_cabina,altura_interior_cabina) 
 VALUES (
 	DEFAULT,'Tupolev','Tu-204',
-	BFILENAME('DIR_IMG_PROYECTO','Tipo_Avion/01-Boeing-717-200.jpg'),
+	BFILENAME('DIR_IMG_PROYECTO','Tipo_Avion/12-Tupolev-Tu-204.jpg'),
 	UNIDAD('VELOCIDAD','MACH',0.728863),
 	UNIDAD('LONGITUD','KILOMETRO',4300),
 	UNIDAD('LONGITUD','KILOMETRO',12.1),
@@ -171,7 +186,7 @@ INSERT INTO Tipo_Avion (
 	ancho_interior_cabina,altura_interior_cabina) 
 VALUES (
 	DEFAULT,'Tupolev','Tu-214',
-	BFILENAME('DIR_IMG_PROYECTO','Tipo_Avion/01-Boeing-717-200.jpg'),
+	BFILENAME('DIR_IMG_PROYECTO','Tipo_Avion/13-Tupolev-Tu-214.jpg'),
 	UNIDAD('VELOCIDAD','MACH',0.733),
 	UNIDAD('LONGITUD','KILOMETRO',4340),
 	UNIDAD('LONGITUD','KILOMETRO',12.1),
@@ -186,7 +201,7 @@ INSERT INTO Tipo_Avion (
 	ancho_interior_cabina,altura_interior_cabina) 
 VALUES (
 	DEFAULT,'Tupolev','Tu-204SM',
-	BFILENAME('DIR_IMG_PROYECTO','Tipo_Avion/01-Boeing-717-200.jpg'),
+	BFILENAME('DIR_IMG_PROYECTO','Tipo_Avion/14-Tupolev-Tu-204SM.jpg'),
 	UNIDAD('VELOCIDAD','MACH',0.743),
 	UNIDAD('LONGITUD','KILOMETRO',5800),
 	UNIDAD('LONGITUD','KILOMETRO',12.2),
