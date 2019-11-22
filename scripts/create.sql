@@ -74,6 +74,7 @@
 
 				nombre VARCHAR2(50) NOT NULL,
 				modelo VARCHAR2(50) NOT NULL,
+				capacidad INTEGER NOT NULL,
 				-- TODO Pendiente por cambiar a NOT NULL foto
 				foto BLOB DEFAULT EMPTY_BLOB(),
 				velocidad_max UNIDAD NOT NULL,
