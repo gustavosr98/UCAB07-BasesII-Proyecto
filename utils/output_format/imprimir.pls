@@ -1,7 +1,7 @@
-CREATE OR REPLACE PROCEDURE out_ (texto VARCHAR2)
+CREATE OR REPLACE PROCEDURE out_ (pad INTEGER DEFAULT 0, texto VARCHAR2)
 	IS
 	BEGIN
-		DBMS_OUTPUT.PUT_LINE( texto );
+		DBMS_OUTPUT.PUT_LINE( OUT_SPACE(pad*2) || texto );
 	END;
 
 CREATE OR REPLACE PROCEDURE out_break (tamano INTEGER DEFAULT 1)
@@ -25,10 +25,10 @@ CREATE OR REPLACE PROCEDURE out_right (pad SMALLINT, texto VARCHAR2)
 		DBMS_OUTPUT.PUT_LINE( RPAD( texto, pad ) );
 	END;
 
-CREATE OR REPLACE FUNCTION out_space (pad SMALLINT) RETURN VARCHAR2
+CREATE OR REPLACE FUNCTION out_space (pad SMALLINT DEFAULT 0) RETURN VARCHAR2
 	IS
-		resultado VARCHAR2(80)
+		resultado VARCHAR2(80) DEFAULT ' ';
 	BEGIN
-		resultado := RPAD( resultado, pad, ' ');
+		resultado := LPAD( resultado, pad, ' ');
 		RETURN resultado;
 	END;
