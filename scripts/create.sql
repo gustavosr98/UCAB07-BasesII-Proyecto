@@ -126,7 +126,8 @@
 
 				CONSTRAINT clase_aerolinea_pk PRIMARY KEY (id),
 				CONSTRAINT clase_aerolinea_fk_aerolinea FOREIGN KEY (fk_aerolinea) REFERENCES Aerolinea(id),
-				CONSTRAINT clase_aerolinea_fk_clase FOREIGN KEY (fk_clase) REFERENCES Clase(id)
+				CONSTRAINT clase_aerolinea_fk_clase FOREIGN KEY (fk_clase) REFERENCES Clase(id),
+				CONSTRAINT clase_aerolinea_unique UNIQUE (fk_aerolinea, fk_clase)
 			);
 
 		-- ASIENTO
