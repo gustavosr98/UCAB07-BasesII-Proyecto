@@ -74,6 +74,7 @@
 
 				nombre VARCHAR2(50) NOT NULL,
 				modelo VARCHAR2(50) NOT NULL,
+				capacidad INTEGER NOT NULL,
 				-- TODO Pendiente por cambiar a NOT NULL foto
 				foto BLOB DEFAULT EMPTY_BLOB(),
 				velocidad_max UNIDAD NOT NULL,
@@ -126,7 +127,8 @@
 
 				CONSTRAINT clase_aerolinea_pk PRIMARY KEY (id),
 				CONSTRAINT clase_aerolinea_fk_aerolinea FOREIGN KEY (fk_aerolinea) REFERENCES Aerolinea(id),
-				CONSTRAINT clase_aerolinea_fk_clase FOREIGN KEY (fk_clase) REFERENCES Clase(id)
+				CONSTRAINT clase_aerolinea_fk_clase FOREIGN KEY (fk_clase) REFERENCES Clase(id),
+				CONSTRAINT clase_aerolinea_unique UNIQUE (fk_aerolinea, fk_clase)
 			);
 
 		-- ASIENTO
