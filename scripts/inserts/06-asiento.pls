@@ -10,15 +10,17 @@ BEGIN
 	v_columna := 1;
 
 	FOR i_asientos IN 1..cantidad LOOP
-			-- ES VENTANA O NO
+		-- ES VENTANA O NO
 		IF (v_columna = 1 OR 
 			v_columna = ROUND(row_tipo_avion.ancho_interior_cabina.cantidad)
 		) THEN
 			v_asiento.es_ventana := 'T';
 		ELSE v_asiento.es_ventana := 'F'; END IF;
+		
 		-- ES PASILLO O NO
-		IF (v_columna = FLOOR(row_tipo_avion.ancho_interior_cabina.cantidad/2) OR
-			v_columna = CEIL(row_tipo_avion.ancho_interior_cabina.cantidad/2) 
+		IF ((v_columna = FLOOR(row_tipo_avion.ancho_interior_cabina.cantidad/2) OR
+			v_columna = CEIL(row_tipo_avion.ancho_interior_cabina.cantidad/2) ) AND
+			v_asiento.es_ventana = 'F'
 		)	THEN
 			v_asiento.es_pasillo := 'T';
 		ELSE v_asiento.es_pasillo := 'F'; END IF;
@@ -32,7 +34,7 @@ BEGIN
 		
 		-- AUMENTAR CONTADORES
 		v_columna := v_columna + 1;
-		IF (v_fila > row_tipo_avion.ancho_interior_cabina.cantidad ) THEN 
+		IF (v_columna > row_tipo_avion.ancho_interior_cabina.cantidad ) THEN 
 			v_columna := 1;
 			v_fila := v_fila + 1;
 		END IF;

@@ -53,8 +53,7 @@ BEGIN
 					OPEN cursor_clase_aerolinea_id(i_a);
 					FETCH cursor_clase_aerolinea_id INTO clase_aerolinea_id;
 					WHILE(NOT(cursor_clase_aerolinea_id%NOTFOUND)) LOOP
-						IF (cursor_clase_aerolinea_id%ROWCOUNT = 1) THEN
-							OUT_(0,'AAAAAAA');
+						IF (cursor_clase_aerolinea_id%ROWCOUNT = 3) THEN
 							INS_ASIENTO(
 								row_tipo_avion, avion_id, 
 								ROUND(row_tipo_avion.capacidad*0.1),
