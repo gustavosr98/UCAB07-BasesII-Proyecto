@@ -1,0 +1,26 @@
+--tipo VARCHAR2(50) NOT NULL CHECK( tipo = 'CALLE' OR tipo = 'CIUDAD' OR tipo = 'ESTADO' OR tipo = 'PAIS' OR tipo = 'CONTINENTE' ),
+
+
+-- PAIS
+	INSERT INTO Lugar VALUES(8,5,'PAIS','Brasil', NULL);
+	INSERT INTO Lugar VALUES(8,5,'PAIS','Brasil', NULL);
+	INSERT INTO Lugar VALUES(8,5,'PAIS','Brasil', NULL);
+	
+	INSERT INTO Lugar VALUES(8,5,'PAIS','Brasil', NULL);
+	INSERT INTO Lugar VALUES(8,5,'PAIS','Brasil', NULL);
+	INSERT INTO Lugar VALUES(8,5,'PAIS','Brasil', NULL);
+
+	INSERT INTO Lugar VALUES(8,5,'PAIS','Brasil', NULL);
+	INSERT INTO Lugar VALUES(8,5,'PAIS','Brasil', NULL);
+	INSERT INTO Lugar VALUES(8,5,'PAIS','Brasil', NULL);
+
+	INSERT INTO Lugar VALUES(8,5,'PAIS','Brasil', NULL);
+	INSERT INTO Lugar VALUES(9,5,'PAIS','Venezuela', NULL);
+	INSERT INTO Lugar VALUES(10,5,'PAIS','Aruba', NULL);
+
+	INSERT INTO Lugar VALUES(9,5,'PAIS','Venezuela', NULL);
+	INSERT INTO Lugar VALUES(9,5,'PAIS','Venezuela', NULL);
+
+-- ESTADO
+-- CIUDAD
+-- CALLE
