@@ -423,7 +423,7 @@ INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (422+262,'ESTADO','Saint Helen
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (423+262,'ESTADO','Tristan da Cunha', 28+7);
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (424+262,'ESTADO','Brest', 29+7);
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (425+262,'ESTADO','Minsk', 29+7);
-INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (426+262,'ESTADO','Homyel'', 29+7);
+INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (426+262,'ESTADO','Homyel', 29+7);
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (427+262,'ESTADO','Hrodna', 29+7);
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (428+262,'ESTADO','Mahilyow', 29+7);
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (429+262,'ESTADO','Minsk', 29+7);
