@@ -1390,7 +1390,7 @@ INSERT INTO Lugar(id,tipo,nombre,fk_lugar,localizacion) VALUES (1389+4758,'CIUDA
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar,localizacion) VALUES (1390+4758,'CIUDAD','Rongzhag',627+262,geolocalizacion(30.95044801740, 101.91666255600));
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar,localizacion) VALUES (1391+4758,'CIUDAD','Sanming',617+262,geolocalizacion(26.22998679500, 117.58004756600));
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar,localizacion) VALUES (1392+4758,'CIUDAD','Sanya',625+262,geolocalizacion(18.25910453930, 109.50403166600));
-INSERT INTO Lugar(id,tipo,nombre,fk_lugar,localizacion) VALUES (1393+4758,'CIUDAD','Shanghai',613+262,geolocalizacion(31.21645245260, 121.43650467800));
+INSERT INTO Lugar(id,tipo,nombre,fk_lugar,localizacion) VALUES (1393+4758,'CIUDAD','Shanghái',613+262,geolocalizacion(31.21645245260, 121.43650467800));
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar,localizacion) VALUES (1394+4758,'CIUDAD','Shangqiu',620+262,geolocalizacion(34.45041526190, 115.65003617300));
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar,localizacion) VALUES (1395+4758,'CIUDAD','Shangrao',618+262,geolocalizacion(28.47039267880, 117.96999792400));
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar,localizacion) VALUES (1396+4758,'CIUDAD','Shangzhi',612+262,geolocalizacion(45.22042970690, 127.97000769000));
@@ -1710,7 +1710,7 @@ INSERT INTO Lugar(id,tipo,nombre,fk_lugar,localizacion) VALUES (1709+4758,'CIUDA
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar,localizacion) VALUES (1710+4758,'CIUDAD','Paphos',787+262,geolocalizacion(34.75591516420, 32.42245666440));
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar,localizacion) VALUES (1711+4758,'CIUDAD','Prague',797+262,geolocalizacion(50.08333701490, 14.46597977570));
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar,localizacion) VALUES (1712+4758,'CIUDAD','Augsburg',805+262,geolocalizacion(48.35000612290, 10.89999588890));
-INSERT INTO Lugar(id,tipo,nombre,fk_lugar,localizacion) VALUES (1713+4758,'CIUDAD','Berlin',803+262,geolocalizacion(52.52181866360, 13.40154862330));
+INSERT INTO Lugar(id,tipo,nombre,fk_lugar,localizacion) VALUES (1713+4758,'CIUDAD','Berlín',803+262,geolocalizacion(52.52181866360, 13.40154862330));
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar,localizacion) VALUES (1714+4758,'CIUDAD','Bielefeld',811+262,geolocalizacion(52.02998821930, 8.53001135116));
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar,localizacion) VALUES (1715+4758,'CIUDAD','Bonn',811+262,geolocalizacion(50.72045574860, 7.08002233748));
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar,localizacion) VALUES (1716+4758,'CIUDAD','Braunschweig',810+262,geolocalizacion(52.24997479160, 10.50002030300));
@@ -3692,7 +3692,7 @@ INSERT INTO Lugar(id,tipo,nombre,fk_lugar,localizacion) VALUES (3691+4758,'CIUDA
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar,localizacion) VALUES (3692+4758,'CIUDAD','Chitre',2999+262,geolocalizacion(7.97001609185, -80.42003727390));
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar,localizacion) VALUES (3693+4758,'CIUDAD','El Porvenir',3004+262,geolocalizacion(9.54168635466, -78.97196298680));
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar,localizacion) VALUES (3694+4758,'CIUDAD','Las Tablas',3000+262,geolocalizacion(7.76039064425, -80.28001998060));
-INSERT INTO Lugar(id,tipo,nombre,fk_lugar,localizacion) VALUES (3695+4758,'CIUDAD','Panama City',3001+262,geolocalizacion(8.96801719048, -79.53303715180));
+INSERT INTO Lugar(id,tipo,nombre,fk_lugar,localizacion) VALUES (3695+4758,'CIUDAD','Ciudad de Panamá',3001+262,geolocalizacion(8.96801719048, -79.53303715180));
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar,localizacion) VALUES (3696+4758,'CIUDAD','Santiago',3002+262,geolocalizacion(8.10036989230, -80.98333622410));
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar,localizacion) VALUES (3697+4758,'CIUDAD','Andoas',3022+262,geolocalizacion(-2.90205930696, -76.40247888360));
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar,localizacion) VALUES (3698+4758,'CIUDAD','Arequipa',3010+262,geolocalizacion(-16.41999387730, -71.53001143560));
@@ -4162,7 +4162,7 @@ INSERT INTO Lugar(id,tipo,nombre,fk_lugar,localizacion) VALUES (4161+4758,'CIUDA
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar,localizacion) VALUES (4162+4758,'CIUDAD','Mogocha',3358+262,geolocalizacion(53.73332094230, 119.76658076900));
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar,localizacion) VALUES (4163+4758,'CIUDAD','Monchegorsk',3318+262,geolocalizacion(67.92912111320, 32.82873490270));
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar,localizacion) VALUES (4164+4758,'CIUDAD','Morshansk',3342+262,geolocalizacion(53.45473329580, 41.80436275100));
-INSERT INTO Lugar(id,tipo,nombre,fk_lugar,localizacion) VALUES (4165+4758,'CIUDAD','Moscow',3316+262,geolocalizacion(55.75216412260, 37.61552282590));
+INSERT INTO Lugar(id,tipo,nombre,fk_lugar,localizacion) VALUES (4165+4758,'CIUDAD','Moscú',3316+262,geolocalizacion(55.75216412260, 37.61552282590));
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar,localizacion) VALUES (4166+4758,'CIUDAD','Mozhga',3348+262,geolocalizacion(56.45475689610, 52.18434932330));
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar,localizacion) VALUES (4167+4758,'CIUDAD','Mtsensk',3325+262,geolocalizacion(53.26474489250, 36.54716426470));
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar,localizacion) VALUES (4168+4758,'CIUDAD','Mundybash',3297+262,geolocalizacion(53.23327394520, 87.31667516980));
@@ -5965,3 +5965,4 @@ INSERT INTO Lugar(id,tipo,nombre,fk_lugar,localizacion) VALUES (5964+4758,'CIUDA
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar,localizacion) VALUES (5965+4758,'CIUDAD','Shamva',4479+262,geolocalizacion(-17.31962888710, 31.57000036490));
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar,localizacion) VALUES (5966+4758,'CIUDAD','Victoria Falls',4482+262,geolocalizacion(-17.92961749390, 25.84001419950));
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar,localizacion) VALUES (5967+4758,'CIUDAD','Zvishavane',4481+262,geolocalizacion(-20.32957436240, 30.04998978550));
+INSERT INTO Lugar(id,tipo,nombre,fk_lugar,localizacion) VALUES (5968+4758,'CIUDAD','Paris',1154+262,geolocalizacion(48.869380,2.349475));
