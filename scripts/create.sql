@@ -216,7 +216,7 @@
 				-- ! Trigger para (fecha_fundacion <= SYSDATE)
 				fecha_fundacion DATE NOT NULL,
 				
-				CONSTRAINT alojamiento_pk PRIMARY KEY (id),
+				CONSTRAINT alojamiento_pk PRIMARY KEY (id)
 			);
 
 		-- LUG_ALOJ
@@ -231,7 +231,7 @@
 				hora_check_out INTEGER CHECK ( hora_check_out >= 0 AND hora_check_out < 24 ),
 
 				CONSTRAINT lug_aloj_pk PRIMARY KEY (id),
-				CONSTRAINT lug_aloj_fk_lugar FOREIGN KEY (fk_lugar) REFERENCES Lugar(id)
+				CONSTRAINT lug_aloj_fk_lugar FOREIGN KEY (fk_lugar) REFERENCES Lugar(id),
 				CONSTRAINT lug_aloj_fk_alojamiento FOREIGN KEY (fk_alojamiento) REFERENCES Alojamiento(id)
 			);
 
