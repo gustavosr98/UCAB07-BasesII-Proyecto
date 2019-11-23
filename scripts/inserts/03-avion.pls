@@ -12,12 +12,13 @@ IS
 	i_a INTEGER;
 
 	i_ca INTEGER;
+	avion_id INTEGER;
 	cantidad_aviones INTEGER;
-	
-	i_asientos INTEGER;
-	v_asiento Asiento%ROWTYPE;
-	v_fila INTEGER;
-	v_columna INTEGER;
+
+	CURSOR cursor_clase_aerolinea_id (aerolinea_id INTEGER) IS 
+		SELECT id FROM Clase_Aerolinea WHERE fk_aerolinea = aerolinea_id;
+	clase_aerolinea_id INTEGER;
+	cant_asientos INTEGER;
 
 	cant_total INTEGER DEFAULT 0;
 BEGIN
@@ -37,71 +38,53 @@ BEGIN
 	OUT_BREAK;
 
 	OPEN cursor_tipo_avion;
+	FETCH cursor_tipo_avion INTO row_tipo_avion;
 
 	WHILE(NOT(cursor_tipo_avion%NOTFOUND)) LOOP
-		FETCH cursor_tipo_avion INTO row_tipo_avion;
-
+		
 		FOR i_a IN min_a_id..max_a_id LOOP
 			IF( DBMS_RANDOM.VALUE > 0.3 ) THEN 
-				cantidad_aviones := ROUND( DBMS_RANDOM.VALUE(10,100) );
+				cantidad_aviones := ROUND( DBMS_RANDOM.VALUE(1,3) );
 				FOR i_ca IN 1..cantidad_aviones LOOP
 					INSERT INTO AVION (fk_aerolinea, fk_tipo_avion) 
-						VALUES (i_a, row_tipo_avion.id);
+						VALUES (i_a, row_tipo_avion.id) RETURNING id INTO avion_id;
 					
-					v_fila := 1;
-					v_columna := 1;
-					FOR i_asientos IN 1..row_tipo_avion.capacidad LOOP
-						 -- ES VENTANA O NO
-						IF (v_columna = 1 OR 
-							v_columna = ROUND(row_tipo_avion.ancho_interior_cabina.cantidad)
-						) THEN
-							v_asiento.es_ventana := 'T';
-						ELSE v_asiento.es_ventana := 'F'; END IF;
-						-- ES PASILLO O NO
-						IF (v_columna = FLOOR(row_tipo_avion.ancho_interior_cabina.cantidad/2) OR
-							v_columna = CEIL(row_tipo_avion.ancho_interior_cabina.cantidad/2) 
-						)	THEN
-							v_asiento.es_pasillo := 'T';
-						ELSE v_asiento.es_pasillo := 'F'; END IF;
-						
-						IF (DBMS_RANDOM.VALUE < 0.05) THEN v_asiento.es_de_emergencia := 'T';
-						ELSE v_asiento.es_de_emergencia := 'F'; END IF;
-
-						INSERT INTO Asiento (fk_avion,fila,columna,es_ventana,es_pasillo,es_de_emergencia) 
-							VALUES (i_a,TO_CHAR(v_fila),asiento_col_to_char(v_columna),
-											v_asiento.es_ventana,v_asiento.es_pasillo,v_asiento.es_de_emergencia);
-						
-						-- AUMENTAR CONTADORES
-						v_columna := v_columna + 1;
-						IF (v_fila > row_tipo_avion.ancho_interior_cabina.cantidad ) THEN 
-							v_columna := 1;
-							v_fila := v_fila + 1;
+					-- ASIENTOS POR CLASES
+					OPEN cursor_clase_aerolinea_id(i_a);
+					FETCH cursor_clase_aerolinea_id INTO clase_aerolinea_id;
+					WHILE(NOT(cursor_clase_aerolinea_id%NOTFOUND)) LOOP
+						IF (cursor_clase_aerolinea_id%ROWCOUNT = 1) THEN
+							OUT_(0,'AAAAAAA');
+							INS_ASIENTO(
+								row_tipo_avion, avion_id, 
+								ROUND(row_tipo_avion.capacidad*0.1),
+								clase_aerolinea_id
+							);
+						ELSIF (cursor_clase_aerolinea_id%ROWCOUNT = 2) THEN
+							INS_ASIENTO(
+								row_tipo_avion, avion_id, 
+								ROUND(row_tipo_avion.capacidad*0.2),
+								clase_aerolinea_id
+							);
+						ELSE
+							INS_ASIENTO(
+								row_tipo_avion, avion_id, 
+								row_tipo_avion.capacidad -ROUND(row_tipo_avion.capacidad*0.1) - ROUND(row_tipo_avion.capacidad*0.2),
+								clase_aerolinea_id
+							);
 						END IF;
-					END LOOP; 
-
+						FETCH cursor_clase_aerolinea_id INTO clase_aerolinea_id;
+					END LOOP;
+					CLOSE cursor_clase_aerolinea_id;
+					
 					cant_total := cant_total +1;
 				END LOOP;  
 			END IF;
 		END LOOP;
+		FETCH cursor_tipo_avion INTO row_tipo_avion;
 	END LOOP;
 
 	CLOSE cursor_tipo_avion;
 
 	OUT_(1,'--> Total de AVIONes generados: ' || cant_total); 
-END;
-
-
-
-CREATE OR REPLACE FUNCTION asiento_col_to_char ( numero INTEGER ) RETURN CHAR
-IS
-BEGIN
-	IF (numero = 1) THEN RETURN 'A';
-	ELSIF (numero = 2) THEN RETURN 'B';
-	ELSIF (numero = 3) THEN RETURN 'C';
-	ELSIF (numero = 4) THEN RETURN 'D';
-	ELSIF (numero = 5) THEN RETURN 'E';
-	ELSIF (numero = 6) THEN RETURN 'F';
-	ELSIF (numero = 7) THEN RETURN 'G';
-	ELSE RETURN 'H';
-	END IF;
 END;
