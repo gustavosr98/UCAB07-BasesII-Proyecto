@@ -20,7 +20,7 @@ BEGIN
 	
 	OUT_BREAK(2);
 	OUT_(0,'***************************************************************');
-	OUT_(0,'******************** PROCEDURE: INS_AVION *********************');
+	OUT_(0,'******************** PROCEDURE: INS_VEHICULO *********************');
 	OUT_(0,'***************************************************************');
 	OUT_BREAK;
 
@@ -31,7 +31,7 @@ BEGIN
 	FOR i_p IN min_p_id..max_p_id LOOP
 		FOR i_m IN min_m_id..max_m_id LOOP
 			IF( DBMS_RANDOM.VALUE > 0.3 ) THEN 
-				cantidad_vehiculos := ROUND( DBMS_RANDOM.VALUE(10,100) );
+				cantidad_vehiculos := ROUND( DBMS_RANDOM.VALUE(10,20) );
 				FOR i_cv IN 1..cantidad_vehiculos LOOP
 					INSERT INTO VEHICULO (fk_modelo_vehiculo, fk_proveedor_vehiculo, esta_disponible,precio_por_dia) 
 						VALUES (i_m, i_p,'T', UNIDAD('DIVISA','DOLAR',ROUND( DBMS_RANDOM.VALUE(10,50) ) ));
@@ -42,4 +42,12 @@ BEGIN
 	END LOOP;
 
 	OUT_(1,'--> Total de Vehiculos generados: ' || cant_total);
+END;
+
+
+DECLARE
+BEGIN
+
+    ins_vehiculo;
+
 END;
