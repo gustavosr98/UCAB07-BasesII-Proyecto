@@ -1,20 +1,20 @@
 INSERT INTO Cliente (
 	id,primer_nombre,segundo_nombre,primer_apellido,segundo_apellido,sexo,telefono,fecha_nacimiento) 
 VALUES (
-	DEFAULT,
+	1,
     'Juan',
     'Alejandro',
     'Rodriguez',
     'Hernandez',
     'M',
     '04142002345',    
-    TO_DATE('20/06/1998', 'dd/mm/yyyy')
+    TO_DATE('20/06/1991', 'dd/mm/yyyy')
 );
 
 INSERT INTO Cliente (
 	id,primer_nombre,segundo_nombre,primer_apellido,segundo_apellido,sexo,telefono,fecha_nacimiento) 
 VALUES (
-	DEFAULT,
+	2,
     'Jose',
     'Angel',
     'Gomez',
@@ -27,20 +27,34 @@ VALUES (
 INSERT INTO Cliente (
 	id,primer_nombre,segundo_nombre,primer_apellido,segundo_apellido,sexo,telefono,fecha_nacimiento) 
 VALUES (
-	DEFAULT,
+	3,
+    'Francisco',
+    'Luis',
+    'Lopez',
+    'Bermudez',
+    'M',
+    '04123789666',    
+    TO_DATE('10/01/1990', 'dd/mm/yyyy')
+);
+
+INSERT INTO Cliente (
+	id,primer_nombre,segundo_nombre,primer_apellido,segundo_apellido,sexo,telefono,fecha_nacimiento,fk_cliente) 
+VALUES (
+	4,
     'Maria',
     'Luisa',
     'Lopez',
     'Diaz',
     'F',
     '04123789666',    
+    3,
     TO_DATE('02/02/2008', 'dd/mm/yyyy')
 );
 
 INSERT INTO Cliente (
 	id,primer_nombre,primer_apellido,sexo,telefono,fecha_nacimiento) 
 VALUES (
-	DEFAULT,
+	5,
     'Ana',
     'García',
     'F',
@@ -49,22 +63,21 @@ VALUES (
 );
 
 INSERT INTO Cliente (
-	id,primer_nombre,segundo_nombre,primer_apellido,segundo_apellido,sexo,telefono,fecha_nacimiento) 
+	id,primer_nombre,segundo_nombre,primer_apellido,sexo,fecha_nacimiento,fk_cliente) 
 VALUES (
-	DEFAULT,
+	6,
     'Sebastián',
     'Jorge',
-    'Lopez',
-    'González',
+    'García',
     'M',
-    '04163445322',    
-    TO_DATE('22/12/2000', 'dd/mm/yyyy')
+    5,
+    TO_DATE('22/12/2009', 'dd/mm/yyyy')
 );
 
 INSERT INTO Cliente (
 	id,primer_nombre,primer_apellido,segundo_apellido,sexo,telefono,fecha_nacimiento) 
 VALUES (
-	DEFAULT,
+	7,
     'Gabriela',
     'Sosa',
     'Romero',
@@ -74,22 +87,35 @@ VALUES (
 );
 
 INSERT INTO Cliente (
-	id,primer_nombre,segundo_nombre,primer_apellido,segundo_apellido,sexo,telefono,fecha_nacimiento) 
+	id,primer_nombre,primer_apellido,segundo_apellido,sexo,telefono,fecha_nacimiento) 
 VALUES (
-	DEFAULT,
+	8,
+    'Isabella',
+    'Sánchez',
+    'Espino',
+    'F',
+    '04124567392',    
+    TO_DATE('04/03/1980', 'dd/mm/yyyy')
+);
+
+INSERT INTO Cliente (
+	id,primer_nombre,segundo_nombre,primer_apellido,segundo_apellido,sexo,telefono,fecha_nacimiento,fk_cliente) 
+VALUES (
+	9,
     'Fernando',
     'Luis',
     'Sánchez',
     'Diaz',
     'M',
-    '04247778354',    
+    '04247778354',   
+    8, 
     TO_DATE('01/11/1953', 'dd/mm/yyyy')
 );
 
 INSERT INTO Cliente (
 	id,primer_nombre,segundo_nombre,primer_apellido,sexo,telefono,fecha_nacimiento) 
 VALUES (
-	DEFAULT,
+	10,
     'Pedro',
     'Alberto',
     'Miranda',
@@ -101,7 +127,7 @@ VALUES (
 INSERT INTO Cliente (
 	id,primer_nombre,segundo_nombre,primer_apellido,segundo_apellido,sexo,telefono,fecha_nacimiento) 
 VALUES (
-	DEFAULT,
+	11,
     'Sara',
     'Rosa',
     'Lopez',
@@ -112,20 +138,22 @@ VALUES (
 );
 
 INSERT INTO Cliente (
-	id,primer_nombre,primer_apellido,sexo,telefono,fecha_nacimiento) 
+	id,primer_nombre,primer_apellido,segundo_apellido,sexo,telefono,fecha_nacimiento,fk_cliente) 
 VALUES (
-	DEFAULT,
+	12,
     'Luis',
-    'Ramirez',
+    'Lopez',
+    'Ruiz',
     'M',
-    '04147764545',    
+    '04147764545',
+    11,    
     TO_DATE('30/01/2001', 'dd/mm/yyyy')
 );
 
 INSERT INTO Cliente (
 	id,primer_nombre,segundo_nombre,primer_apellido,segundo_apellido,sexo,telefono,fecha_nacimiento) 
 VALUES (
-	DEFAULT,
+	13,
     'Silvia',
     'Fernanda',
     'Martínez',
@@ -138,7 +166,7 @@ VALUES (
 INSERT INTO Cliente (
 	id,primer_nombre,primer_apellido,segundo_apellido,sexo,telefono,fecha_nacimiento) 
 VALUES (
-	DEFAULT,
+	14,
     'Rosa',
     'Pérez',
     'Torres',
@@ -150,7 +178,7 @@ VALUES (
 INSERT INTO Cliente (
 	id,primer_nombre,segundo_nombre,primer_apellido,segundo_apellido,sexo,telefono,fecha_nacimiento) 
 VALUES (
-	DEFAULT,
+	15,
     'Gerardo',
     'Sergio',
     'Suarez',
@@ -163,25 +191,190 @@ VALUES (
 INSERT INTO Cliente (
 	id,primer_nombre,segundo_nombre,primer_apellido,segundo_apellido,sexo,telefono,fecha_nacimiento) 
 VALUES (
-	DEFAULT,
-    'David',
-    'Gabriel',
-    'Fernández',
-    'Lopez',
-    'M',
-    '04148921564',    
-    TO_DATE('11/08/2009', 'dd/mm/yyyy')
-);
-
-INSERT INTO Cliente (
-	id,primer_nombre,segundo_nombre,primer_apellido,segundo_apellido,sexo,telefono,fecha_nacimiento) 
-VALUES (
-	DEFAULT,
+	16,
     'Raquel',
     'Maria',
     'Muñoz',
     'Ortiz',
     'F',
     '04125566782',    
-    TO_DATE('11/08/1993', 'dd/mm/yyyy')
+    TO_DATE('11/08/1990', 'dd/mm/yyyy')
+);
+
+INSERT INTO Cliente (
+	id,primer_nombre,segundo_nombre,primer_apellido,segundo_apellido,sexo,fecha_nacimiento,fk_cliente) 
+VALUES (
+	17,
+    'David',
+    'Gabriel',
+    'Muñoz',
+    'Ortiz',
+    'M',
+    16,
+    TO_DATE('11/08/2009', 'dd/mm/yyyy')
+);
+
+INSERT INTO Cliente (
+	id,primer_nombre,segundo_nombre,primer_apellido,segundo_apellido,sexo,telefono,fecha_nacimiento) 
+VALUES (
+	18,
+    'Miguel',
+    'Angel',
+    'Andrade',
+    'Mendez',
+    'M',
+    '04145319835',    
+    TO_DATE('11/11/1997', 'dd/mm/yyyy')
+);
+
+INSERT INTO Cliente (
+	id,primer_nombre,segundo_nombre,primer_apellido,segundo_apellido,sexo,telefono,fecha_nacimiento) 
+VALUES (
+	19,
+    'Mario',
+    'Felix',
+    'González',
+    'Mendoza',
+    'M',
+    '04121258861',    
+    TO_DATE('01/06/1970', 'dd/mm/yyyy')
+);
+
+INSERT INTO Cliente (
+	id,primer_nombre,segundo_nombre,primer_apellido,segundo_apellido,sexo,telefono,fecha_nacimiento,fk_cliente) 
+VALUES (
+	20,
+    'Maria',
+    'José',
+    'Hernandez',
+    'Avarez',
+    'F',
+    '04141147865',  
+    19,  
+    TO_DATE('18/04/1972', 'dd/mm/yyyy')
+);
+
+INSERT INTO Cliente (
+	id,primer_nombre,primer_apellido,segundo_apellido,sexo,telefono,fecha_nacimiento,fk_cliente) 
+VALUES (
+	21,
+    'Bianca',
+    'González',
+    'Hernandez',
+    'F',
+    '04243978542',    
+    19,
+    TO_DATE('09/10/2008', 'dd/mm/yyyy')
+);
+
+INSERT INTO Cliente (
+	id,primer_nombre,primer_apellido,segundo_apellido,sexo,telefono,fecha_nacimiento,fk_cliente) 
+VALUES (
+	22,
+    'Felix',
+    'González',
+    'Acosta',
+    'M',
+    '04164784465', 
+    19,
+    TO_DATE('24/03/1950', 'dd/mm/yyyy')
+);
+
+INSERT INTO Cliente (
+	id,primer_nombre,segundo_nombre,primer_apellido,segundo_apellido,sexo,telefono,fecha_nacimiento) 
+VALUES (
+	23,
+    'Sofia',
+    'Amelia',
+    'Figueroa',
+    'Torres',
+    'F',
+    '04145683496',    
+    TO_DATE('20/05/1980', 'dd/mm/yyyy')
+);
+
+INSERT INTO Cliente (
+	id,primer_nombre,segundo_nombre,primer_apellido,segundo_apellido,sexo,telefono,fecha_nacimiento) 
+VALUES (
+	24,
+    'Santiago',
+    'Matías',
+    'Alvarado',
+    'Blanco',
+    'M',
+    '04123578976',    
+    TO_DATE('20/09/1997', 'dd/mm/yyyy')
+);
+
+INSERT INTO Cliente (
+	id,primer_nombre,primer_apellido,sexo,telefono,fecha_nacimiento) 
+VALUES (
+	25,
+    'Hernando',
+    'Castillo',
+    'M',
+    '04124561199',    
+    TO_DATE('23/10/1990', 'dd/mm/yyyy')
+);
+
+INSERT INTO Cliente (
+	id,primer_nombre,segundo_nombre,primer_apellido,sexo,fecha_nacimiento,fk_cliente) 
+VALUES (
+	26,
+    'Lucia',
+    'Ana',
+    'Castillo',
+    'F',
+    25,
+    TO_DATE('03/06/2010', 'dd/mm/yyyy')
+);
+
+INSERT INTO Cliente (
+	id,primer_nombre,segundo_nombre,primer_apellido,sexo,fecha_nacimiento,fk_cliente) 
+VALUES (
+	27,
+    'Valentina',
+    'Camila',
+    'Castillo',
+    'F',
+    25,
+    TO_DATE('07/08/2012', 'dd/mm/yyyy')
+);
+
+INSERT INTO Cliente (
+	id,primer_nombre,primer_apellido,segundo_apellido,sexo,telefono,fecha_nacimiento) 
+VALUES (
+	28,
+    'Valeria',
+    'Herrera',
+    'Infante',
+    'F',
+    '04126329166',    
+    TO_DATE('12/12/1996', 'dd/mm/yyyy')
+);
+
+INSERT INTO Cliente (
+	id,primer_nombre,segundo_nombre,primer_apellido,segundo_apellido,sexo,telefono,fecha_nacimiento) 
+VALUES (
+	29,
+    'Angel',
+    'Lucas',
+    'Jímenez',
+    'León',
+    'M',
+    '04145523867',    
+    TO_DATE('27/02/1984', 'dd/mm/yyyy')
+);
+
+INSERT INTO Cliente (
+	id,primer_nombre,segundo_nombre,primer_apellido,segundo_apellido,sexo,fecha_nacimiento,fk_cliente) 
+VALUES (
+	30,
+    'Ivan',
+    'Oliver',
+    'Jímenez',
+    'León',
+    'M',
+    29,
+    TO_DATE('23/12/2007', 'dd/mm/yyyy')
 );
