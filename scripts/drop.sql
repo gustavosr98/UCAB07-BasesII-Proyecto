@@ -28,6 +28,7 @@ DROP TABLE Modelo_Vehiculo;
 
 -- HABITACIONES
 DROP TABLE Habitacion;
+DROP TABLE Lug_Aloj;
 DROP TABLE Alojamiento;
 
 -- VUELOS
