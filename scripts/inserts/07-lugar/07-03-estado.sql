@@ -441,8 +441,8 @@ INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (440+262,'ESTADO','Paget', 31+
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (441+262,'ESTADO','Pembroke', 31+7);
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (442+262,'ESTADO','Sandys', 31+7);
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (443+262,'ESTADO','Saint George', 31+7);
-INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (444+262,'ESTADO','Saint George's', 31+7);
-INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (445+262,'ESTADO','Smith's', 31+7);
+INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (444+262,'ESTADO','Saint Georges', 31+7);
+INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (445+262,'ESTADO','Smiths', 31+7);
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (446+262,'ESTADO','Southampton', 31+7);
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (447+262,'ESTADO','Warwick', 31+7);
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (448+262,'ESTADO','El Beni', 32+7);
@@ -542,7 +542,7 @@ INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (541+262,'ESTADO','Nana-GrÃ©
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (542+262,'ESTADO','KÃ©mo', 38+7);
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (543+262,'ESTADO','Lobaye', 38+7);
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (544+262,'ESTADO','Mbomou', 38+7);
-INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (545+262,'ESTADO','Ombella-M'Poko', 38+7);
+INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (545+262,'ESTADO','Ombella-M"Poko', 38+7);
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (546+262,'ESTADO','Nana-MambÃ©rÃ©', 38+7);
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (547+262,'ESTADO','Ouham-PendÃ©', 38+7);
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (548+262,'ESTADO','Sangha-MbaÃ©rÃ©', 38+7);
@@ -594,7 +594,7 @@ INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (593+262,'ESTADO','La Araucan�
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (594+262,'ESTADO','Atacama', 41+7);
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (595+262,'ESTADO','BÃ­o-BÃ­o', 41+7);
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (596+262,'ESTADO','Coquimbo', 41+7);
-INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (597+262,'ESTADO','Libertador General Bernardo O'Higgins', 41+7);
+INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (597+262,'ESTADO','Libertador General Bernardo O"Higgins', 41+7);
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (598+262,'ESTADO','Los Lagos', 41+7);
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (599+262,'ESTADO','Los RÃ­os', 41+7);
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (600+262,'ESTADO','Magallanes y AntÃ¡rtica Chilena', 41+7);
@@ -644,7 +644,7 @@ INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (643+262,'ESTADO','Lacs', 43+7
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (644+262,'ESTADO','Zanzan', 43+7);
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (645+262,'ESTADO','Bas-Sassandra', 43+7);
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (646+262,'ESTADO','DenguÃ©lÃ©', 43+7);
-INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (647+262,'ESTADO','N'zi-ComoÃ©', 43+7);
+INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (647+262,'ESTADO','N"zi-ComoÃ©', 43+7);
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (648+262,'ESTADO','MarahouÃ©', 43+7);
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (649+262,'ESTADO','Sud-ComoÃ©', 43+7);
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (650+262,'ESTADO','Worodougou', 43+7);
@@ -778,7 +778,7 @@ INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (777+262,'ESTADO','GuantÃ¡na
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (778+262,'ESTADO','Artemisa', 52+7);
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (779+262,'ESTADO','Mayabeque', 52+7);
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (780+262,'ESTADO','Isla de la Juventud', 52+7);
-INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (781+262,'ESTADO','CUW-00 INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (CuraÃ§ao+262 'ESTADO',ggregation)', 53+7);
+INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (781+262,'ESTADO','Curazao', 53+7);
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (782+262,'ESTADO','Cayman Islands', 54+7);
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (783+262,'ESTADO','Nicosia', 55+7);
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (784+262,'ESTADO','Limassol', 55+7);
@@ -895,7 +895,7 @@ INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (894+262,'ESTADO','Guelma', 62
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (895+262,'ESTADO','Constantine', 62+7);
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (896+262,'ESTADO','MÃ©dÃ©a', 62+7);
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (897+262,'ESTADO','Mostaganem', 62+7);
-INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (898+262,'ESTADO','M'Sila', 62+7);
+INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (898+262,'ESTADO','M"Sila', 62+7);
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (899+262,'ESTADO','Mascara', 62+7);
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (900+262,'ESTADO','Ouargla', 62+7);
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (901+262,'ESTADO','Oran', 62+7);
@@ -953,7 +953,7 @@ INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (952+262,'ESTADO','Al Fayyum',
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (953+262,'ESTADO','Al Gharbiyah', 64+7);
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (954+262,'ESTADO','Al Jizah', 64+7);
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (955+262,'ESTADO','Al Isma`iliyah', 64+7);
-INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (956+262,'ESTADO','Janub Sina'', 64+7);
+INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (956+262,'ESTADO','Janub Sina', 64+7);
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (957+262,'ESTADO','Al Qalyubiyah', 64+7);
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (958+262,'ESTADO','Kafr ash Shaykh', 64+7);
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (959+262,'ESTADO','Qina', 64+7);
@@ -964,7 +964,7 @@ INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (963+262,'ESTADO','Matruh', 64
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (964+262,'ESTADO','Bur Sa`id', 64+7);
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (965+262,'ESTADO','Suhaj', 64+7);
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (966+262,'ESTADO','Ash Sharqiyah', 64+7);
-INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (967+262,'ESTADO','Shamal Sina'', 64+7);
+INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (967+262,'ESTADO','Shamal Sina', 64+7);
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (968+262,'ESTADO','As Suways', 64+7);
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (969+262,'ESTADO','Al Wadi at Jadid', 64+7);
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (970+262,'ESTADO','Anseba', 65+7);
@@ -1097,8 +1097,8 @@ INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (1096+262,'ESTADO','Charente',
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (1097+262,'ESTADO','Charente-Maritime', 73+7);
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (1098+262,'ESTADO','Cher', 73+7);
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (1099+262,'ESTADO','CorrÃ¨ze', 73+7);
-INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (1100+262,'ESTADO','CÃ´te-d'Or', 73+7);
-INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (1101+262,'ESTADO','CÃ´tes-d'Armor', 73+7);
+INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (1100+262,'ESTADO','CÃ´te-d"Or', 73+7);
+INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (1101+262,'ESTADO','CÃ´tes-d"Armor', 73+7);
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (1102+262,'ESTADO','Creuse', 73+7);
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (1103+262,'ESTADO','Dordogne', 73+7);
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (1104+262,'ESTADO','Doubs', 73+7);
@@ -1171,7 +1171,7 @@ INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (1170+262,'ESTADO','Essonne', 
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (1171+262,'ESTADO','Hauts-de-Seine', 73+7);
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (1172+262,'ESTADO','Seine-Saint-Denis', 73+7);
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (1173+262,'ESTADO','Val-de-Marne', 73+7);
-INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (1174+262,'ESTADO','Val-d'Oise', 73+7);
+INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (1174+262,'ESTADO','Val-d"Oise', 73+7);
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (1175+262,'ESTADO','Guyane franÃ§aise', 73+7);
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (1176+262,'ESTADO','Guadeloupe', 73+7);
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (1177+262,'ESTADO','Martinique', 73+7);
@@ -1619,9 +1619,9 @@ INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (1618+262,'ESTADO','Istarska',
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (1619+262,'ESTADO','DubrovaÄko-neretvanska', 95+7);
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (1620+262,'ESTADO','Medimurska', 95+7);
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (1621+262,'ESTADO','Grad Zagreb', 95+7);
-INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (1622+262,'ESTADO','L'Artibonite', 96+7);
+INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (1622+262,'ESTADO','L"Artibonite', 96+7);
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (1623+262,'ESTADO','Centre', 96+7);
-INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (1624+262,'ESTADO','Grand'Anse', 96+7);
+INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (1624+262,'ESTADO','Grand"Anse', 96+7);
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (1625+262,'ESTADO','Nord', 96+7);
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (1626+262,'ESTADO','Nord-Est', 96+7);
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (1627+262,'ESTADO','Nippes', 96+7);
@@ -1705,7 +1705,7 @@ INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (1704+262,'ESTADO','Sumatera S
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (1705+262,'ESTADO','Sulawesi Tengah', 98+7);
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (1706+262,'ESTADO','Sumatera Utara', 98+7);
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (1707+262,'ESTADO','Yogyakarta', 98+7);
-INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (1708+262,'ESTADO','IMN-00 INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (Isle+262 'ESTADO',f Man aggregation)', 99+7);
+INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (1708+262,'ESTADO','Isle of Man', 99+7);
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (1709+262,'ESTADO','Andaman and Nicobar', 100+7);
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (1710+262,'ESTADO','Andhra Pradesh', 100+7);
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (1711+262,'ESTADO','Arunachal Pradesh', 100+7);
@@ -1806,7 +1806,7 @@ INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (1805+262,'ESTADO','Baghdad', 
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (1806+262,'ESTADO','Dihok', 104+7);
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (1807+262,'ESTADO','Diyala', 104+7);
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (1808+262,'ESTADO','Dhi-Qar', 104+7);
-INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (1809+262,'ESTADO','Karbala'', 104+7);
+INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (1809+262,'ESTADO','Karbala', 104+7);
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (1810+262,'ESTADO','Maysan', 104+7);
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (1811+262,'ESTADO','Al-Muthannia', 104+7);
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (1812+262,'ESTADO','An-Najaf', 104+7);
@@ -1814,7 +1814,7 @@ INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (1813+262,'ESTADO','Ninawa', 1
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (1814+262,'ESTADO','Al-Qadisiyah', 104+7);
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (1815+262,'ESTADO','Sala ad-Din', 104+7);
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (1816+262,'ESTADO','As-Sulaymaniyah', 104+7);
-INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (1817+262,'ESTADO','At-Ta'mim', 104+7);
+INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (1817+262,'ESTADO','At-Ta"mim', 104+7);
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (1818+262,'ESTADO','Wasit', 104+7);
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (1819+262,'ESTADO','Höfuðborgarsvæði utan Reykjavíkur', 105+7);
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (1820+262,'ESTADO','Suðurnes', 105+7);
@@ -1835,7 +1835,7 @@ INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (1834+262,'ESTADO','Alessandri
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (1835+262,'ESTADO','Ancona', 107+7);
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (1836+262,'ESTADO','Aosta', 107+7);
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (1837+262,'ESTADO','Ascoli Piceno', 107+7);
-INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (1838+262,'ESTADO','L'Aquila', 107+7);
+INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (1838+262,'ESTADO','L"Aquila', 107+7);
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (1839+262,'ESTADO','Arezzo', 107+7);
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (1840+262,'ESTADO','Asti', 107+7);
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (1841+262,'ESTADO','Avellino', 107+7);
@@ -2088,8 +2088,8 @@ INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (2087+262,'ESTADO','Trinity Pa
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (2088+262,'ESTADO','Seoul', 118+7);
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (2089+262,'ESTADO','Busan', 118+7);
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (2090+262,'ESTADO','Daegu', 118+7);
-INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (2091+262,'ESTADO','Inch'on-gwangyoksi', 118+7);
-INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (2092+262,'ESTADO','Gwangju Gwang'yeogsi [Kwangju-Kwangyokshi]', 118+7);
+INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (2091+262,'ESTADO','Inch"on-gwangyoksi', 118+7);
+INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (2092+262,'ESTADO','Gwangju Gwang yeogsi [Kwangju-Kwangyokshi]', 118+7);
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (2093+262,'ESTADO','Daejeon', 118+7);
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (2094+262,'ESTADO','Ulsan', 118+7);
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (2095+262,'ESTADO','Gyeonggi-do', 118+7);
@@ -2193,9 +2193,9 @@ INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (2192+262,'ESTADO','An Nuqat a
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (2193+262,'ESTADO','Al Qubbah', 124+7);
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (2194+262,'ESTADO','Sabha', 124+7);
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (2195+262,'ESTADO','Surt', 124+7);
-INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (2196+262,'ESTADO','Tajura' wa an Nawahi al Arba', 124+7);
+INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (2196+262,'ESTADO','Tajura wa an Nawahi al Arba', 124+7);
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (2197+262,'ESTADO','Wadi al ?ayat', 124+7);
-INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (2198+262,'ESTADO','Ash Shati'', 124+7);
+INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (2198+262,'ESTADO','Ash Shati', 124+7);
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (2199+262,'ESTADO','Az Zawiyah', 124+7);
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (2200+262,'ESTADO','Ansela-Raye', 125+7);
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (2201+262,'ESTADO','Castries', 125+7);
@@ -2249,9 +2249,9 @@ INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (2248+262,'ESTADO','Butha-Buth
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (2249+262,'ESTADO','Leribe', 128+7);
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (2250+262,'ESTADO','Berea', 128+7);
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (2251+262,'ESTADO','Mafeteng', 128+7);
-INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (2252+262,'ESTADO','Mohale's Hoek', 128+7);
+INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (2252+262,'ESTADO','Mohale"s Hoek', 128+7);
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (2253+262,'ESTADO','Quthing', 128+7);
-INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (2254+262,'ESTADO','Qacha's Nek', 128+7);
+INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (2254+262,'ESTADO','Qacha"s Nek', 128+7);
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (2255+262,'ESTADO','Mokhotlong', 128+7);
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (2256+262,'ESTADO','Thaba-Tseka', 128+7);
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (2257+262,'ESTADO','Alytaus', 129+7);
@@ -3333,7 +3333,7 @@ INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (3332+262,'ESTADO','Chukot', 1
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (3333+262,'ESTADO','Sakhalin', 183+7);
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (3334+262,'ESTADO','Samara', 183+7);
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (3335+262,'ESTADO','Saratov', 183+7);
-INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (3336+262,'ESTADO','Severnaya Osetiya, Respublika [Alaniya] [Respublika Severnaya Osetiya-Alaniya]', 183+7);
+INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (3336+262,'ESTADO','Severnaya Osetiya', 183+7);
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (3337+262,'ESTADO','Smolensk', 183+7);
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (3338+262,'ESTADO','City of St. Petersburg', 183+7);
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (3339+262,'ESTADO','Stavropol', 183+7);
