@@ -47,8 +47,8 @@ VALUES (
     'Diaz',
     'F',
     '04123789666',    
-    3,
-    TO_DATE('02/02/2008', 'dd/mm/yyyy')
+    TO_DATE('02/02/2008', 'dd/mm/yyyy'),
+    3
 );
 
 INSERT INTO Cliente (
@@ -70,8 +70,8 @@ VALUES (
     'Jorge',
     'García',
     'M',
-    5,
-    TO_DATE('22/12/2009', 'dd/mm/yyyy')
+    TO_DATE('22/12/2009', 'dd/mm/yyyy'),
+    5
 );
 
 INSERT INTO Cliente (
@@ -108,8 +108,8 @@ VALUES (
     'Diaz',
     'M',
     '04247778354',   
-    8, 
-    TO_DATE('01/11/1953', 'dd/mm/yyyy')
+    TO_DATE('01/11/1953', 'dd/mm/yyyy'),
+    8
 );
 
 INSERT INTO Cliente (
@@ -146,8 +146,8 @@ VALUES (
     'Ruiz',
     'M',
     '04147764545',
-    11,    
-    TO_DATE('30/01/2001', 'dd/mm/yyyy')
+    TO_DATE('30/01/2001', 'dd/mm/yyyy'),
+    11
 );
 
 INSERT INTO Cliente (
@@ -210,8 +210,8 @@ VALUES (
     'Muñoz',
     'Ortiz',
     'M',
-    16,
-    TO_DATE('11/08/2009', 'dd/mm/yyyy')
+    TO_DATE('11/08/2009', 'dd/mm/yyyy'),
+    16
 );
 
 INSERT INTO Cliente (
@@ -250,8 +250,8 @@ VALUES (
     'Avarez',
     'F',
     '04141147865',  
-    19,  
-    TO_DATE('18/04/1972', 'dd/mm/yyyy')
+    TO_DATE('18/04/1972', 'dd/mm/yyyy'),
+    19
 );
 
 INSERT INTO Cliente (
@@ -263,8 +263,8 @@ VALUES (
     'Hernandez',
     'F',
     '04243978542',    
-    19,
-    TO_DATE('09/10/2008', 'dd/mm/yyyy')
+    TO_DATE('09/10/2008', 'dd/mm/yyyy'),
+    19
 );
 
 INSERT INTO Cliente (
@@ -276,8 +276,8 @@ VALUES (
     'Acosta',
     'M',
     '04164784465', 
-    19,
-    TO_DATE('24/03/1950', 'dd/mm/yyyy')
+    TO_DATE('24/03/1950', 'dd/mm/yyyy'),
+    19
 );
 
 INSERT INTO Cliente (
@@ -325,8 +325,8 @@ VALUES (
     'Ana',
     'Castillo',
     'F',
-    25,
-    TO_DATE('03/06/2010', 'dd/mm/yyyy')
+    TO_DATE('03/06/2010', 'dd/mm/yyyy'),
+    25
 );
 
 INSERT INTO Cliente (
@@ -337,8 +337,8 @@ VALUES (
     'Camila',
     'Castillo',
     'F',
-    25,
-    TO_DATE('07/08/2012', 'dd/mm/yyyy')
+    TO_DATE('07/08/2012', 'dd/mm/yyyy'),
+    25
 );
 
 INSERT INTO Cliente (
@@ -375,6 +375,6 @@ VALUES (
     'Jímenez',
     'León',
     'M',
-    29,
-    TO_DATE('23/12/2007', 'dd/mm/yyyy')
+    TO_DATE('23/12/2007', 'dd/mm/yyyy'),
+    29
 );
