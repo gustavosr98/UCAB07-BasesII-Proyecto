@@ -1,4 +1,4 @@
-CREATE OR REPLACE PROCEDURE insertar_seguro
+CREATE OR REPLACE PROCEDURE ins_seguro
 IS
     cant_aseg INTEGER DEFAULT 0;
     i_ca INTEGER;
@@ -16,7 +16,7 @@ IS
 BEGIN
     OUT_BREAK(2);
 	OUT_(0,'***************************************************************');
-	OUT_(0,'******************** PROCEDURE: INSERTAR_SEGURO ***************');
+	OUT_(0,'******************** PROCEDURE: INS_SEGURO ********************');
 	OUT_(0,'***************************************************************');
 	OUT_BREAK;
 
