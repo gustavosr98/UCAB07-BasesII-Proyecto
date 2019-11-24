@@ -40,3 +40,20 @@ BEGIN
 		END IF;
 	END LOOP; 
 END;
+
+CREATE OR REPLACE FUNCTION asiento_col_to_char ( numero INTEGER ) RETURN CHAR
+IS
+BEGIN
+	IF (numero = 1) THEN RETURN 'A';
+	ELSIF (numero = 2) THEN RETURN 'B';
+	ELSIF (numero = 3) THEN RETURN 'C';
+	ELSIF (numero = 4) THEN RETURN 'D';
+	ELSIF (numero = 5) THEN RETURN 'E';
+	ELSIF (numero = 6) THEN RETURN 'F';
+	ELSIF (numero = 7) THEN RETURN 'G';
+	ELSIF (numero = 8) THEN RETURN 'H';
+	ELSIF (numero = 9) THEN RETURN 'I';
+	ELSIF (numero = 10) THEN RETURN 'J';
+	ELSE RETURN 'K';
+	END IF;
+END;
