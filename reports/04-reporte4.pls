@@ -9,7 +9,8 @@ BEGIN
 
     OPEN cursor4 FOR
 
-    SELECT u.correo, u.foto, cl.primer_nombre, cl.primer_apellido, cl.telefono
+    SELECT u.correo, u.foto, cl.primer_nombre || ' ' || cl.segundo_nombre, 
+        cl.primer_apellido || ' ' || cl.segundo_apellido, cl.telefono
         INTO correo, foto, nombre, apellido, telefono
     FROM Usuario u, Cliente cl
     WHERE cl.id = u.fk_cliente;
