@@ -238,7 +238,7 @@ VALUES (
 	UNIDAD('LONGITUD','METRO',2.12)
 );
 
-SELECT TA.id,TA.nombre,TA.modelo,TA,capacidad.foto,TA.velocidad_max.cantidad,TA.
+SELECT TA.id,TA.nombre,TA.modelo,TA.capacidad,TA.foto,TA.velocidad_max.cantidad,TA.
 	alcance_max.cantidad,TA.altitud_max.cantidad,TA.evergadura.cantidad,TA.
 	ancho_interior_cabina.cantidad,TA.altura_interior_cabina.cantidad 
 FROM TIPO_AVION TA;
