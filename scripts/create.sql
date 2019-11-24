@@ -54,14 +54,34 @@
 			latitud NUMBER,
 			longitud NUMBER,
 			
-			MEMBER FUNCTION calcular_distancia( latitud NUMBER, longitud NUMBER ) RETURN NUMBER
+			MEMBER FUNCTION calcular_distancia( x GEOLOCALIZACION ) RETURN NUMBER
 		);
 
 		CREATE OR REPLACE TYPE BODY Geolocalizacion AS
-			MEMBER FUNCTION calcular_distancia( latitud NUMBER, longitud NUMBER ) RETURN NUMBER IS
-				var_temporal NUMBER;	
+			MEMBER FUNCTION calcular_distancia( x GEOLOCALIZACION ) RETURN NUMBER IS
+				R CONSTANT NUMBER := 6371; -- RADIO DE TIERRA EN KM
+				PI CONSTANT NUMBER := 3.141592654; 
+
+				fi_1 NUMBER;
+				fi_2 NUMBER;
+				delta_fi NUMBER;
+				delta_alfa NUMBER;
+
+				var_a NUMBER;
+				var_c NUMBER;
+				var_d NUMBER;
 			BEGIN
-				RETURN 1;
+				fi_1 := (latitud)*(PI/180);
+				fi_2 := (x.latitud)*(PI/180);
+				delta_fi := (x.latitud-latitud)*(PI/180);
+				delta_alfa := (x.longitud-longitud)*(PI/180);
+
+				var_a := SIN(delta_fi/2) * SIN(delta_fi/2) + COS(fi_1) * COS(fi_2) * SIN(delta_alfa/2) * SIN(delta_alfa/2);
+				var_c := 2 * ATAN2(SQRT(var_a), SQRT(1-var_a));
+
+				var_d := R * var_c;
+				-- DISTANCIA EN KM
+				RETURN var_d;
 			END;
 		END;
 
