@@ -87,3 +87,9 @@ BEGIN
 
 	OUT_(1,'--> Total de AVIONes generados: ' || cant_total); 
 END;
+
+-- EJECUTANDO
+BEGIN
+	INS_AVION;
+END;
+/
