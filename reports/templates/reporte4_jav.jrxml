@@ -196,7 +196,7 @@
 					<textElement verticalAlignment="Middle">
 						<font size="10" isBold="false"/>
 					</textElement>
-					<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+					<textFieldExpression><![CDATA[Universidad Católica Andrés Bello]]></textFieldExpression>
 				</textField>
 			</frame>
 		</band>
