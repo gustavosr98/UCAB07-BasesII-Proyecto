@@ -156,7 +156,7 @@
 
 				tipo VARCHAR2(50) NOT NULL CHECK( tipo = 'CALLE' OR tipo = 'CIUDAD' OR tipo = 'ESTADO' OR tipo = 'PAIS' OR tipo = 'CONTINENTE' ),
 				-- ! TRIGGER para jerarquia 
-				nombre VARCHAR2(50) NOT NULL,
+				nombre VARCHAR2(100) NOT NULL,
 				localizacion GEOLOCALIZACION,
 
 				CONSTRAINT lugar_pk PRIMARY KEY (id),
