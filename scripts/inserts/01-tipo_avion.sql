@@ -1,6 +1,6 @@
 INSERT INTO Tipo_Avion (
 	id,nombre,modelo,capacidad,foto,velocidad_max,
-	alcance_max,altitud_max,evergadura,
+	alcance_max,altitud_max,envergadura,
 	ancho_interior_cabina,altura_interior_cabina) 
 VALUES (
 	DEFAULT,'Boeing','717-200',
@@ -16,7 +16,7 @@ VALUES (
 
 INSERT INTO Tipo_Avion (
 	id,nombre,modelo,capacidad,foto,velocidad_max,
-	alcance_max,altitud_max,evergadura,
+	alcance_max,altitud_max,envergadura,
 	ancho_interior_cabina,altura_interior_cabina) 
 VALUES (
 	DEFAULT,'Airbus A340','-200',
@@ -32,7 +32,7 @@ VALUES (
 
 INSERT INTO Tipo_Avion (
 	id,nombre,modelo,capacidad,foto,velocidad_max,
-	alcance_max,altitud_max,evergadura,
+	alcance_max,altitud_max,envergadura,
 	ancho_interior_cabina,altura_interior_cabina) 
 VALUES (
 	DEFAULT,'McDonnell Douglas','MD-80',
@@ -48,7 +48,7 @@ VALUES (
 
 INSERT INTO Tipo_Avion (
 	id,nombre,modelo,capacidad,foto,velocidad_max,
-	alcance_max,altitud_max,evergadura,
+	alcance_max,altitud_max,envergadura,
 	ancho_interior_cabina,altura_interior_cabina) 
 VALUES (
 	DEFAULT,'Embraer E-Jet','E170',
@@ -64,7 +64,7 @@ VALUES (
 
 INSERT INTO Tipo_Avion (
 	id,nombre,modelo,capacidad,foto,velocidad_max,
-	alcance_max,altitud_max,evergadura,
+	alcance_max,altitud_max,envergadura,
 	ancho_interior_cabina,altura_interior_cabina) 
 VALUES (
 	DEFAULT,'Boeing','747-8',
@@ -80,7 +80,7 @@ VALUES (
 
 INSERT INTO Tipo_Avion (
 	id,nombre,modelo,capacidad,foto,velocidad_max,
-	alcance_max,altitud_max,evergadura,
+	alcance_max,altitud_max,envergadura,
 	ancho_interior_cabina,altura_interior_cabina) 
 VALUES (
 	DEFAULT,'Boeing','VC-25A',
@@ -96,7 +96,7 @@ VALUES (
 
 INSERT INTO Tipo_Avion (
 	id,nombre,modelo,capacidad,foto,velocidad_max,
-	alcance_max,altitud_max,evergadura,
+	alcance_max,altitud_max,envergadura,
 	ancho_interior_cabina,altura_interior_cabina) 
 VALUES (
 	DEFAULT,'Boeing','747SP',
@@ -112,7 +112,7 @@ VALUES (
 
 INSERT INTO Tipo_Avion (
 	id,nombre,modelo,capacidad,foto,velocidad_max,
-	alcance_max,altitud_max,evergadura,
+	alcance_max,altitud_max,envergadura,
 	ancho_interior_cabina,altura_interior_cabina) 
 VALUES (
 	DEFAULT,'Embraer','Phenom 100',
@@ -128,7 +128,7 @@ VALUES (
 
 INSERT INTO Tipo_Avion (
 	id,nombre,modelo,capacidad,foto,velocidad_max,
-	alcance_max,altitud_max,evergadura,
+	alcance_max,altitud_max,envergadura,
 	ancho_interior_cabina,altura_interior_cabina) 
 VALUES (
 	DEFAULT,'ICON','A5',
@@ -144,7 +144,7 @@ VALUES (
 
 INSERT INTO Tipo_Avion (
 	id,nombre,modelo,capacidad,foto,velocidad_max,
-	alcance_max,altitud_max,evergadura,
+	alcance_max,altitud_max,envergadura,
 	ancho_interior_cabina,altura_interior_cabina) 
 VALUES (
 	DEFAULT,'Bombardier','CRJ200',
@@ -160,7 +160,7 @@ VALUES (
 
 INSERT INTO Tipo_Avion (
 	id,nombre,modelo,capacidad,foto,velocidad_max,
-	alcance_max,altitud_max,evergadura,
+	alcance_max,altitud_max,envergadura,
 	ancho_interior_cabina,altura_interior_cabina) 
 VALUES (
 	DEFAULT,'Ilyushin','Il-96M',
@@ -176,7 +176,7 @@ VALUES (
 
 INSERT INTO Tipo_Avion (
 	id,nombre,modelo,capacidad,foto,velocidad_max,
-	alcance_max,altitud_max,evergadura,
+	alcance_max,altitud_max,envergadura,
 	ancho_interior_cabina,altura_interior_cabina) 
 VALUES (
 	DEFAULT,'Tupolev','Tu-204',
@@ -192,7 +192,7 @@ VALUES (
 
 INSERT INTO Tipo_Avion (
 	id,nombre,modelo,capacidad,foto,velocidad_max,
-	alcance_max,altitud_max,evergadura,
+	alcance_max,altitud_max,envergadura,
 	ancho_interior_cabina,altura_interior_cabina) 
 VALUES (
 	DEFAULT,'Tupolev','Tu-214',
@@ -208,7 +208,7 @@ VALUES (
 
 INSERT INTO Tipo_Avion (
 	id,nombre,modelo,capacidad,foto,velocidad_max,
-	alcance_max,altitud_max,evergadura,
+	alcance_max,altitud_max,envergadura,
 	ancho_interior_cabina,altura_interior_cabina) 
 VALUES (
 	DEFAULT,'Tupolev','Tu-204SM',
@@ -224,7 +224,7 @@ VALUES (
 
 INSERT INTO Tipo_Avion (
 	id,nombre,modelo,capacidad,foto,velocidad_max,
-	alcance_max,altitud_max,evergadura,
+	alcance_max,altitud_max,envergadura,
 	ancho_interior_cabina,altura_interior_cabina) 
 VALUES (
 	DEFAULT,'An-225 Mriya','UNICO',
@@ -239,6 +239,6 @@ VALUES (
 );
 
 SELECT TA.id,TA.nombre,TA.modelo,TA.capacidad,TA.foto,TA.velocidad_max.cantidad,TA.
-	alcance_max.cantidad,TA.altitud_max.cantidad,TA.evergadura.cantidad,TA.
+	alcance_max.cantidad,TA.altitud_max.cantidad,TA.envergadura.cantidad,TA.
 	ancho_interior_cabina.cantidad,TA.altura_interior_cabina.cantidad 
 FROM TIPO_AVION TA;

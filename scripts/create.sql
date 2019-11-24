@@ -80,7 +80,7 @@
 				velocidad_max UNIDAD NOT NULL,
 				alcance_max UNIDAD NOT NULL,
 				altitud_max UNIDAD NOT NULL,
-				evergadura UNIDAD NOT NULL,
+				envergadura UNIDAD NOT NULL,
 				ancho_interior_cabina UNIDAD NOT NULL,
 				altura_interior_cabina UNIDAD NOT NULL,
 
