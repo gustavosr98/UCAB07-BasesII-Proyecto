@@ -1404,7 +1404,7 @@ INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (1403+262,'ESTADO','London Bor
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (1404+262,'ESTADO','Vale of Glamorgan', 77+7);
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (1405+262,'ESTADO','Warwickshire', 77+7);
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (1406+262,'ESTADO','Berkshire', 77+7);
-INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (1407+262,'ESTADO','Dumbarton & Clydebank', 77+7);
+INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (1407+262,'ESTADO','Dumbarton and Clydebank', 77+7);
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (1408+262,'ESTADO','London Borough of Waltham Forest', 77+7);
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (1409+262,'ESTADO','Greater Manchester', 77+7);
 INSERT INTO Lugar(id,tipo,nombre,fk_lugar) VALUES (1410+262,'ESTADO','Wiltshire', 77+7);
