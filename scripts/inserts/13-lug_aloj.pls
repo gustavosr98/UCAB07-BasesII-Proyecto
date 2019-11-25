@@ -1,7 +1,6 @@
 CREATE OR REPLACE PROCEDURE ins_lug_aloj
 IS
     cant_total INTEGER DEFAULT 0;
-    cant_total_h INTEGER DEFAULT 0;
     cont INTEGER DEFAULT 1;
 
     CURSOR c_a_hotel IS SELECT * FROM Alojamiento WHERE tipo = 'HOTEL';
@@ -20,6 +19,7 @@ IS
 
     fk_lug_aloj Lug_Aloj.id%TYPE;
     cant INTEGER;
+    i INTEGER;
 BEGIN
     OUT_BREAK(2);
 	OUT_(0,'***************************************************************');
@@ -55,7 +55,6 @@ BEGIN
 
             cont := cont + 1;
             cant_total := cant_total + 1;
-            cant_total_h := cant_total_h + cant;
         END LOOP;
 
     CLOSE c_a_apartamento;
@@ -90,12 +89,10 @@ BEGIN
 
             cont := cont + 1;
             cant_total := cant_total + 1;
-            cant_total_h := cant_total_h + cant;
         END LOOP;
 
     CLOSE c_a_hotel; 
     CLOSE c_l_calle;
 
 	OUT_(1,'--> Total de LUG_ALOJ generados: ' || cant_total);
-	OUT_(1,'--> Total de HABITACIONES generadas: ' || cant_total_h);
 END;
