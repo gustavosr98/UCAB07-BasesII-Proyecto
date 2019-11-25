@@ -176,7 +176,7 @@
 
 				tipo VARCHAR2(50) NOT NULL CHECK( tipo = 'CALLE' OR tipo = 'CIUDAD' OR tipo = 'ESTADO' OR tipo = 'PAIS' OR tipo = 'CONTINENTE' ),
 				-- ! TRIGGER para jerarquia 
-				nombre VARCHAR2(100) NOT NULL,
+				nombre VARCHAR2(150) NOT NULL,
 				localizacion GEOLOCALIZACION,
 
 				CONSTRAINT lugar_pk PRIMARY KEY (id),
@@ -246,7 +246,7 @@
 				-- ! Lugar debe ser calle
 				fk_alojamiento NUMBER NOT NULL,
 
-				-- ! Trigger para (hora_check_in < hora_check_out)
+				-- ! Trigger para (hora_check_in > hora_check_out)
 				hora_check_in INTEGER CHECK ( hora_check_in >= 0 AND hora_check_in < 24 ),
 				hora_check_out INTEGER CHECK ( hora_check_out >= 0 AND hora_check_out < 24 ),
 
