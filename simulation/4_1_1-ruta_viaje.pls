@@ -34,7 +34,7 @@ BEGIN
 			Destino1.fk_lugar = L_Destino1.id AND
 			L_Destino1.fk_lugar = LC_Destino1.id 
 			AND
-			L_Origen1.fk_lugar = 5547 AND L_Destino1.fk_lugar = 10240
+			L_Origen1.fk_lugar = ' || ciudad_origen_id ||' AND L_Destino1.fk_lugar = ' || ciudad_destino_id ||'
 			
 	UNION
 
@@ -66,7 +66,7 @@ BEGIN
 			L_Destino2.fk_lugar = LC_Destino2.id AND
 			Destino2.fk_lugar = L_Destino2.id 
 			AND
-			L_Origen1.fk_lugar = 5547 AND L_Destino2.fk_lugar = 10240
+			L_Origen1.fk_lugar = ' || ciudad_origen_id ||' AND L_Destino2.fk_lugar = ' || ciudad_destino_id ||'
 
 	UNION
 
@@ -107,10 +107,10 @@ BEGIN
 			L_Destino3.fk_lugar = LC_Destino3.id AND
 			Destino3.fk_lugar = L_Destino3.id 
 			AND
-			L_Origen1.fk_lugar = 5547 AND L_Destino3.fk_lugar = 10240
-	) TABLITA ' 
-	|| limitante
-	|| ' ORDER BY ' || col_order_by;
+			L_Origen1.fk_lugar = ' || ciudad_origen_id ||' AND L_Destino3.fk_lugar = ' || ciudad_destino_id ||'
+		) TABLITA ' 
+		|| limitante
+		|| ' ORDER BY ' || col_order_by;
 END;
 
 
@@ -130,8 +130,8 @@ DECLARE
 BEGIN
   ruta_viaje (
 		mi_cursor => mi_cursor,
-		ciudad_origen_id => 0,
-    ciudad_destino_id => 0,
+		ciudad_origen_id => 6639,
+    ciudad_destino_id => 6688,
 		orden_por => 'MENOR_DISTANCIA',
 		limite => 3
 	);
