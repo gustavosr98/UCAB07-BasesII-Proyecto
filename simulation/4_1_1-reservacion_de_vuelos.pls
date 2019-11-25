@@ -67,3 +67,83 @@ BEGIN
 	));
 END;
 /
+
+
+-- QUERY PODEROSO
+
+-- DIRECTO
+SELECT  
+	Origen1.nombre origen1, T1.id t1id ,Destino1.nombre destino1,
+    0 t2id,'NULL' destino2 --,
+	-- Destino2.nombre destino2, '|('|| T3.id ||')->' ,Destino3.nombre destino3
+FROM 
+	Trayecto T1, 
+	Aeropuerto Origen1, Lugar L_Origen1, 
+	Aeropuerto Destino1, Lugar L_Destino1
+WHERE 
+	T1.fk_aeropuerto_origen = Origen1.id AND
+	T1.fk_aeropuerto_destino = Destino1.id AND
+	Origen1.fk_lugar = L_Origen1.id AND
+	Destino1.fk_lugar = L_Destino1.id AND
+	L_Origen1.fk_lugar = 5547 AND L_Destino1.fk_lugar = 10240
+    
+UNION
+
+-- UNA ESCALA
+SELECT  
+	Origen1.nombre origen1, T1.id t1id ,Destino1.nombre destino1,
+	T2.id t2id ,Destino2.nombre destino2
+FROM 
+	Trayecto T1, 
+	Aeropuerto Origen1, Lugar L_Origen1, 
+	Aeropuerto Destino1, Lugar L_Destino1,
+	Trayecto T2, 
+	Aeropuerto Destino2, Lugar L_Destino2
+WHERE 
+	T1.fk_aeropuerto_origen = Origen1.id AND
+	T1.fk_aeropuerto_destino = Destino1.id AND
+	Origen1.fk_lugar = L_Origen1.id AND
+	Destino1.fk_lugar = L_Destino1.id 
+	AND
+	T2.fk_aeropuerto_origen = Destino1.id AND
+	T2.fk_aeropuerto_destino = Destino2.id AND
+	Destino1.fk_lugar = L_Destino1.id AND
+	Destino2.fk_lugar = L_Destino2.id AND
+	L_Origen1.fk_lugar = 5547 AND L_Destino2.fk_lugar = 10240
+ORDER BY t2id;
+
+
+	-- DIRECTO
+/* SELECT  
+	Origen1.nombre origen1, '|('|| T1.id ||')->',Destino1.nombre destino1,
+	-- Destino1.nombre destino1, '|('|| T2.id ||')->',Destino2.nombre destino2--,
+	-- Destino2.nombre destino2, '|('|| T3.id ||')->' ,Destino3.nombre destino3
+FROM 
+	Trayecto T1, 
+	Aeropuerto Origen1, Lugar L_Origen1, 
+	Aeropuerto Destino1, Lugar L_Destino1,
+	Trayecto T2, 
+	Aeropuerto Destino2, Lugar L_Destino2,
+	--Trayecto T3, Aeropuerto Destino3, Lugar L_Destino3
+WHERE 
+	T1.fk_aeropuerto_origen = Origen1.id AND
+	T1.fk_aeropuerto_destino = Destino1.id AND
+	Origen1.fk_lugar = L_Origen1.id AND
+	Destino1.fk_lugar = L_Destino1.id 
+	
+	AND (
+		
+		L_Origen1.fk_lugar = 5547 AND L_Destino1.fk_lugar = 10240
+		-- CON UNA ESCALA
+		
+		-- CON DOS ESCALAS
+	);
+ */
+
+/* 
+	- **USA** | Chicago (5547) - Nueva York (10240)
+- **Panamá** | Ciudad de Panamá (8453)
+- **Venezuela** | Caracas (10542) - Porlamar (10559)
+- **Brasil** | Rio de Janeiro (5547)
+- **Argentina** | Buenos Aires (4855) */
+	--
