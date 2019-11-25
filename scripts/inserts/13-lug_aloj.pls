@@ -82,7 +82,7 @@ BEGIN
                     hora_check_out(cont))
                 RETURNING id INTO fk_lug_aloj;
 
-            cant := ROUND( DBMS_RANDOM.VALUE(1,4) );
+            cant := ROUND( DBMS_RANDOM.VALUE(10,30) );
             ins_habitacion(fk_lug_aloj, cant, 'HOTEL');
 
             FETCH c_a_hotel INTO registro_hotel;

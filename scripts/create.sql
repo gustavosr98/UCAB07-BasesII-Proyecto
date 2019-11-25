@@ -215,7 +215,7 @@
 				fk_avion NUMBER NOT NULL,
 				fk_trayecto NUMBER NOT NULL,
 
-				estatus VARCHAR2(20) NOT NULL CHECK ( estatus = 'NO_INICIADO' OR estatus = 'EN_TRANSITO' OR estatus = ' RETRASADO' OR estatus = 'EN_VUELO' OR estatus = 'COMPLETADO' ),
+				estatus VARCHAR2(20) NOT NULL CHECK ( estatus = 'NO_INICIADO' OR estatus = 'EN_TRANSITO' OR estatus = 'RETRASADO' OR estatus = 'EN_VUELO' OR estatus = 'COMPLETADO' ),
 				precio_base UNIDAD NOT NULL,
 				periodo_estimado PERIODO NOT NULL,
 				periodo_real PERIODO,
