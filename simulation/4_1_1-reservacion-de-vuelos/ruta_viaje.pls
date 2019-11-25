@@ -7,7 +7,7 @@ BEGIN
 		col_order_by := 'distancia_total';
 	ELSIF (orden_por ='MENOS_PARADAS') THEN
 		col_order_by := 't3id, t2id, t1id';
-	ELSIF (orden_por ='MAS_BARATO') THEN
+	ELSIF (orden_por ='MAS_BARATA') THEN
 		col_order_by := 'distancia_total'; -- CAMBIAR LUEGO
 	END IF;
 
@@ -21,9 +21,9 @@ BEGIN
 	-- DIRECTO
 		SELECT  
 			LC_Origen1.nombre || '' ('' || Origen1.codigo_iata || '')'' origen1, T1.id t1id,V1.id v1id,LC_Destino1.nombre || '' ('' || Destino1.codigo_iata || '')'' destino1,
-				0 t2id,0 v2id,''NULL'' destino2,
-				0 t3id,0 v3id,''NULL'' destino3,
-				ROUND( T1.distancia.cantidad) distancia_total
+			0 t2id,0 v2id,''NULL'' destino2,
+			0 t3id,0 v3id,''NULL'' destino3,
+			ROUND( T1.distancia.cantidad) distancia_total
 		FROM 
 			Trayecto T1, 
 			Aeropuerto Origen1, Lugar L_Origen1, Lugar LC_Origen1, 
@@ -123,7 +123,7 @@ BEGIN
 			V1.fk_trayecto = T1.id AND
 			V2.fk_trayecto = T2.id AND
 			V3.fk_trayecto = T3.id
-		) TABLITA ' 
+		) TABLITA '
 		|| limitante
 		|| ' ORDER BY ' || col_order_by;
 END;
@@ -151,7 +151,7 @@ BEGIN
 		ciudad_origen_id => 6639,
     ciudad_destino_id => 6688,
 		orden_por => 'MAS_BARATA',
-		limite => 3
+		limite => 100
 	);
   LOOP 
     FETCH mi_cursor INTO  
