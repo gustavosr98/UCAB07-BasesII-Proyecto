@@ -29,7 +29,7 @@ BEGIN
         'Cobertura de accidentes en el viaje.',
         'Cobertura de accidentes durante el transporte en vehículo.',
         'Asistencia médica a familiares.',
-        'Cobertura en caso de hospitalización',
+        'Cobertura en caso de hospitalización.',
         'Cobertura de accidentes de tráfico.'
     );
 
