@@ -21,10 +21,13 @@ END;
 
 CREATE OR REPLACE PROCEDURE insertarVuelo (avion IN NUMBER, trayecto IN NUMBER, precio IN NUMBER, periodo_estimado IN PERIODO)
 IS
+    tipo_avion NUMBER;
     alcance NUMBER;
     distancia NUMBER;
 BEGIN
-    SELECT t.alcance_max.cantidad INTO alcance FROM Tipo_Avion t WHERE id = avion;
+    SELECT fk_tipo_avion INTO tipo_avion FROM Avion WHERE id = avion;
+
+    SELECT t.alcance_max.cantidad INTO alcance FROM Tipo_Avion t WHERE id = tipo_avion;
     SELECT t.distancia.cantidad INTO distancia FROM Trayecto t WHERE id = trayecto;
 
     IF (alcance >= distancia) THEN
@@ -51,7 +54,7 @@ BEGIN
     IF (segundos_estimados > 0) THEN 
         fecha_llegada_estimada := fecha_salida_estimada + numToDSInterval( segundos_estimados, 'SECOND' );
     ELSE
-        fecha_llegada_estimada := TIEMPO_PKG.RANDOM(PERIODO(fecha_salida_estimada, fecha_salida_estimada + numToDSInterval( 3, 'DAY' )));
+        fecha_llegada_estimada := TIEMPO_PKG.RANDOM(PERIODO(fecha_salida_estimada + numToDSInterval( 1, 'HOUR' ), fecha_salida_estimada + numToDSInterval( 15, 'HOUR' )));
     END IF;
 
     per := PERIODO(fecha_salida_estimada, fecha_llegada_estimada);
@@ -71,9 +74,7 @@ BEGIN
 
     avion := ROUND( DBMS_RANDOM.VALUE(minId,maxId) );
 
-    SELECT fk_tipo_avion INTO tipo_avion FROM Avion WHERE id = avion;
-
-    RETURN tipo_avion;
+    RETURN avion;
 END;
 
 CREATE OR REPLACE FUNCTION selectTrayecto RETURN NUMBER
