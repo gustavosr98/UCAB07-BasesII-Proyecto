@@ -76,22 +76,22 @@ CREATE OR REPLACE PACKAGE BODY tiempo_pkg AS
 END tiempo_pkg;
 
 -- EJECUTAR
-DECLARE
-	x PERIODO;
-BEGIN
-	OUT_BREAK(2);
-	OUT_(0,'***************************************************************');
-	OUT_(0,'********************* PACKAGE: TIEMPO_PKG **********************');
-	OUT_(0,'***************************************************************');
-	OUT_BREAK;
+	DECLARE
+		x PERIODO;
+	BEGIN
+		OUT_BREAK(2);
+		OUT_(0,'***************************************************************');
+		OUT_(0,'********************* PACKAGE: TIEMPO_PKG **********************');
+		OUT_(0,'***************************************************************');
+		OUT_BREAK;
 
-	x := PERIODO(
-		TIMESTAMP '2019-05-05 20:05:00',
-		TIMESTAMP '2019-05-06 02:10:00'
-	);
-	
-	OUT_(2,'TIEMPO_PKG.RANDOM(x) ---> ' || TO_CHAR(TIEMPO_PKG.RANDOM(x), 'DD-MM-YYYY HH24:MI:SS'));
-	OUT_(2,'TIEMPO_PKG.DIFF(x.inicio, x.fin, "MINUTE") ---> ' || TIEMPO_PKG.DIFF(x.fecha_inicio,x.fecha_fin,'MINUTE'));
-	OUT_(2,'TIEMPO_PKG.DIFF(x.inicio, x.fin, "SECOND") ---> ' || TIEMPO_PKG.DIFF(x.fecha_inicio,x.fecha_fin,'SECOND'));
-END;
-/
+		x := PERIODO(
+			TIMESTAMP '2019-05-05 20:05:00',
+			TIMESTAMP '2019-05-05 20:05:00'
+		);
+		
+		OUT_(2,'TIEMPO_PKG.RANDOM(x) ---> ' || TO_CHAR(TIEMPO_PKG.RANDOM(x), 'YYYY-MM-DD HH24:MI:SS'));
+		OUT_(2,'TIEMPO_PKG.DIFF(x.inicio, x.fin, "DAY") ---> ' || TIEMPO_PKG.DIFF(x.fecha_inicio,x.fecha_fin,'DAY'));
+		OUT_(2,'TIEMPO_PKG.DIFF(x.inicio, x.fin, "SECOND") ---> ' || TIEMPO_PKG.DIFF(x.fecha_inicio,x.fecha_fin,'SECOND'));
+	END;
+	/
