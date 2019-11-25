@@ -53,3 +53,9 @@ BEGIN
 
 	OUT_(1,'--> Total de SEGUROS generados: ' || cant_total);
 END;
+
+BEGIN
+
+    ins_seguro;
+
+END;
