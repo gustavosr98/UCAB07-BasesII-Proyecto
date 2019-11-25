@@ -34,8 +34,8 @@ BEGIN
 		IF ( DBMS_RANDOM.VALUE(0,1) < 0.1 ) THEN
 			cant_estimada_acompanantes := TRUNC( DBMS_RANDOM.VALUE(1,3) );
 			WHILE ( cant_estimada_acompanantes > 0 ) LOOP
-				acompanante_id := TRUNC( DBMS_RANDOM.VALUE(1,cant_users) );
-				IF ( acompanante_id != user_id) THEN
+				acompanante_id := TRUNC( DBMS_RANDOM.VALUE(min_cliente_id,max_cliente_id) );
+				IF ( acompanante_id != v_usuario.fk_cliente ) THEN
 					lista_acompanantes(acompanante_id) := acompanante_id;
 				END IF;
 				cant_estimada_acompanantes := cant_estimada_acompanantes -1
