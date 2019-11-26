@@ -8,7 +8,9 @@ SELECT * FROM
 			NULL destino2,
 			NULL v3id, NULL v3e, NULL v3fi, NULL v3ff,
 			NULL destino3,
-			ROUND( V1.precio_base.cantidad ,2) costo_total
+			ROUND( V1.precio_base.cantidad ,2) costo_total,
+			V1.periodo_estimado.fecha_fin fecha_final
+
 		FROM 
 			Trayecto T1, 
 			Aeropuerto Origen1, Lugar L_Origen1, Lugar LC_Origen1, 
@@ -26,10 +28,12 @@ SELECT * FROM
 			L_Origen1.fk_lugar = 10240 AND L_Destino1.fk_lugar = 6688
 			AND
 			V1.fk_trayecto = T1.id
-			
+			AND
+			EXTRACT (DAY FROM (TIEMPO_PKG.EXTRAER(V1.periodo_estimado.fecha_inicio, 'DATE') - TIEMPO_PKG.EXTRAER( TIMESTAMP '2019-10-03 12:00:00', 'DATE'))) <= 0 
+
 	UNION
 
-	-- UNA ESCALA
+	-- UNA ESCALA 
 		SELECT  
 			LC_Origen1.nombre || ' (' || Origen1.codigo_iata || ')' origen1,
 			V1.id v1id, V1.estatus v1e, V1.periodo_estimado.fecha_inicio v1fi, V1.periodo_estimado.fecha_fin v1ff,
@@ -39,10 +43,10 @@ SELECT * FROM
 			NULL v3id, NULL v3e, NULL v3fi, NULL v3ff,
 			NULL destino3,
 			ROUND( 
-				V1.precio_base.cantidad
-				+ V2.precio_base.cantidad
+				V1.precio_base.cantidad + V2.precio_base.cantidad
 				,2
-			) costo_total
+			) costo_total,
+			V2.periodo_estimado.fecha_fin fecha_final
 		FROM 
 			Trayecto T1, 
 			Aeropuerto Origen1, Lugar L_Origen1, Lugar LC_Origen1, 
@@ -70,24 +74,28 @@ SELECT * FROM
 			AND
 			V1.fk_trayecto = T1.id AND
 			V2.fk_trayecto = T2.id
-			
+			AND
+			V1.periodo_estimado.fecha_fin + INTERVAL '2' HOUR < V2.periodo_estimado.fecha_inicio
+			AND
+			EXTRACT (DAY FROM (V1.periodo_estimado.fecha_inicio - TIMESTAMP '2019-10-03 10:00:00')) < 1 AND
+			EXTRACT (DAY FROM (V2.periodo_estimado.fecha_fin - V1.periodo_estimado.fecha_inicio)) < 30
 	UNION
 
 	-- DOS PARADAS
 		SELECT  
 			LC_Origen1.nombre || ' (' || Origen1.codigo_iata || ')' origen1,
-			V2.id v1id, V2.estatus v1e, V2.periodo_estimado.fecha_inicio v1fi, V2.periodo_estimado.fecha_fin v1ff,
+			V1.id v1id, V1.estatus v1e, V1.periodo_estimado.fecha_inicio v1fi, V1.periodo_estimado.fecha_fin v1ff,
 			LC_Destino1.nombre || ' (' || Destino1.codigo_iata || ')' destino1,
 			V2.id v2id, V2.estatus v2e, V2.periodo_estimado.fecha_inicio v2fi, V2.periodo_estimado.fecha_fin v2ff,
 			LC_Destino2.nombre || ' (' || Destino2.codigo_iata || ')' destino2,
 			V3.id v3id, V3.estatus v3e, V3.periodo_estimado.fecha_inicio v3fi, V3.periodo_estimado.fecha_fin v3ff,
 			LC_Destino3.nombre || ' (' || Destino3.codigo_iata || ')' destino3,
 			ROUND( 
-				V1.precio_base.cantidad
-				+ V2.precio_base.cantidad
-				+ V3.precio_base.cantidad
+				V1.precio_base.cantidad + V2.precio_base.cantidad + V3.precio_base.cantidad
 				,2
-			) costo_total
+			) costo_total,
+			V3.periodo_estimado.fecha_fin fecha_final
+
 		FROM 
 			Trayecto T1, 
 			Aeropuerto Origen1, Lugar L_Origen1, Lugar LC_Origen1, 
@@ -125,4 +133,10 @@ SELECT * FROM
 			V1.fk_trayecto = T1.id AND
 			V2.fk_trayecto = T2.id AND
 			V3.fk_trayecto = T3.id
-		) TABLITA ORDER BY costo_total
+			AND
+			V1.periodo_estimado.fecha_fin + INTERVAL '2' HOUR < V2.periodo_estimado.fecha_inicio AND
+			V2.periodo_estimado.fecha_fin + INTERVAL '2' HOUR < V3.periodo_estimado.fecha_inicio
+			AND
+			EXTRACT (DAY FROM (V1.periodo_estimado.fecha_inicio - TIMESTAMP '2019-10-03 10:00:00')) < 1 AND
+			EXTRACT (DAY FROM (V3.periodo_estimado.fecha_fin - V1.periodo_estimado.fecha_inicio)) < 30
+		) TABLITA ORDER BY fecha_final ASC --costo_total

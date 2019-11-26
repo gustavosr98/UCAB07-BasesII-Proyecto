@@ -3,10 +3,8 @@ AS
 	col_order_by VARCHAR(50);
 	limitante VARCHAR(50) DEFAULT ' ';
 BEGIN
-	IF (orden_por ='MENOR_DISTANCIA') THEN
+	IF (orden_por ='LLEGADA_MAS_TEMPRANA') THEN
 		col_order_by := 'distancia_total';
-	ELSIF (orden_por ='MENOS_PARADAS') THEN
-		col_order_by := 't3id, t2id, t1id';
 	ELSIF (orden_por ='MAS_BARATA') THEN
 		col_order_by := 'distancia_total'; -- CAMBIAR LUEGO
 	END IF;
