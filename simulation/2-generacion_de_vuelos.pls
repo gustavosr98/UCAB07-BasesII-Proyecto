@@ -1,23 +1,36 @@
 CREATE OR REPLACE PROCEDURE sim_generacion_de_vuelos (fechas_base IN PERIODO)
 IS
     cantidad INTEGER;
+    cantidad2 INTEGER;
+    fecha_salida_estimada TIMESTAMP;
     periodo_estimado PERIODO;
     precio NUMBER;
     avion NUMBER;
-    trayecto NUMBER;
+    tray Trayecto%ROWTYPE;
 BEGIN
-    cantidad := ROUND( DBMS_RANDOM.VALUE(100,500) );
+    cantidad := ROUND( DBMS_RANDOM.VALUE(1000,3000) );
 
     WHILE cantidad > 0 
         LOOP
             precio := DBMS_RANDOM.VALUE(100,700);
-            avion := selectAvion();
-            trayecto := selectTrayecto();
-            periodo_estimado := selectFecha(fechas_base, trayecto);
-            insertarVuelo(avion, trayecto, precio, periodo_estimado);
+            tray := selectTrayecto();
+            fecha_salida_estimada := TIEMPO_PKG.RANDOM(fechas_base);
+            avion := selectAvion(tray.distancia.cantidad,fecha_salida_estimada);
+
+            cantidad2 := ROUND( DBMS_RANDOM.VALUE(5,8) );
+
+            WHILE cantidad2 > 0
+                LOOP
+                    periodo_estimado := selectFecha(fecha_salida_estimada, tray.id);
+                    insertarVuelo(avion, tray.id, precio, periodo_estimado);
+                    
+                    fecha_salida_estimada := fecha_salida_estimada + numToDSInterval( 1, 'DAY' );
+                    cantidad2 := cantidad2 - 1;
+                END LOOP;
+
             cantidad := cantidad - 1;
         END LOOP;
-END;    
+END;   
 
 CREATE OR REPLACE PROCEDURE insertarVuelo (avion IN NUMBER, trayecto IN NUMBER, precio IN NUMBER, periodo_estimado IN PERIODO)
 IS
@@ -25,30 +38,21 @@ IS
     alcance NUMBER;
     distancia NUMBER;
 BEGIN
-    SELECT fk_tipo_avion INTO tipo_avion FROM Avion WHERE id = avion;
-
-    SELECT t.alcance_max.cantidad INTO alcance FROM Tipo_Avion t WHERE id = tipo_avion;
-    SELECT t.distancia.cantidad INTO distancia FROM Trayecto t WHERE id = trayecto;
-
-    IF (alcance >= distancia) THEN
-        INSERT INTO Vuelo (fk_avion,fk_trayecto,estatus,precio_base,periodo_estimado)
-            VALUES (
-                avion,
-                trayecto,
-                'NO_INICIADO',
-                UNIDAD('DIVISA','DOLAR',precio),
-                periodo_estimado);
-    END IF;
+    INSERT INTO Vuelo (fk_avion,fk_trayecto,estatus,precio_base,periodo_estimado)
+        VALUES (
+            avion,
+            trayecto,
+            'NO_INICIADO',
+            UNIDAD('DIVISA','DOLAR',precio),
+            periodo_estimado);
 END;
 
-CREATE OR REPLACE FUNCTION selectFecha (fechas_base IN PERIODO, trayecto IN NUMBER) RETURN PERIODO
+CREATE OR REPLACE FUNCTION selectFecha (fecha_salida_estimada IN TIMESTAMP, trayecto IN NUMBER) RETURN PERIODO
 IS 
-    fecha_salida_estimada TIMESTAMP;
     fecha_llegada_estimada TIMESTAMP;
     segundos_estimados NUMBER;
     per PERIODO;
 BEGIN
-    fecha_salida_estimada := TIEMPO_PKG.RANDOM(fechas_base);
     segundos_estimados := promedioTiempo(trayecto);
 
     IF (segundos_estimados > 0) THEN 
@@ -61,7 +65,7 @@ BEGIN
     RETURN per;
 END;
 
-CREATE OR REPLACE FUNCTION selectAvion RETURN NUMBER
+CREATE OR REPLACE FUNCTION selectAvion (distancia IN NUMBER,fecha_salida_estimada IN TIMESTAMP) RETURN NUMBER
 IS
     minId NUMBER;
     maxId NUMBER;
@@ -69,27 +73,38 @@ IS
     avion NUMBER;
     tipo_avion NUMBER;
 BEGIN
-    SELECT MIN(id), MAX(id) INTO minId, maxId
-    FROM Avion;
-
-    avion := ROUND( DBMS_RANDOM.VALUE(minId,maxId) );
+    SELECT tabla.idAvion INTO avion FROM
+        (SELECT av.id idAvion FROM Avion av, Tipo_Avion ta
+        WHERE av.fk_tipo_avion = ta.id
+            AND ta.alcance_max.cantidad >= distancia
+            AND av.id NOT IN (
+                SELECT v.fk_avion FROM Vuelo v
+                WHERE v.periodo_estimado.fecha_inicio BETWEEN 
+                    (fecha_salida_estimada - numToDSInterval( 1, 'DAY' )) AND (fecha_salida_estimada + numToDSInterval( 10, 'DAY' ))
+            )
+        ORDER BY dbms_random.value) tabla
+    WHERE rownum = 1;
 
     RETURN avion;
 END;
 
-CREATE OR REPLACE FUNCTION selectTrayecto RETURN NUMBER
+CREATE OR REPLACE FUNCTION selectTrayecto RETURN Trayecto%ROWTYPE
 IS
     minId NUMBER;
     maxId NUMBER;
 
-    trayecto NUMBER;
+    idTrayecto NUMBER;
+
+    rowTrayecto Trayecto%ROWTYPE;
 BEGIN
     SELECT MIN(id), MAX(id) INTO minId, maxId
     FROM Trayecto;
 
-    trayecto := ROUND( DBMS_RANDOM.VALUE(minId,maxId) );
+    idTrayecto := ROUND( DBMS_RANDOM.VALUE(minId,maxId) );
 
-    RETURN trayecto;
+    SELECT * INTO rowTrayecto FROM Trayecto WHERE id = idTrayecto;
+
+    RETURN rowTrayecto;
 END;
 
 CREATE OR REPLACE FUNCTION promedioTiempo (trayecto IN NUMBER) RETURN NUMBER
