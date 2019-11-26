@@ -8,7 +8,7 @@ SELECT * FROM
 			NULL destino2,
 			NULL v3id, NULL v3e, NULL v3fi, NULL v3ff,
 			NULL destino3,
-			ROUND( precio_vuelo(V1.id, 'ECONOMICA', 1).cantidad ,2) costo_total
+			ROUND( V1.precio_base.cantidad ,2) costo_total
 		FROM 
 			Trayecto T1, 
 			Aeropuerto Origen1, Lugar L_Origen1, Lugar LC_Origen1, 
@@ -39,8 +39,8 @@ SELECT * FROM
 			NULL v3id, NULL v3e, NULL v3fi, NULL v3ff,
 			NULL destino3,
 			ROUND( 
-				precio_vuelo(V1.id, 'ECONOMICA', 1).cantidad
-				+ precio_vuelo(V2.id, 'ECONOMICA', 1).cantidad
+				V1.precio_base.cantidad
+				+ V2.precio_base.cantidad
 				,2
 			) costo_total
 		FROM 
@@ -83,9 +83,9 @@ SELECT * FROM
 			V3.id v3id, V3.estatus v3e, V3.periodo_estimado.fecha_inicio v3fi, V3.periodo_estimado.fecha_fin v3ff,
 			LC_Destino3.nombre || ' (' || Destino3.codigo_iata || ')' destino3,
 			ROUND( 
-				precio_vuelo(V1.id, 'ECONOMICA', 1).cantidad
-				+ precio_vuelo(V2.id, 'ECONOMICA', 1).cantidad
-				+ precio_vuelo(V3.id, 'ECONOMICA', 1).cantidad
+				V1.precio_base.cantidad
+				+ V2.precio_base.cantidad
+				+ V3.precio_base.cantidad
 				,2
 			) costo_total
 		FROM 
