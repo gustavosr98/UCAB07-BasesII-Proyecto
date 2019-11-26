@@ -27,6 +27,10 @@ IS
 	origen LUGAR%ROWTYPE;
 	destino LUGAR%ROWTYPE;
 	es_ida_vuelta CHAR(1);
+
+	fecha_reservacion TIMESTAMP;
+	fecha_salida TIMESTAMP;
+	fecha_viaje PERIODO;
 BEGIN
 
 	OUT_BREAK(2);
@@ -64,7 +68,8 @@ BEGIN
 		-- Se eligen aleatoriamente los posibles acompañantes.
 		OPEN c_acompanantes(v_usuario, cant_acompanantes_usuario);
 
-		-- Escoger origen y destino aleatorio
+		-- RESERVACIÓN DE UNA RUTA DE VUELO | PASO 1
+		-- Inicia conociéndose el origen del usuario y el destino deseado, así como la fecha de salida y en caso de que desee retornar, la fecha de regreso en que desea viajar. 
 		SELECT * INTO origen FROM ( 
 			SELECT * FROM LUGAR 
 			WHERE id IN ( -- Ciudades que se decidieron para la simulacion
@@ -82,9 +87,17 @@ BEGIN
 			ORDER BY DBMS_RANDOM.VALUE
 		) WHERE ROWNUM = 1; 
 
-		-- Definir si es ida vuelta
 		es_ida_vuelta := 'F';
 		IF ( DBMS_RANDOM.VALUE > 0.5 ) THEN es_ida_vuelta := 'T'; END IF;
+ 
+		fecha_reservacion := TIEMPO_PKG.RANDOM(fq); 
+		fecha_salida := TIEMPO_PKG.RANDOM(PERIODO(
+			fecha_reservacion, fg.fecha_fin
+		));
+		fecha_viaje := PERIODO( 
+			fecha_salida, 
+			TIEMPO_PKG.RANDOM(PERIODO(fecha_salida, fg.fecha_fin)) 
+		);
 
 		FETCH c_acompanantes INTO v_acompanante;
 		WHILE (NOT(c_acompanantes%NOTFOUND)) LOOP
@@ -94,9 +107,13 @@ BEGIN
 		CLOSE	c_acompanantes;
 
 		OUT_(3,'Viaje Deseado: ' || origen.nombre || ' ---> ' || destino.nombre || ' | Regreso (' || es_ida_vuelta ||')');
-
+		OUT_(4,'Reservacion: '||
+			TIEMPO_PKG.PRINT(fecha_reservacion,'FECHA') ||
+			' | Salida: ' || TIEMPO_PKG.PRINT(fecha_salida,'FECHA') ||
+			' | Llegada: ' || TIEMPO_PKG.PRINT(fecha_viaje.fecha_fin,'FECHA')
+		);
 		
-		OUT_BREAK();
+		OUT_BREAK;
 		FETCH c_usuarios INTO v_usuario;
 		cant_users_a_reservar := cant_users_a_reservar -1;
 		i_u := i_u +1;
@@ -114,12 +131,12 @@ DECLARE
 BEGIN
 	sim_reservacion_de_vuelos(
 		PERIODO(
-			TIMESTAMP '19-09-19 12:00:00',
-			TIMESTAMP '19-09-26 12:00:00'
+			TIMESTAMP '2019-09-19 12:00:00',
+			TIMESTAMP '2019-09-26 12:00:00'
 		),
 		PERIODO(
-			TIMESTAMP '19-09-19 11:24:50',
-			TIMESTAMP '20-03-20 06:47:15'
+			TIMESTAMP '2019-09-19 11:24:50',
+			TIMESTAMP '2020-03-20 06:47:15'
 		)
 	);
 END;
