@@ -7,6 +7,8 @@ BEGIN
 		col_order_by := 'distancia_total';
 	ELSIF (orden_por ='MENOS_PARADAS') THEN
 		col_order_by := 't3id, t2id, t1id';
+	ELSIF (orden_por ='MAS_BARATA') THEN
+		col_order_by := 'distancia_total'; -- CAMBIAR LUEGO
 	END IF;
 
 	IF ( limite != 0 ) THEN
@@ -18,14 +20,16 @@ BEGIN
 	(
 	-- DIRECTO
 		SELECT  
-			LC_Origen1.nombre || '' ('' || Origen1.codigo_iata || '')'' origen1, T1.id t1id ,LC_Destino1.nombre || '' ('' || Destino1.codigo_iata || '')'' destino1,
-				0 t2id,''NULL'' destino2,
-				0 t3id,''NULL'' destino3,
-				ROUND( T1.distancia.cantidad) distancia_total
+			LC_Origen1.nombre || '' ('' || Origen1.codigo_iata || '')'' origen1, T1.id t1id,V1.id v1id,LC_Destino1.nombre || '' ('' || Destino1.codigo_iata || '')'' destino1,
+			0 t2id,0 v2id,''NULL'' destino2,
+			0 t3id,0 v3id,''NULL'' destino3,
+			ROUND( T1.distancia.cantidad) distancia_total
 		FROM 
 			Trayecto T1, 
 			Aeropuerto Origen1, Lugar L_Origen1, Lugar LC_Origen1, 
-			Aeropuerto Destino1, Lugar L_Destino1, Lugar LC_Destino1
+			Aeropuerto Destino1, Lugar L_Destino1, Lugar LC_Destino1,
+			
+			Vuelo V1
 		WHERE 
 			T1.fk_aeropuerto_origen = Origen1.id AND
 			T1.fk_aeropuerto_destino = Destino1.id AND
@@ -35,22 +39,25 @@ BEGIN
 			L_Destino1.fk_lugar = LC_Destino1.id 
 			AND
 			L_Origen1.fk_lugar = ' || ciudad_origen_id ||' AND L_Destino1.fk_lugar = ' || ciudad_destino_id ||'
+			AND
+			V1.fk_trayecto = T1.id
 			
 	UNION
 
 	-- UNA ESCALA
 		SELECT  
-			LC_Origen1.nombre || '' ('' || Origen1.codigo_iata || '')'' origen1, T1.id t1id ,LC_Destino1.nombre || '' ('' || Destino1.codigo_iata || '')'' destino1,
-			T2.id t2id, LC_Destino2.nombre || '' ('' || Destino2.codigo_iata || '')'' destino2,
-			0 t3id,''NULL'' destino3,
+			LC_Origen1.nombre || '' ('' || Origen1.codigo_iata || '')'' origen1, T1.id t1id,V1.id v1id,LC_Destino1.nombre || '' ('' || Destino1.codigo_iata || '')'' destino1,
+			T2.id t2id, V2.id v2id, LC_Destino2.nombre || '' ('' || Destino2.codigo_iata || '')'' destino2,
+			0 t3id,0 v3id,''NULL'' destino3,
 			ROUND( T1.distancia.cantidad + T2.distancia.cantidad) distancia_total
-
 		FROM 
 			Trayecto T1, 
 			Aeropuerto Origen1, Lugar L_Origen1, Lugar LC_Origen1, 
 			Aeropuerto Destino1, Lugar L_Destino1, Lugar LC_Destino1,
 			Trayecto T2, 
-			Aeropuerto Destino2, Lugar L_Destino2, Lugar LC_Destino2
+			Aeropuerto Destino2, Lugar L_Destino2, Lugar LC_Destino2,
+
+			Vuelo V1, Vuelo V2
 		WHERE 
 			T1.fk_aeropuerto_origen = Origen1.id AND
 			T1.fk_aeropuerto_destino = Destino1.id AND
@@ -67,16 +74,18 @@ BEGIN
 			Destino2.fk_lugar = L_Destino2.id 
 			AND
 			L_Origen1.fk_lugar = ' || ciudad_origen_id ||' AND L_Destino2.fk_lugar = ' || ciudad_destino_id ||'
-
+			AND
+			V1.fk_trayecto = T1.id AND
+			V2.fk_trayecto = T2.id
+			
 	UNION
 
 	-- DOS PARADAS
 		SELECT  
-			LC_Origen1.nombre || '' ('' || Origen1.codigo_iata || '')'' origen1, T1.id t1id ,LC_Destino1.nombre || '' ('' || Destino1.codigo_iata || '')'' destino1,
-			T2.id t2id, LC_Destino2.nombre || '' ('' || Destino2.codigo_iata || '')'' destino2,
-			T3.id t3id, LC_Destino3.nombre || '' ('' || Destino3.codigo_iata || '')'' destino3,
+			LC_Origen1.nombre || '' ('' || Origen1.codigo_iata || '')'' origen1, T1.id t1id,V1.id v1id,LC_Destino1.nombre || '' ('' || Destino1.codigo_iata || '')'' destino1,
+			T2.id t2id, V2.id v2id, LC_Destino2.nombre || '' ('' || Destino2.codigo_iata || '')'' destino2,
+			T3.id t3id,V3.id v3id, LC_Destino3.nombre || '' ('' || Destino3.codigo_iata || '')'' destino3,
 			ROUND( T1.distancia.cantidad + T2.distancia.cantidad + T3.distancia.cantidad) distancia_total
-
 		FROM 
 			Trayecto T1, 
 			Aeropuerto Origen1, Lugar L_Origen1, Lugar LC_Origen1, 
@@ -84,7 +93,9 @@ BEGIN
 			Trayecto T2, 
 			Aeropuerto Destino2, Lugar L_Destino2, Lugar LC_Destino2,
 			Trayecto T3,
-			Aeropuerto Destino3, Lugar L_Destino3, Lugar LC_Destino3
+			Aeropuerto Destino3, Lugar L_Destino3, Lugar LC_Destino3,
+
+			Vuelo V1, Vuelo V2, Vuelo V3
 		WHERE 
 			T1.fk_aeropuerto_origen = Origen1.id AND
 			T1.fk_aeropuerto_destino = Destino1.id AND
@@ -108,7 +119,11 @@ BEGIN
 			Destino3.fk_lugar = L_Destino3.id 
 			AND
 			L_Origen1.fk_lugar = ' || ciudad_origen_id ||' AND L_Destino3.fk_lugar = ' || ciudad_destino_id ||'
-		) TABLITA ' 
+			AND
+			V1.fk_trayecto = T1.id AND
+			V2.fk_trayecto = T2.id AND
+			V3.fk_trayecto = T3.id
+		) TABLITA '
 		|| limitante
 		|| ' ORDER BY ' || col_order_by;
 END;
@@ -121,10 +136,13 @@ DECLARE
   mi_cursor SYS_REFCURSOR;
   origen1 VARCHAR(100);
 	t1id INTEGER;
+	v1id INTEGER;
 	destino1 VARCHAR(100);
 	t2id INTEGER;
+	v2id INTEGER;
 	destino2 VARCHAR(100);
 	t3id INTEGER;
+	v3id INTEGER;
 	destino3 VARCHAR(100);
 	distancia_total INTEGER;
 BEGIN
@@ -132,17 +150,20 @@ BEGIN
 		mi_cursor => mi_cursor,
 		ciudad_origen_id => 6639,
     ciudad_destino_id => 6688,
-		orden_por => 'MENOR_DISTANCIA',
-		limite => 3
+		orden_por => 'MAS_BARATA',
+		limite => 100
 	);
   LOOP 
     FETCH mi_cursor INTO  
 			origen1,
 			t1id,
+			v1id,
 			destino1,
 			t2id,
+			v2id,
 			destino2,
 			t3id,
+			v3id,
 			destino3,
 			distancia_total
 		;
@@ -151,10 +172,13 @@ BEGIN
     OUT_(5,
 			origen1 || ' | ' ||
 			t1id || ' | ' ||
+			v1id || ' | ' ||
 			destino1 || ' | ' ||
 			t2id || ' | ' ||
+			v2id || ' | ' ||
 			destino2 || ' | ' ||
 			t3id || ' | ' ||
+			v3id || ' | ' ||
 			destino3 || ' | ' ||
 			distancia_total
 		);
