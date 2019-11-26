@@ -1,35 +1,46 @@
 CREATE OR REPLACE PROCEDURE sim_generacion_de_vuelos (fechas_base IN PERIODO)
 IS
-    cantidad INTEGER;
-    cantidad2 INTEGER;
     fecha_salida_estimada TIMESTAMP;
     periodo_estimado PERIODO;
     precio NUMBER;
-    avion NUMBER;
+    avion NUMBER DEFAULT 0;
+
+    CURSOR ctray IS SELECT * FROM Trayecto;
     tray Trayecto%ROWTYPE;
+
+    llenado NUMBER;
+    cantidad_vuelos_por_trayecto NUMBER;
 BEGIN
-    cantidad := ROUND( DBMS_RANDOM.VALUE(1000,3000) );
+    OPEN ctray;
+    FETCH ctray INTO tray;
 
-    WHILE cantidad > 0 
+    WHILE ctray%FOUND 
         LOOP
+            --llenado := DBMS_RANDOM.VALUE(0.1, 1);
+            --cantidad_vuelos_por_trayecto := TRUNC(
+            --    DBMS_RANDOM.VALUE(
+            --        TIEMPO_PKG.DIFF( fechas_base.fecha_inicio, fechas_base.fecha_fin, 'DAY' )*llenado,
+            --        TIEMPO_PKG.DIFF( fechas_base.fecha_inicio, fechas_base.fecha_fin, 'DAY' )
+            --    ));
+            cantidad_vuelos_por_trayecto := DBMS_RANDOM.VALUE(3, 5);
+
             precio := DBMS_RANDOM.VALUE(100,700);
-            tray := selectTrayecto();
             fecha_salida_estimada := TIEMPO_PKG.RANDOM(fechas_base);
+
             avion := selectAvion(tray.distancia.cantidad,fecha_salida_estimada);
-
-            cantidad2 := ROUND( DBMS_RANDOM.VALUE(5,8) );
-
-            WHILE cantidad2 > 0
+            WHILE cantidad_vuelos_por_trayecto > 0
                 LOOP
                     periodo_estimado := selectFecha(fecha_salida_estimada, tray.id);
                     insertarVuelo(avion, tray.id, precio, periodo_estimado);
                     
-                    fecha_salida_estimada := fecha_salida_estimada + numToDSInterval( 1, 'DAY' );
-                    cantidad2 := cantidad2 - 1;
+                    fecha_salida_estimada := fecha_salida_estimada + numToDSInterval( 10, 'HOUR' );
+                    cantidad_vuelos_por_trayecto := cantidad_vuelos_por_trayecto - 1;
                 END LOOP;
 
-            cantidad := cantidad - 1;
+            FETCH ctray INTO tray;
         END LOOP;
+    
+    CLOSE ctray;
 END;   
 
 CREATE OR REPLACE PROCEDURE insertarVuelo (avion IN NUMBER, trayecto IN NUMBER, precio IN NUMBER, periodo_estimado IN PERIODO)
@@ -50,7 +61,7 @@ END;
 CREATE OR REPLACE FUNCTION selectFecha (fecha_salida_estimada IN TIMESTAMP, trayecto IN NUMBER) RETURN PERIODO
 IS 
     fecha_llegada_estimada TIMESTAMP;
-    segundos_estimados NUMBER;
+    segundos_estimados NUMBER DEFAULT 0;
     per PERIODO;
 BEGIN
     segundos_estimados := promedioTiempo(trayecto);
@@ -58,7 +69,7 @@ BEGIN
     IF (segundos_estimados > 0) THEN 
         fecha_llegada_estimada := fecha_salida_estimada + numToDSInterval( segundos_estimados, 'SECOND' );
     ELSE
-        fecha_llegada_estimada := TIEMPO_PKG.RANDOM(PERIODO(fecha_salida_estimada + numToDSInterval( 1, 'HOUR' ), fecha_salida_estimada + numToDSInterval( 15, 'HOUR' )));
+        fecha_llegada_estimada := TIEMPO_PKG.RANDOM(PERIODO(fecha_salida_estimada + numToDSInterval( 1, 'HOUR' ), fecha_salida_estimada + numToDSInterval( 5, 'HOUR' )));
     END IF;
 
     per := PERIODO(fecha_salida_estimada, fecha_llegada_estimada);
@@ -80,31 +91,12 @@ BEGIN
             AND av.id NOT IN (
                 SELECT v.fk_avion FROM Vuelo v
                 WHERE v.periodo_estimado.fecha_inicio BETWEEN 
-                    (fecha_salida_estimada - numToDSInterval( 1, 'DAY' )) AND (fecha_salida_estimada + numToDSInterval( 10, 'DAY' ))
+                    (fecha_salida_estimada - numToDSInterval( 5, 'HOUR' )) AND (fecha_salida_estimada + numToDSInterval( 5, 'HOUR' ))
             )
         ORDER BY dbms_random.value) tabla
     WHERE rownum = 1;
 
     RETURN avion;
-END;
-
-CREATE OR REPLACE FUNCTION selectTrayecto RETURN Trayecto%ROWTYPE
-IS
-    minId NUMBER;
-    maxId NUMBER;
-
-    idTrayecto NUMBER;
-
-    rowTrayecto Trayecto%ROWTYPE;
-BEGIN
-    SELECT MIN(id), MAX(id) INTO minId, maxId
-    FROM Trayecto;
-
-    idTrayecto := ROUND( DBMS_RANDOM.VALUE(minId,maxId) );
-
-    SELECT * INTO rowTrayecto FROM Trayecto WHERE id = idTrayecto;
-
-    RETURN rowTrayecto;
 END;
 
 CREATE OR REPLACE FUNCTION promedioTiempo (trayecto IN NUMBER) RETURN NUMBER

@@ -89,7 +89,7 @@ BEGIN
     RETURN vue;
 END;
 
-CREATE OR REPLACE FUNCTION insertVuelo (trayecto IN NUMBER, periodo_base IN PERIODO, fechas_base IN PERIODO) RETURN NUMBER
+CREATE OR REPLACE FUNCTION insertVueloReprogramacion (trayecto IN NUMBER, periodo_base IN PERIODO, fechas_base IN PERIODO) RETURN NUMBER
 IS 
     avion NUMBER;
     dist NUMBER;
@@ -101,13 +101,6 @@ IS
 
     idVuelo Vuelo.id%TYPE;
 BEGIN
-    SELECT t.distancia.cantidad INTO dist FROM Trayecto t
-    WHERE id = trayecto;
-
-    SELECT av.id INTO avion FROM Avion av, Tipo_Avion t 
-    WHERE av.fk_tipo_avion = t.id
-        AND t.alcance_max.cantidad >= dist;
-
     precio := DBMS_RANDOM.VALUE(100,700);
 
     fecha_salida_estimada := TIEMPO_PKG.RANDOM(PERIODO(periodo_base.fecha_inicio,fechas_base.fecha_fin));
@@ -116,8 +109,20 @@ BEGIN
     IF (segundos_estimados > 0) THEN 
         fecha_llegada_estimada := fecha_salida_estimada + numToDSInterval( segundos_estimados, 'SECOND' );
     ELSE
-        fecha_llegada_estimada := TIEMPO_PKG.RANDOM(PERIODO(fecha_salida_estimada + numToDSInterval( 1, 'HOUR' ), fecha_salida_estimada + numToDSInterval( 15, 'HOUR' )));
+        fecha_llegada_estimada := TIEMPO_PKG.RANDOM(PERIODO(fecha_salida_estimada + numToDSInterval( 1, 'HOUR' ), fecha_salida_estimada + numToDSInterval( 5, 'HOUR' )));
     END IF;
+
+    SELECT t.distancia.cantidad INTO dist FROM Trayecto t
+    WHERE id = trayecto;
+
+    SELECT av.id INTO avion FROM Avion av, Tipo_Avion t 
+    WHERE av.fk_tipo_avion = t.id
+        AND t.alcance_max.cantidad >= dist
+        AND av.id NOT IN (
+                SELECT v.fk_avion FROM Vuelo v
+                WHERE v.periodo_estimado.fecha_inicio BETWEEN 
+                    (fecha_salida_estimada - numToDSInterval( 5, 'HOUR' )) AND (fecha_salida_estimada + numToDSInterval( 5, 'HOUR' ))
+            );
 
     INSERT INTO Vuelo (fk_avion,fk_trayecto,estatus,precio_base,periodo_estimado)
         VALUES (
