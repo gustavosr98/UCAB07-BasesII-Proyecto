@@ -124,6 +124,8 @@ SELECT COUNT(*) FROM TRAYECTO;
 SELECT COUNT(*) FROM ( SELECT COUNT(*) FROM VUELO GROUP BY fk_trayecto );
 SELECT COUNT(*) FROM VUELO GROUP BY fk_trayecto;
 
+SELECT id, estatus, PRECIO_BASE.cantidad, PERIODO_ESTIMADO.fecha_inicio, PERIODO_ESTIMADO.fecha_fin, FK_AVION, FK_TRAYECTO FROM vuelo;
+
 --Inserts de prueba
 INSERT INTO Vuelo (fk_avion,fk_trayecto,estatus,precio_base,periodo_estimado,periodo_real)
     VALUES (

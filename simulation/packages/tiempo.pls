@@ -2,6 +2,7 @@ CREATE OR REPLACE PACKAGE tiempo_pkg AS
   FUNCTION random(rango PERIODO) RETURN TIMESTAMP; 
   FUNCTION diff(x TIMESTAMP, y TIMESTAMP, tipo VARCHAR2) RETURN NUMBER; 
   FUNCTION print(x TIMESTAMP, formato VARCHAR2) RETURN VARCHAR2; 
+  FUNCTION extraer(x TIMESTAMP, tipo VARCHAR2) RETURN TIMESTAMP;
 END; 
 /
 
@@ -73,6 +74,7 @@ CREATE OR REPLACE PACKAGE BODY tiempo_pkg AS
 				); 
 			END IF;
 		END diff; 
+
 	-- TIEMPO.PRINT
 		FUNCTION print(x TIMESTAMP, formato VARCHAR2) RETURN VARCHAR2
 		IS
@@ -87,6 +89,17 @@ CREATE OR REPLACE PACKAGE BODY tiempo_pkg AS
 				RETURN TO_CHAR(x, 'YYYY-MM-DD HH24:MI:SS');
 			END IF;
 		END print;
+
+	-- TIEMPO.EXTRAER
+		FUNCTION extraer(x TIMESTAMP, tipo VARCHAR2) RETURN TIMESTAMP
+		IS
+		BEGIN
+			IF (tipo = 'DATE') THEN
+				RETURN 
+					TO_TIMESTAMP ( TO_CHAR(x,'YYYY-MM-DD') ,'YYYY-MM-DD');
+			END IF;
+		END extraer; 
+
 END tiempo_pkg;
 /
 
@@ -112,5 +125,6 @@ END tiempo_pkg;
 		OUT_(2,'TIEMPO_PKG.PRINT(x.fecha_inicio, "MUY_HUMANO") ---> ' || TIEMPO_PKG.PRINT(x.fecha_inicio, 'MUY_HUMANO'));
 		OUT_(2,'TIEMPO_PKG.PRINT(x.fecha_inicio, "HUMANO") ---> ' || TIEMPO_PKG.PRINT(x.fecha_inicio, 'HUMANO'));
 		OUT_(2,'TIEMPO_PKG.PRINT(x.fecha_inicio, "JERARQUICO") ---> ' || TIEMPO_PKG.PRINT(x.fecha_inicio, 'JERARQUICO'));
+		OUT_(2,'TIEMPO_PKG.EXTRAER(x.inicio, "DATE") ---> ' || TO_CHAR( TIEMPO_PKG.EXTRAER(x.fecha_inicio,'DATE') , 'YYYY-MM-DD HH24:MI:SS') );
 	END;
 	/
