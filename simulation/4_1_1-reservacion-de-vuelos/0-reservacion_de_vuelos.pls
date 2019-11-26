@@ -31,6 +31,8 @@ IS
 	fecha_reservacion TIMESTAMP;
 	fecha_salida TIMESTAMP;
 	fecha_viaje PERIODO;
+
+	criterio_vuelo VARCHAR2(50);
 BEGIN
 
 	OUT_BREAK(2);
@@ -98,6 +100,10 @@ BEGIN
 			fecha_salida, 
 			TIEMPO_PKG.RANDOM(PERIODO(fecha_salida, fg.fecha_fin)) 
 		);
+
+		-- RESERVACIÓN DE UNA RUTA DE VUELO | PASO 2
+		-- Se elige aleatoriamente uno de los criterios de selección de ruta de vuelo. Se toma en cuenta la cantidad de acompañantes.
+		IF ( DBMS_RANDOM.VALUE > 0.5 ) THEN criterio_vuelo := 'MAS_BARATA'; ELSE criterio_vuelo := 'LLEGADA_MAS_TEMPRANA'; END IF;
 
 		FETCH c_acompanantes INTO v_acompanante;
 		WHILE (NOT(c_acompanantes%NOTFOUND)) LOOP

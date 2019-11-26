@@ -2,11 +2,13 @@ SELECT * FROM
 	(
 		SELECT  
 			LC_Origen1.nombre || ' (' || Origen1.codigo_iata || ')' origen1,
-			V1.id v1id, V1.estatus, V1.periodo_estimado.fecha_inicio, V1.periodo_estimado.fecha_fin,
+			V1.id v1id, V1.estatus v1e, V1.periodo_estimado.fecha_inicio v1fi, V1.periodo_estimado.fecha_fin v1ff,
 			LC_Destino1.nombre || ' (' || Destino1.codigo_iata || ')' destino1,
-			0 v2id,
-			'NULL' destino2,
-			0 v3id,'NULL'
+			NULL v2id, NULL v2e, NULL v2fi, NULL v2ff,
+			NULL destino2,
+			NULL v3id, NULL v3e, NULL v3fi, NULL v3ff,
+			NULL destino3,
+			ROUND( precio_vuelo(V1.id, 'ECONOMICA', 1).cantidad ,2) costo_total
 		FROM 
 			Trayecto T1, 
 			Aeropuerto Origen1, Lugar L_Origen1, Lugar LC_Origen1, 
@@ -30,11 +32,17 @@ SELECT * FROM
 	-- UNA ESCALA
 		SELECT  
 			LC_Origen1.nombre || ' (' || Origen1.codigo_iata || ')' origen1,
-			V1.id v1id, V1.estatus, V1.periodo_estimado.fecha_inicio, V1.periodo_estimado.fecha_fin,
+			V1.id v1id, V1.estatus v1e, V1.periodo_estimado.fecha_inicio v1fi, V1.periodo_estimado.fecha_fin v1ff,
 			LC_Destino1.nombre || ' (' || Destino1.codigo_iata || ')' destino1,
-			V2.id v2id,
-			 LC_Destino2.nombre || ' (' || Destino2.codigo_iata || ')' destino2,
-			0 v3id,'NULL'
+			V2.id v2id, V2.estatus v2e, V2.periodo_estimado.fecha_inicio v2fi, V2.periodo_estimado.fecha_fin v2ff,
+			LC_Destino2.nombre || ' (' || Destino2.codigo_iata || ')' destino2,
+			NULL v3id, NULL v3e, NULL v3fi, NULL v3ff,
+			NULL destino3,
+			ROUND( 
+				precio_vuelo(V1.id, 'ECONOMICA', 1).cantidad
+				+ precio_vuelo(V2.id, 'ECONOMICA', 1).cantidad
+				,2
+			) costo_total
 		FROM 
 			Trayecto T1, 
 			Aeropuerto Origen1, Lugar L_Origen1, Lugar LC_Origen1, 
@@ -68,11 +76,18 @@ SELECT * FROM
 	-- DOS PARADAS
 		SELECT  
 			LC_Origen1.nombre || ' (' || Origen1.codigo_iata || ')' origen1,
-			V1.id v1id, V1.estatus, V1.periodo_estimado.fecha_inicio, V1.periodo_estimado.fecha_fin,
+			V2.id v1id, V2.estatus v1e, V2.periodo_estimado.fecha_inicio v1fi, V2.periodo_estimado.fecha_fin v1ff,
 			LC_Destino1.nombre || ' (' || Destino1.codigo_iata || ')' destino1,
-			V2.id v2id,
+			V2.id v2id, V2.estatus v2e, V2.periodo_estimado.fecha_inicio v2fi, V2.periodo_estimado.fecha_fin v2ff,
 			LC_Destino2.nombre || ' (' || Destino2.codigo_iata || ')' destino2,
-			V3.id v3id, LC_Destino3.nombre || ' (' || Destino3.codigo_iata || ')'
+			V3.id v3id, V3.estatus v3e, V3.periodo_estimado.fecha_inicio v3fi, V3.periodo_estimado.fecha_fin v3ff,
+			LC_Destino3.nombre || ' (' || Destino3.codigo_iata || ')' destino3,
+			ROUND( 
+				precio_vuelo(V1.id, 'ECONOMICA', 1).cantidad
+				+ precio_vuelo(V2.id, 'ECONOMICA', 1).cantidad
+				+ precio_vuelo(V3.id, 'ECONOMICA', 1).cantidad
+				,2
+			) costo_total
 		FROM 
 			Trayecto T1, 
 			Aeropuerto Origen1, Lugar L_Origen1, Lugar LC_Origen1, 
@@ -110,4 +125,4 @@ SELECT * FROM
 			V1.fk_trayecto = T1.id AND
 			V2.fk_trayecto = T2.id AND
 			V3.fk_trayecto = T3.id
-		) TABLITA ORDER BY DBMS_RANDOM.VALUE
+		) TABLITA ORDER BY costo_total
