@@ -1,4 +1,4 @@
-CREATE OR REPLACE PROCEDURE sim_reservas_de_alojamientos()
+CREATE OR REPLACE PROCEDURE sim_reservas_de_alojamientos(id_reservacion_vuelo NUMBER)
 IS
     cant_usuarios_con_reservaciones_de_vuelo NUMBER;
     cant_usuarios_a_reservar NUMBER;
@@ -7,69 +7,63 @@ IS
 
     cant_alojamientos NUMBER;
     tipo_alojamiento_a_reservar VARCHAR2(20);
+    fecha_base TIMESTAMP;
     fecha_llegada_vuelo TIMESTAMP;
+    fecha_reservacion_vuelo TIMESTAMP;
     criterio NUMBER;    
     alojamiento_a_reservar habitacion%ROWTYPE;
+
+    ini_estadia TIMESTAMP;
+    fin_estadia TIMESTAMP;
+    estadia VARCHAR2(10);
+    i INTEGER;
+    p PERIODO;
+    condi NUMBER;
+    disp BOOLEAN;
+
 
 BEGIN
 
     --  Usuarios que tienen reservaciones de vuelo no iniciado
 
-        SELECT COUNT(*) --INTO cant_usuarios_con_reservaciones_de_vuelo
-        FROM Usuario u, Cliente c, Reserva rva, Reservacion ron, Vuelo v
-        WHERE u.fk_cliente = c.id
-        AND rva.fk_cliente = c.id
-        AND rva.fk_reservacion = ron.id
-        AND ron.tipo = 'V'
-        AND ron.v_fk_vuelo = v.id
-        AND v.estatus = 'NO_INICIADO';
+        SELECT COUNT(*) INTO cant_usuarios_con_reservaciones_de_vuelo
+        FROM usuario u, pago p, reservacion r, vuelo v
+        WHERE p.fk_usuario = u.id
+        AND p.fk_reservacion = r.id
+        AND r.v_fk_vuelo = v.id
+        AND v.estatus = 'NO_INICIADO'; 
 
     --  Random de usuarios a reservar
 
         cant_usuarios_a_reservar := ROUND(DBMS_RANDOM.VALUE(1,cant_usuarios_con_reservaciones_de_vuelo));
 
-        BEGIN
-        
-            DBMS_OUTPUT.PUT_LINE(ROUND(DBMS_RANDOM.VALUE(1,2)));
-
-        END;
-
     --  Se reserva la cantidad indicada
 
-        FOR cant_usuarios_a_reservar IN 1..cant_usuarios_a_reservar LOOP
+        FOR i IN 1..cant_usuarios_a_reservar LOOP
 
             --  Se elige un usuario random
 
                 SELECT * INTO id_usuario_a_reservar
-                FROM (SELECT u.id 
-                        FROM Usuario u, Cliente c, Reserva rva, Reservacion ron, Vuelo v
-                        WHERE u.fk_cliente = c.id
-                        AND rva.fk_cliente = c.id
-                        AND rva.fk_reservacion = ron.id
-                        AND ron.tipo = 'V'
-                        AND ron.v_fk_vuelo = v.id
+                FROM (SELECT u.id
+                        FROM usuario u, pago p, reservacion r, vuelo v
+                        WHERE p.fk_usuario = u.id
+                        AND p.fk_reservacion = r.id
+                        AND r.v_fk_vuelo = v.id
                         AND v.estatus = 'NO_INICIADO'
                         ORDER BY DBMS_RANDOM.VALUE)
                 WHERE ROWNUM = 1;
 
-            -- Se elige un vuelo random
+            -- -- Se busca el vuelo
 
-                SELECT * INTO id_vuelo_no_iniciado
-                FROM (SELECT v.id 
-                        FROM Usuario u, Cliente c, Reserva rva, Reservacion ron, Vuelo v
-                        WHERE u.fk_cliente = c.id
-                        AND rva.fk_cliente = c.id
-                        AND rva.fk_reservacion = ron.id
-                        AND ron.tipo = 'V'
-                        AND ron.v_fk_vuelo = v.id
-                        AND v.estatus = 'NO_INICIADO'
-                        ORDER BY DBMS_RANDOM.VALUE)
-                WHERE ROWNUM = 1;
+            SELECT v.id into id_vuelo_no_iniciado
+            FROM VUELO v, reservacion r
+            WHERE r.v_fk_vuelo = v.id
+            AND r.id = id_reservacion_vuelo;
 
            --  Se cuentan cuantos alojamientos hay
 
                 SELECT COUNT(*) INTO cant_alojamientos
-                FROM alojamientos;
+                FROM alojamiento;
 
             -- Se elige TIPO de alojamiento random
 
@@ -85,48 +79,431 @@ BEGIN
                 FROM vuelo v
                 WHERE v.id = id_vuelo_no_iniciado;
 
+            -- Se guarda la fecha de reservacion del vuelo
+
+                SELECT FECHA_RESERVACION INTO fecha_reservacion_vuelo
+                FROM reservacion r 
+                WHERE id = id_reservacion_vuelo;
+
+            -- Se elige el periodo de reserva del alojamiento
+
+                fecha_base := TIEMPO_PKG.EXTRAER(fecha_llegada_vuelo,'DATE');
+                estadia := TO_CHAR(ROUND(DBMS_RANDOM.VALUE(1,10)));
+
+                ini_estadia := fecha_base + INTERVAL '13' HOUR;
+                fin_estadia := fecha_base + numToDSInterval(estadia,'DAY');
+                fin_estadia := fecha_base + INTERVAL '11' HOUR;
+
+                p := PERIODO(
+                ini_estadia,
+                fin_estadia
+                );
+
             --  Se elige un criterio random
 
                 criterio := ROUND(DBMS_RANDOM.VALUE(1,2));
 
-                CASE [criterio]
+                if criterio = 1 THEN  -- Más barato
 
-                    WHEN criterio = 1 THEN  -- Más barato
+                        SELECT COUNT(*) into condi FROM RESERVACION WHERE tipo = 'A';
 
-                        SELECT * INTO alojamiento_a_reservar 
-                        FROM (SELECT h.id, h.precio_base_noche.cantidad
-                                FROM alojamiento a, lug_aloj la, habitacion h, reservacion r
-                                WHERE a.tipo = tipo_alojamiento_a_reservar
-                                AND la.fk_alojamiento = a.id
-                                AND h.fk_lug_aloj = la.id
-                                AND r.a_fk_habitacion = h.id
-                                -- valida fecha
-                                AND NOT EXISTS (SELECT r.id 
-                                                FROM reservacion r
-                                                WHERE r.a_periodo.fecha_inicio < fecha_llegada_vuelo
-                                                AND r.a_periodo.fecha_fin > fecha_llegada_vuelo)
+                        if condi = 0 THEN
 
-                                ORDER BY h.precio_base_noche.cantidad ASC)
-                        WHERE ROWNUM = 1;
+                            disp := FALSE;
 
-                        DBMS_OUTPUT.PUT_LINE(alojamiento_a_reservar.id);
+                            while disp = FALSE
+                            LOOP
+                                SELECT * INTO alojamiento_a_reservar 
+                                FROM (SELECT h.*
+                                    FROM alojamiento al, lug_aloj la, habitacion h
+                                    WHERE al.tipo = tipo_alojamiento_a_reservar
+                                    AND la.fk_alojamiento = al.id
+                                    AND h.fk_lug_aloj = la.id
+                                    ORDER BY DBMS_RANDOM.VALUE)
+                                    WHERE ROWNUM = 1;
 
-                    WHEN criterio = 2 THEN  -- Más actual
+                                disp := hab_esta_disponible(alojamiento_a_reservar.id);
+                            END LOOP;
 
-                        SELECT * INTO alojamiento_a_reservar 
-                        FROM (SELECT TO_CHAR(a.fecha_fundacion, 'DD-MM-YYYY'), h.id, h.precio_base_noche.cantidad
-                                FROM alojamiento a, lug_aloj la, habitacion h
-                                WHERE a.tipo = tipo_alojamiento_a_reservar
-                                AND la.fk_alojamiento = a.id
-                                AND h.fk_lug_aloj = la.id
-                                ORDER BY a.fecha_fundacion DESC)
-                        WHERE ROWNUM = 1;
+                        ELSE
 
-                END;
+                            SELECT * INTO alojamiento_a_reservar 
+                            FROM (SELECT h.*
+                                    FROM alojamiento a, lug_aloj la, habitacion h
+                                    WHERE a.tipo = tipo_alojamiento_a_reservar
+                                    AND la.fk_alojamiento = a.id
+                                    AND h.fk_lug_aloj = la.id
+                                    -- valida fecha
+                                    AND NOT EXISTS (SELECT r.id 
+                                                    FROM reservacion r
+                                                    WHERE r.a_periodo.fecha_inicio < ini_estadia
+                                                    AND r.a_periodo.fecha_fin > fin_estadia
+                                                    AND r.a_fk_habitacion = h.id)
 
-                -- Se inserta la reservacion
+                                    ORDER BY h.precio_base_noche.cantidad ASC, DBMS_RANDOM.VALUE )
+                            WHERE ROWNUM = 1;
+
+                            -- DBMS_OUTPUT.PUT_LINE(alojamiento_a_reservar.id);
+
+                        END IF;
+
+                ELSIF criterio = 2 THEN  -- Más actual
+
+                        if (SELECT COUNT(*) FROM RESERVACION WHERE tipo = 'A') = 0 THEN
+
+                            SELECT * INTO alojamiento_a_reservar 
+                            FROM (SELECT TO_CHAR(a.fecha_fundacion, 'DD-MM-YYYY'), h.id, h.precio_base_noche.cantidad
+                                    FROM alojamiento a, lug_aloj la, habitacion h
+                                    WHERE a.tipo = tipo_alojamiento_a_reservar
+                                    AND la.fk_alojamiento = a.id
+                                    AND h.fk_lug_aloj = la.id
+                                    ORDER BY a.fecha_fundacion DESC, DBMS_RANDOM.VALUE )
+                            WHERE ROWNUM = 1;
+
+                        ELSE 
+
+                            SELECT * INTO alojamiento_a_reservar 
+                            FROM (SELECT TO_CHAR(a.fecha_fundacion, 'DD-MM-YYYY'), h.id, h.precio_base_noche.cantidad
+                                    FROM alojamiento a, lug_aloj la, habitacion h
+                                    WHERE a.tipo = tipo_alojamiento_a_reservar
+                                    AND la.fk_alojamiento = a.id
+                                    AND h.fk_lug_aloj = la.id
+
+                                    AND NOT EXISTS (SELECT r.id 
+                                                    FROM reservacion r
+                                                    WHERE r.a_periodo.fecha_inicio < ini_estadia
+                                                    AND r.a_periodo.fecha_fin > fin_estadia
+                                                    AND r.a_fk_habitacion = h.id)
+
+                                    ORDER BY a.fecha_fundacion DESC, DBMS_RANDOM.VALUE )
+                            WHERE ROWNUM = 1;
+
+                        END IF;
+
+                END IF;
+
+        --         -- Se inserta la reservacion
+
+        --             INSERT INTO RESERVACION(tipo,precio_total,esta_cancelada,fecha_reservacion, a_fk_habitacion, a_periodo,fk_reservacion) 
+        --             VALUES('A',
+        --                     UNIDAD('DIVISA','DOLAR',get_precio_total(p.fecha_inicio,p.fecha_fin,alojamiento_a_reservar.precio_base_noche)),                          ),
+        --                     'F',
+        --                     fecha_reservacion_vuelo,
+        --                     alojamiento_a_reservar.id,
+        --                     p,
+        --                     id_reservacion_vuelo
+        --                     );
+        END LOOP;   
+END;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+CREATE OR REPLACE FUNCTION get_precio_total(ini TIMESTAMP, fin TIMESTAMP, precio_noche UNIDAD)
+RETURN UNIDAD
+IS
+    total NUMBER;
+    uni UNIDAD;
+
+BEGIN
+
+    total := TIEMPO_PKG.DIFF(ini,fin,'DAY') * precio_noche.cantidad;
+
+    uni.cantidad := total;
+    uni.tipo := 'DIVISA';
+    uni.nombre := 'DOLAR';
+
+    return uni;
+END;
+
+
+-- HABITACIONES
+
+CREATE OR REPLACE FUNCTION habitacion()
+RETURN habitacion%ROWTYPE
+IS
+    hab NUMBER;
+    CURSOR cvalores is SELECT * FROM habitacion;
+    registro_tabla habitacion%ROWTYPE;
+
+BEGIN
+    open cvalores;
+    fetch cvalores into registro_tabla;
+    
+    while cvalores%found
+        LOOP
+
+            if hab_esta_disponible(registro_tabla.id) THEN
+
+                RETURN registro_tabla;
+
+            ELSE
+
+                fetch cvalores into registro_tabla;
+
+            END IF;
+        END LOOP;
+        close cvalores;
+    RETURN null;
+END;
+
+CREATE OR REPLACE FUNCTION hab_esta_disponible(id NUMBER)
+RETURN BOOLEAN
+IS
+    io BOOLEAN := TRUE;
+    CURSOR cvalores is SELECT * FROM reservacion WHERE tipo = 'A';
+    registro_tabla reservacion%ROWTYPE;
+BEGIN
+
+    open cvalores;
+    fetch cvalores into registro_tabla;
+
+    WHILE cvalores%found
+        LOOP
+
+            if registro_tabla.v_fk_asiento = id THEN 
+
+                io := FALSE;
+
+            END IF;
+
+            fetch cvalores into registro_tabla;
 
         END LOOP;
-
     
+    RETURN io;
+END;    
+
+
+--  INSERTS DE PRUEBA
+
+    -- INSERTS DE RESERVACION VUELOS
+
+    -- ASIENTOS CON AVION Y VUELO
+
+        SELECT asi.id idA, av.id idAV, v.id idV
+        FROM asiento asi, avion av, vuelo v
+        WHERE asi.fk_avion = av.id
+        AND v.fk_avion = av.id;
+
+    -- USUARIOS Y VUELOS
+
+        SELECT u.id idU, v.id idV, v.estatus
+        FROM usuario u, pago p, reservacion r, vuelo v
+        WHERE p.fk_usuario = u.id
+        AND p.fk_reservacion = r.id
+        AND r.v_fk_vuelo = v.id
+        AND v.estatus = 'NO_INICIADO'; 
+
+    --  ALOJAMIENTOS 
+
+        SELECT * FROM (SELECT h.id, h.precio_base_noche.cantidad, al.tipo
+        FROM alojamiento al, lug_aloj la, habitacion h, reservacion r
+        WHERE al.tipo = 'HOTEL'
+        AND la.fk_alojamiento = al.id
+        AND h.fk_lug_aloj = la.id
+        ORDER BY DBMS_RANDOM.VALUE)
+        WHERE ROWNUM = 1;
+
+    INSERT INTO RESERVACION(tipo,precio_total,esta_cancelada,fecha_reservacion, v_fk_asiento, v_fk_vuelo, v_es_ida_vuelta)
+                VALUES('V',UNIDAD('DIVISA','DOLAR',2000),'F',TIMESTAMP '19-02-03 12:00:00',1,1,'F');
+    INSERT INTO PAGO(pagado,FK_USUARIO,FK_RESERVACION) VALUES(UNIDAD('DIVISA','DOLAR',2000),1,1);
+
+    INSERT INTO RESERVACION(tipo,precio_total,esta_cancelada,fecha_reservacion, v_fk_asiento, v_fk_vuelo, v_es_ida_vuelta)
+                VALUES('V',UNIDAD('DIVISA','DOLAR',2000),'F',TIMESTAMP '19-02-03 12:00:00',1,4,'F');
+    INSERT INTO PAGO(pagado,FK_USUARIO,FK_RESERVACION) VALUES(UNIDAD('DIVISA','DOLAR',2000),2,2);
+    
+    INSERT INTO RESERVACION(tipo,precio_total,esta_cancelada,fecha_reservacion, v_fk_asiento, v_fk_vuelo, v_es_ida_vuelta)
+                VALUES('V',UNIDAD('DIVISA','DOLAR',2000),'F',TIMESTAMP '19-02-03 12:00:00',1,41,'F');
+    INSERT INTO PAGO(pagado,FK_USUARIO,FK_RESERVACION) VALUES(UNIDAD('DIVISA','DOLAR',2000),3,3);
+
+    INSERT INTO RESERVACION(tipo,precio_total,esta_cancelada,fecha_reservacion, v_fk_asiento, v_fk_vuelo, v_es_ida_vuelta)
+                VALUES('V',UNIDAD('DIVISA','DOLAR',2000),'F',TIMESTAMP '19-02-03 12:00:00',2,1,'F');
+    INSERT INTO PAGO(pagado,FK_USUARIO,FK_RESERVACION) VALUES(UNIDAD('DIVISA','DOLAR',2000),4,4);
+
+    INSERT INTO RESERVACION(tipo,precio_total,esta_cancelada,fecha_reservacion, v_fk_asiento, v_fk_vuelo, v_es_ida_vuelta)
+                VALUES('V',UNIDAD('DIVISA','DOLAR',2000),'F',TIMESTAMP '19-02-03 12:00:00',2,4,'F');
+    INSERT INTO PAGO(pagado,FK_USUARIO,FK_RESERVACION) VALUES(UNIDAD('DIVISA','DOLAR',2000),5,5);
+
+    INSERT INTO RESERVACION(tipo,precio_total,esta_cancelada,fecha_reservacion, v_fk_asiento, v_fk_vuelo, v_es_ida_vuelta)
+                VALUES('V',UNIDAD('DIVISA','DOLAR',2000),'F',TIMESTAMP '19-02-03 12:00:00',1,1,'F');
+    INSERT INTO PAGO(pagado,FK_USUARIO,FK_RESERVACION) VALUES(UNIDAD('DIVISA','DOLAR',2000),6,6);
+
+    INSERT INTO RESERVACION(tipo,precio_total,esta_cancelada,fecha_reservacion, v_fk_asiento, v_fk_vuelo, v_es_ida_vuelta)
+                VALUES('V',UNIDAD('DIVISA','DOLAR',2000),'F',TIMESTAMP '19-02-03 12:00:00',108,50,'F');
+    INSERT INTO PAGO(pagado,FK_USUARIO,FK_RESERVACION) VALUES(UNIDAD('DIVISA','DOLAR',2000),7,7);
+
+    INSERT INTO RESERVACION(tipo,precio_total,esta_cancelada,fecha_reservacion, v_fk_asiento, v_fk_vuelo, v_es_ida_vuelta)
+                VALUES('V',UNIDAD('DIVISA','DOLAR',2000),'F',TIMESTAMP '19-02-03 12:00:00',110,47,'F');
+    INSERT INTO PAGO(pagado,FK_USUARIO,FK_RESERVACION) VALUES(UNIDAD('DIVISA','DOLAR',2000),8,8);
+
+    INSERT INTO RESERVACION(tipo,precio_total,esta_cancelada,fecha_reservacion, v_fk_asiento, v_fk_vuelo, v_es_ida_vuelta)
+                VALUES('V',UNIDAD('DIVISA','DOLAR',2000),'F',TIMESTAMP '19-02-03 12:00:00',110,48,'F');
+    INSERT INTO PAGO(pagado,FK_USUARIO,FK_RESERVACION) VALUES(UNIDAD('DIVISA','DOLAR',2000),9,9);
+ 
+    DELETE FROM PAGO WHERE FK_USUARIO = 7;
+
+    SELECT * FROM alojamiento
+
+    SELECT ID FROM HABITACION
+
+
+BEGIN
+
+    DBMS_OUTPUT.PUT_LINE(TO_CHAR(TIEMPO_PKG.EXTRAER(TIMESTAMP '2019-02-03 12:00:00','DATE'), 'YYYY-MM-DD HH24:MI:SS'));
+
 END;
+
+SELECT * FROM RESERVACION
+
+DELETE FROM RESERVACION 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--  ASIENTOS
+
+
+CREATE OR REPLACE FUNCTION asiento()
+RETURN NUMBER
+IS
+    spot NUMBER;
+    CURSOR cvalores is SELECT * FROM asiento;
+    registro_tabla asiento%ROWTYPE;
+
+BEGIN
+    open cvalores;
+    fetch cvalores into registro_tabla;
+    
+    while cvalores%found
+        LOOP
+
+            if vehi_esta_disponible(registro_tabla.id) THEN
+
+                RETURN registro_tabla.id;
+
+            ELSE
+
+                fetch cvalores into registro_tabla;
+
+            END IF;
+        END LOOP;
+        close cvalores;
+    RETURN null;
+END;
+
+CREATE OR REPLACE FUNCTION vehi_esta_diponible(id NUMBER)
+RETURN BOOLEAN
+IS
+    io BOOLEAN := TRUE;
+    CURSOR cvalores is SELECT * FROM reservacion WHERE tipo = 'V';
+    registro_tabla reservacion%ROWTYPE;
+BEGIN
+
+    open cvalores;
+    fetch cvalores into registro_tabla;
+
+    WHILE cvalores%found
+        LOOP
+
+            if registro_tabla.fk_asiento = id THEN 
+
+                io := FALSE;
+
+            END IF;
+
+            fetch cvalores into registro_tabla;
+
+        END LOOP;
+    
+    RETURN io;
+END;    
+
+
+
