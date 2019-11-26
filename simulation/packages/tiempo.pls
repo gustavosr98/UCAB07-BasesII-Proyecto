@@ -1,6 +1,7 @@
 CREATE OR REPLACE PACKAGE tiempo_pkg AS 
   FUNCTION random(rango PERIODO) RETURN TIMESTAMP; 
   FUNCTION diff(x TIMESTAMP, y TIMESTAMP, tipo VARCHAR2) RETURN NUMBER; 
+  FUNCTION print(x TIMESTAMP, formato VARCHAR2) RETURN VARCHAR2; 
 END; 
 /
 
@@ -72,8 +73,22 @@ CREATE OR REPLACE PACKAGE BODY tiempo_pkg AS
 				); 
 			END IF;
 		END diff; 
-
+	-- TIEMPO.PRINT
+		FUNCTION print(x TIMESTAMP, formato VARCHAR2) RETURN VARCHAR2
+		IS
+		BEGIN
+			IF (formato = 'FECHA') THEN
+				RETURN TO_CHAR(x, 'DD/MON/YYYY');
+			ELSIF (formato = 'MUY_HUMANO') THEN
+				RETURN TO_CHAR(x, 'DY DD/MON/YYYY');
+			ELSIF (formato = 'HUMANO') THEN
+				RETURN TO_CHAR(x, 'DY DD/MON/YYYY HH12:MI:SS AM');
+			ELSIF (formato = 'JERARQUICO') THEN
+				RETURN TO_CHAR(x, 'YYYY-MM-DD HH24:MI:SS');
+			END IF;
+		END print;
 END tiempo_pkg;
+/
 
 -- EJECUTAR
 	DECLARE
@@ -87,11 +102,15 @@ END tiempo_pkg;
 
 		x := PERIODO(
 			TIMESTAMP '2019-05-05 20:05:00',
-			TIMESTAMP '2019-05-05 20:05:00'
+			TIMESTAMP '2019-05-06 02:05:00'
 		);
 		
 		OUT_(2,'TIEMPO_PKG.RANDOM(x) ---> ' || TO_CHAR(TIEMPO_PKG.RANDOM(x), 'YYYY-MM-DD HH24:MI:SS'));
-		OUT_(2,'TIEMPO_PKG.DIFF(x.inicio, x.fin, "DAY") ---> ' || TIEMPO_PKG.DIFF(x.fecha_inicio,x.fecha_fin,'DAY'));
-		OUT_(2,'TIEMPO_PKG.DIFF(x.inicio, x.fin, "SECOND") ---> ' || TIEMPO_PKG.DIFF(x.fecha_inicio,x.fecha_fin,'SECOND'));
+		OUT_(2,'TIEMPO_PKG.DIFF(x.fecha_inicio, x.fin, "DAY") ---> ' || TIEMPO_PKG.DIFF(x.fecha_inicio,x.fecha_fin,'DAY'));
+		OUT_(2,'TIEMPO_PKG.DIFF(x.fecha_inicio, x.fin, "SECOND") ---> ' || TIEMPO_PKG.DIFF(x.fecha_inicio,x.fecha_fin,'SECOND'));
+		OUT_(2,'TIEMPO_PKG.PRINT(x.fecha_inicio, "FECHA") ---> ' || TIEMPO_PKG.PRINT(x.fecha_inicio, 'FECHA'));
+		OUT_(2,'TIEMPO_PKG.PRINT(x.fecha_inicio, "MUY_HUMANO") ---> ' || TIEMPO_PKG.PRINT(x.fecha_inicio, 'MUY_HUMANO'));
+		OUT_(2,'TIEMPO_PKG.PRINT(x.fecha_inicio, "HUMANO") ---> ' || TIEMPO_PKG.PRINT(x.fecha_inicio, 'HUMANO'));
+		OUT_(2,'TIEMPO_PKG.PRINT(x.fecha_inicio, "JERARQUICO") ---> ' || TIEMPO_PKG.PRINT(x.fecha_inicio, 'JERARQUICO'));
 	END;
 	/
