@@ -117,14 +117,31 @@ END tiempo_pkg;
 			TIMESTAMP '2019-05-05 20:05:00',
 			TIMESTAMP '2019-05-06 02:05:00'
 		);
-		
+
 		OUT_(2,'TIEMPO_PKG.RANDOM(x) ---> ' || TO_CHAR(TIEMPO_PKG.RANDOM(x), 'YYYY-MM-DD HH24:MI:SS'));
+		OUT_BREAK;
+		
 		OUT_(2,'TIEMPO_PKG.DIFF(x.fecha_inicio, x.fin, "DAY") ---> ' || TIEMPO_PKG.DIFF(x.fecha_inicio,x.fecha_fin,'DAY'));
 		OUT_(2,'TIEMPO_PKG.DIFF(x.fecha_inicio, x.fin, "SECOND") ---> ' || TIEMPO_PKG.DIFF(x.fecha_inicio,x.fecha_fin,'SECOND'));
+		OUT_BREAK;
+		
 		OUT_(2,'TIEMPO_PKG.PRINT(x.fecha_inicio, "FECHA") ---> ' || TIEMPO_PKG.PRINT(x.fecha_inicio, 'FECHA'));
 		OUT_(2,'TIEMPO_PKG.PRINT(x.fecha_inicio, "MUY_HUMANO") ---> ' || TIEMPO_PKG.PRINT(x.fecha_inicio, 'MUY_HUMANO'));
 		OUT_(2,'TIEMPO_PKG.PRINT(x.fecha_inicio, "HUMANO") ---> ' || TIEMPO_PKG.PRINT(x.fecha_inicio, 'HUMANO'));
 		OUT_(2,'TIEMPO_PKG.PRINT(x.fecha_inicio, "JERARQUICO") ---> ' || TIEMPO_PKG.PRINT(x.fecha_inicio, 'JERARQUICO'));
+		OUT_BREAK;
+		
+
+		x := PERIODO(
+			TIMESTAMP '2019-05-05 02:05:37',
+			TIMESTAMP '2019-05-05 20:08:09'
+		);
+
 		OUT_(2,'TIEMPO_PKG.EXTRAER(x.inicio, "DATE") ---> ' || TO_CHAR( TIEMPO_PKG.EXTRAER(x.fecha_inicio,'DATE') , 'YYYY-MM-DD HH24:MI:SS') );
+		IF ( TIEMPO_PKG.EXTRAER(x.fecha_inicio,'DATE') = TIEMPO_PKG.EXTRAER(x.fecha_fin,'DATE') ) THEN
+			OUT_(2,'TIEMPO_PKG.EXTRAER(x.inicio, "DATE") = TIEMPO_PKG.EXTRAER(x.inicio, "DATE") ---> TRUE');
+		ELSE
+			OUT_(2,'TIEMPO_PKG.EXTRAER(x.inicio, "DATE") = TIEMPO_PKG.EXTRAER(x.fin, "DATE") ---> FALSE');
+		END IF;
 	END;
 	/
