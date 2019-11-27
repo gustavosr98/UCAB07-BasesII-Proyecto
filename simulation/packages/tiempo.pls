@@ -97,6 +97,9 @@ CREATE OR REPLACE PACKAGE BODY tiempo_pkg AS
 			IF (tipo = 'DATE') THEN
 				RETURN 
 					TO_TIMESTAMP ( TO_CHAR(x,'YYYY-MM-DD') ,'YYYY-MM-DD');
+			ELSIF (tipo = 'BORRAR_SEGUNDOS') THEN
+				RETURN 
+					TO_TIMESTAMP ( TO_CHAR(x,'YYYY-MM-DD HH24:MI')||':00' ,'YYYY-MM-DD HH24:MI:SS');
 			END IF;
 		END extraer; 
 
@@ -106,6 +109,7 @@ END tiempo_pkg;
 -- EJECUTAR
 	DECLARE
 		x PERIODO;
+		y PERIODO;
 	BEGIN
 		OUT_BREAK(2);
 		OUT_(0,'***************************************************************');
@@ -132,16 +136,18 @@ END tiempo_pkg;
 		OUT_BREAK;
 		
 
-		x := PERIODO(
-			TIMESTAMP '2019-05-05 02:05:37',
-			TIMESTAMP '2019-05-05 20:08:09'
+		y := PERIODO(
+			TIMESTAMP '2019-05-05 02:15:37',
+			TIMESTAMP '2019-05-05 20:40:09'
 		);
 
-		OUT_(2,'TIEMPO_PKG.EXTRAER(x.inicio, "DATE") ---> ' || TO_CHAR( TIEMPO_PKG.EXTRAER(x.fecha_inicio,'DATE') , 'YYYY-MM-DD HH24:MI:SS') );
-		IF ( TIEMPO_PKG.EXTRAER(x.fecha_inicio,'DATE') = TIEMPO_PKG.EXTRAER(x.fecha_fin,'DATE') ) THEN
-			OUT_(2,'TIEMPO_PKG.EXTRAER(x.inicio, "DATE") = TIEMPO_PKG.EXTRAER(x.inicio, "DATE") ---> TRUE');
+		OUT_(2,'TIEMPO_PKG.EXTRAER(y.inicio, "DATE") ---> ' || TO_CHAR( TIEMPO_PKG.EXTRAER(y.fecha_inicio,'DATE') , 'YYYY-MM-DD HH24:MI:SS') );
+		OUT_(5,'TIEMPO_PKG.EXTRAER(y.inicio, "BORRAR_SEGUNDOS") ---> ' || TO_CHAR( TIEMPO_PKG.EXTRAER(y.fecha_inicio,'BORRAR_SEGUNDOS') , 'YYYY-MM-DD HH24:MI:SS') );
+
+		IF ( TIEMPO_PKG.EXTRAER(y.fecha_inicio,'DATE') = TIEMPO_PKG.EXTRAER(y.fecha_fin,'DATE') ) THEN
+			OUT_(2,'TIEMPO_PKG.EXTRAER(y.inicio, "DATE") = TIEMPO_PKG.EXTRAER(y.inicio, "DATE") ---> TRUE');
 		ELSE
-			OUT_(2,'TIEMPO_PKG.EXTRAER(x.inicio, "DATE") = TIEMPO_PKG.EXTRAER(x.fin, "DATE") ---> FALSE');
+			OUT_(2,'TIEMPO_PKG.EXTRAER(y.inicio, "DATE") = TIEMPO_PKG.EXTRAER(y.fin, "DATE") ---> FALSE');
 		END IF;
 	END;
 	/
