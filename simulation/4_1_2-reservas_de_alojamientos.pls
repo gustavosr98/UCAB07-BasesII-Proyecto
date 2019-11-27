@@ -90,7 +90,7 @@ BEGIN
 
                 ini_estadia := fecha_base + INTERVAL '13' HOUR;
                 fin_estadia := fecha_base + numToDSInterval(estadia,'DAY');
-                fin_estadia := fecha_base + INTERVAL '11' HOUR;
+                fin_estadia := fin_estadia + INTERVAL '11' HOUR;
 
                 p := PERIODO(
                 ini_estadia,
@@ -140,8 +140,6 @@ BEGIN
 
                                     ORDER BY h.precio_base_noche.cantidad ASC, DBMS_RANDOM.VALUE ) tabla
                             WHERE ROWNUM = 1;
-
-                            -- DBMS_OUTPUT.PUT_LINE(alojamiento_a_reservar.id);
 
                         END IF;
 
@@ -207,6 +205,7 @@ BEGIN
                             p,
                             id_reservacion_vuelo
                             );
+
         END LOOP;   
 END;
 
@@ -215,92 +214,6 @@ BEGIN
     sim_reservas_de_alojamientos();
 
 END;
-
-SELECT * FROM RESERVACION WHERE TIPO = 'A'
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-CREATE OR REPLACE FUNCTION get_id()
-RETURN NUMBER;
-
-IS
-    id_resul NUMBER;
-
-BEGIN
-
-    SELECT id --into id_resul 
-    from reservacion
-    where ROWNUM = 1;
-
-    RETURN id_resul;
-
-END;
-
-
-
-
-
-
-
-
-
-
 
 CREATE OR REPLACE FUNCTION get_precio_total(ini TIMESTAMP, fin TIMESTAMP, precio_noche UNIDAD)
 RETURN UNIDAD
@@ -451,35 +364,6 @@ END;
     SELECT * FROM alojamiento
 
     SELECT ID FROM HABITACION
-
-
-BEGIN
-
-    DBMS_OUTPUT.PUT_LINE(TO_CHAR(TIEMPO_PKG.EXTRAER(TIMESTAMP '2019-02-03 12:00:00','DATE'), 'YYYY-MM-DD HH24:MI:SS'));
-
-END;
-
-SELECT * FROM RESERVACION
-
-DELETE FROM RESERVACION 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 --  ASIENTOS
 
