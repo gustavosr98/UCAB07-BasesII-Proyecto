@@ -1,5 +1,6 @@
-CREATE OR REPLACE PROCEDURE sim_reservas_de_alojamientos(id_reservacion_vuelo NUMBER)
+CREATE OR REPLACE PROCEDURE sim_reservas_de_alojamientos
 IS
+    id_reservacion_vuelo NUMBER;
     cant_usuarios_con_reservaciones_de_vuelo NUMBER;
     cant_usuarios_a_reservar NUMBER;
     id_usuario_a_reservar NUMBER;
@@ -13,6 +14,9 @@ IS
     criterio NUMBER;    
     alojamiento_a_reservar habitacion%ROWTYPE;
 
+    id_habitacion NUMBER;
+    precio_habitacion UNIDAD;
+
     ini_estadia TIMESTAMP;
     fin_estadia TIMESTAMP;
     estadia VARCHAR2(10);
@@ -21,6 +25,7 @@ IS
     condi NUMBER;
     disp BOOLEAN;
 
+    fecha_max TIMESTAMP;
 
 BEGIN
 
@@ -43,22 +48,15 @@ BEGIN
 
             --  Se elige un usuario random
 
-                SELECT * INTO id_usuario_a_reservar
-                FROM (SELECT u.id
+                SELECT tabla.idu, tabla.idv, tabla.idr INTO id_usuario_a_reservar, id_vuelo_no_iniciado, id_reservacion_vuelo
+                FROM (SELECT u.id idu, v.id idv, r.id idr
                         FROM usuario u, pago p, reservacion r, vuelo v
                         WHERE p.fk_usuario = u.id
                         AND p.fk_reservacion = r.id
                         AND r.v_fk_vuelo = v.id
                         AND v.estatus = 'NO_INICIADO'
-                        ORDER BY DBMS_RANDOM.VALUE)
+                        ORDER BY DBMS_RANDOM.VALUE) tabla
                 WHERE ROWNUM = 1;
-
-            -- -- Se busca el vuelo
-
-            SELECT v.id into id_vuelo_no_iniciado
-            FROM VUELO v, reservacion r
-            WHERE r.v_fk_vuelo = v.id
-            AND r.id = id_reservacion_vuelo;
 
            --  Se cuentan cuantos alojamientos hay
 
@@ -113,13 +111,13 @@ BEGIN
 
                             while disp = FALSE
                             LOOP
-                                SELECT * INTO alojamiento_a_reservar 
-                                FROM (SELECT h.*
+                                SELECT tabla.idHab, tabla.precioHab INTO id_habitacion, precio_habitacion
+                                FROM (SELECT  h.id as idHab, h.precio_base_noche as precioHab
                                     FROM alojamiento al, lug_aloj la, habitacion h
                                     WHERE al.tipo = tipo_alojamiento_a_reservar
                                     AND la.fk_alojamiento = al.id
                                     AND h.fk_lug_aloj = la.id
-                                    ORDER BY DBMS_RANDOM.VALUE)
+                                    ORDER BY DBMS_RANDOM.VALUE) tabla
                                     WHERE ROWNUM = 1;
 
                                 disp := hab_esta_disponible(alojamiento_a_reservar.id);
@@ -127,8 +125,8 @@ BEGIN
 
                         ELSE
 
-                            SELECT * INTO alojamiento_a_reservar 
-                            FROM (SELECT h.*
+                            SELECT tabla.idHab, tabla.precioHab INTO  id_habitacion, precio_habitacion
+                            FROM (SELECT  h.id as idHab, h.precio_base_noche as precioHab
                                     FROM alojamiento a, lug_aloj la, habitacion h
                                     WHERE a.tipo = tipo_alojamiento_a_reservar
                                     AND la.fk_alojamiento = a.id
@@ -138,9 +136,9 @@ BEGIN
                                                     FROM reservacion r
                                                     WHERE r.a_periodo.fecha_inicio < ini_estadia
                                                     AND r.a_periodo.fecha_fin > fin_estadia
-                                                    AND r.a_fk_habitacion = h.id)
+                                                    AND r.a_fk_habitacion = h.id) 
 
-                                    ORDER BY h.precio_base_noche.cantidad ASC, DBMS_RANDOM.VALUE )
+                                    ORDER BY h.precio_base_noche.cantidad ASC, DBMS_RANDOM.VALUE ) tabla
                             WHERE ROWNUM = 1;
 
                             -- DBMS_OUTPUT.PUT_LINE(alojamiento_a_reservar.id);
@@ -149,53 +147,76 @@ BEGIN
 
                 ELSIF criterio = 2 THEN  -- Más actual
 
-                        if (SELECT COUNT(*) FROM RESERVACION WHERE tipo = 'A') = 0 THEN
+                        SELECT COUNT(*) into condi FROM RESERVACION WHERE tipo = 'A';
 
-                            SELECT * INTO alojamiento_a_reservar 
-                            FROM (SELECT TO_CHAR(a.fecha_fundacion, 'DD-MM-YYYY'), h.id, h.precio_base_noche.cantidad
-                                    FROM alojamiento a, lug_aloj la, habitacion h
-                                    WHERE a.tipo = tipo_alojamiento_a_reservar
-                                    AND la.fk_alojamiento = a.id
-                                    AND h.fk_lug_aloj = la.id
-                                    ORDER BY a.fecha_fundacion DESC, DBMS_RANDOM.VALUE )
-                            WHERE ROWNUM = 1;
+                        if condi = 0 THEN
+
+                            SELECT  MAX(alo.fecha_fundacion) into fecha_max 
+                            FROM alojamiento alo, lug_aloj la, habitacion h
+                            WHERE alo.tipo = tipo_alojamiento_a_reservar
+                            AND la.fk_alojamiento = alo.id
+                            AND h.fk_lug_aloj = la.id;
+
+                            SELECT tabla.idHab, tabla.precioHab INTO  id_habitacion, precio_habitacion
+                            FROM (SELECT  h.id as idHab, h.precio_base_noche as precioHab 
+                                                            FROM alojamiento alo, lug_aloj la, habitacion h
+                                                            WHERE alo.tipo = tipo_alojamiento_a_reservar
+                                                            AND la.fk_alojamiento = alo.id
+                                                            AND h.fk_lug_aloj = la.id
+                                                            AND alo.fecha_fundacion = fecha_max
+                                                            ORDER BY DBMS_RANDOM.VALUE) tabla
+                            WHERE ROWNUM =1;
 
                         ELSE 
+                    
+                            SELECT  MAX(alo.fecha_fundacion) into fecha_max 
+                                FROM alojamiento alo, lug_aloj la, habitacion h
+                                WHERE alo.tipo = tipo_alojamiento_a_reservar
+                                AND la.fk_alojamiento = alo.id
+                                AND h.fk_lug_aloj = la.id;
 
-                            SELECT * INTO alojamiento_a_reservar 
-                            FROM (SELECT TO_CHAR(a.fecha_fundacion, 'DD-MM-YYYY'), h.id, h.precio_base_noche.cantidad
-                                    FROM alojamiento a, lug_aloj la, habitacion h
-                                    WHERE a.tipo = tipo_alojamiento_a_reservar
-                                    AND la.fk_alojamiento = a.id
-                                    AND h.fk_lug_aloj = la.id
+                                SELECT tabla.idHab, tabla.precioHab INTO  id_habitacion, precio_habitacion
+                                FROM (SELECT  h.id as idHab, h.precio_base_noche as precioHab   
+                                                                FROM alojamiento alo, lug_aloj la, habitacion h
+                                                                WHERE alo.tipo = tipo_alojamiento_a_reservar
+                                                                AND la.fk_alojamiento = alo.id
+                                                                AND h.fk_lug_aloj = la.id
+                                                                AND alo.fecha_fundacion = fecha_max
 
-                                    AND NOT EXISTS (SELECT r.id 
-                                                    FROM reservacion r
-                                                    WHERE r.a_periodo.fecha_inicio < ini_estadia
-                                                    AND r.a_periodo.fecha_fin > fin_estadia
-                                                    AND r.a_fk_habitacion = h.id)
-
-                                    ORDER BY a.fecha_fundacion DESC, DBMS_RANDOM.VALUE )
-                            WHERE ROWNUM = 1;
+                                                                AND NOT EXISTS (SELECT r.id 
+                                                                                FROM reservacion r
+                                                                                WHERE r.a_periodo.fecha_inicio < ini_estadia
+                                                                                AND r.a_periodo.fecha_fin > fin_estadia
+                                                                                AND r.a_fk_habitacion = h.id)
+                                                                
+                                                                ORDER BY DBMS_RANDOM.VALUE) tabla
+                                WHERE ROWNUM =1;
 
                         END IF;
 
                 END IF;
 
-        --         -- Se inserta la reservacion
+                -- Se inserta la reservacion
 
-        --             INSERT INTO RESERVACION(tipo,precio_total,esta_cancelada,fecha_reservacion, a_fk_habitacion, a_periodo,fk_reservacion) 
-        --             VALUES('A',
-        --                     UNIDAD('DIVISA','DOLAR',get_precio_total(p.fecha_inicio,p.fecha_fin,alojamiento_a_reservar.precio_base_noche)),                          ),
-        --                     'F',
-        --                     fecha_reservacion_vuelo,
-        --                     alojamiento_a_reservar.id,
-        --                     p,
-        --                     id_reservacion_vuelo
-        --                     );
+                    INSERT INTO RESERVACION(tipo,precio_total,esta_cancelada,fecha_reservacion, a_fk_habitacion, a_periodo,fk_reservacion) 
+                    VALUES('A',
+                            get_precio_total(ini_estadia,fin_estadia,precio_habitacion),
+                            'F',
+                            fecha_reservacion_vuelo,
+                            id_habitacion,
+                            p,
+                            id_reservacion_vuelo
+                            );
         END LOOP;   
 END;
 
+BEGIN
+
+    sim_reservas_de_alojamientos();
+
+END;
+
+SELECT * FROM RESERVACION WHERE TIPO = 'A'
 
 
 
@@ -255,10 +276,21 @@ END;
 
 
 
+CREATE OR REPLACE FUNCTION get_id()
+RETURN NUMBER;
 
+IS
+    id_resul NUMBER;
 
+BEGIN
 
+    SELECT id --into id_resul 
+    from reservacion
+    where ROWNUM = 1;
 
+    RETURN id_resul;
+
+END;
 
 
 
@@ -280,9 +312,11 @@ BEGIN
 
     total := TIEMPO_PKG.DIFF(ini,fin,'DAY') * precio_noche.cantidad;
 
-    uni.cantidad := total;
-    uni.tipo := 'DIVISA';
-    uni.nombre := 'DOLAR';
+    uni := UNIDAD(
+			'DIVISA',
+            'DOLAR',
+            total
+		);    
 
     return uni;
 END;
