@@ -28,6 +28,13 @@ SELECT * FROM
 			L_Origen1.fk_lugar = 10240 AND L_Destino1.fk_lugar = 6688
 			AND
 			V1.fk_trayecto = T1.id
+			AND
+			EXTRACT (
+				DAY FROM (
+					TIEMPO_PKG.EXTRAER(V1.periodo_estimado.fecha_inicio, 'DATE') 
+					- TIEMPO_PKG.EXTRAER( TIMESTAMP '2019-10-03 12:00:00', 'DATE')
+			)) = 0 
+
 	UNION
 
 	-- UNA ESCALA 
@@ -73,6 +80,13 @@ SELECT * FROM
 			V2.fk_trayecto = T2.id
 			AND
 			V1.periodo_estimado.fecha_fin + INTERVAL '2' HOUR < V2.periodo_estimado.fecha_inicio
+			AND
+			EXTRACT (
+				DAY FROM (
+					TIEMPO_PKG.EXTRAER(V1.periodo_estimado.fecha_inicio, 'DATE') 
+					- TIEMPO_PKG.EXTRAER( TIMESTAMP '2019-10-03 12:00:00', 'DATE')
+			)) = 0 AND
+			EXTRACT (DAY FROM (V2.periodo_estimado.fecha_fin - V1.periodo_estimado.fecha_inicio)) < 5
 	UNION
 
 	-- DOS PARADAS
@@ -130,4 +144,11 @@ SELECT * FROM
 			AND
 			V1.periodo_estimado.fecha_fin + INTERVAL '2' HOUR < V2.periodo_estimado.fecha_inicio AND
 			V2.periodo_estimado.fecha_fin + INTERVAL '2' HOUR < V3.periodo_estimado.fecha_inicio
+			AND
+			EXTRACT (
+				DAY FROM (
+					TIEMPO_PKG.EXTRAER(V1.periodo_estimado.fecha_inicio, 'DATE') 
+					- TIEMPO_PKG.EXTRAER( TIMESTAMP '2019-10-03 12:00:00', 'DATE')
+			)) = 0 AND
+			EXTRACT (DAY FROM (V3.periodo_estimado.fecha_fin - V1.periodo_estimado.fecha_inicio)) < 5
 		) TABLITA ORDER BY fecha_final ASC --costo_total ASC
