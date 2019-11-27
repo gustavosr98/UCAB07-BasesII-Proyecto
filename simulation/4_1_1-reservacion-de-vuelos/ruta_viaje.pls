@@ -220,15 +220,15 @@ BEGIN
 
   ruta_viaje (
 		mi_cursor => mi_cursor,
-		ciudad_origen_id => 6639,
-    ciudad_destino_id => 6688,
+		ciudad_origen_id => 10726,
+    ciudad_destino_id => 4855,
 		orden_por => 'MAS_BARATA',
 		fecha_deseada => TIEMPO_PKG.RANDOM(PERIODO(
-			TIMESTAMP '2019-09-19 11:24:50',
-			TIMESTAMP '2020-10-26 06:47:15'
+			TIMESTAMP '2020-05-19 11:24:50',
+			TIMESTAMP '2020-05-26 06:47:15'
 		)), 
-		dias_max_volando => 1000,
-		rango_dias_aceptable => 1000,
+		dias_max_volando => 1,
+		rango_dias_aceptable => 1,
 		limite_rows => 1
 	);
   LOOP 
@@ -245,13 +245,21 @@ BEGIN
 		;
 
   	EXIT WHEN mi_cursor%NOTFOUND;
-    OUT_(5,
+    OUT_(2,
 			costo_total || ' - ' ||
-			fecha_final || ' - ' ||
+			fecha_final
+		);
+		OUT_(3,
 			origen1 || ' - ' ||
 			v1id || ' - ' || v1e || ' - ' || v1fi || ' - ' || v1ff || ' - ' ||
+			destino1
+		);
+		OUT_(3,
 			destino1 || ' - ' ||
 			v2id || ' - ' || v2e || ' - ' || v2fi || ' - ' || v2ff || ' - ' ||
+			destino2
+		);
+		OUT_(3,
 			destino2 || ' - ' ||
 			v3id || ' - ' || v3e || ' - ' || v3fi || ' - ' || v3ff || ' - ' ||
 			destino3

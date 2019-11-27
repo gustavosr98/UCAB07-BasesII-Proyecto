@@ -14,38 +14,35 @@ BEGIN
     OPEN ctray;
     FETCH ctray INTO tray;
 
-    WHILE ctray%FOUND 
-        LOOP
-            --llenado := DBMS_RANDOM.VALUE(0.1, 1);
-            --cantidad_vuelos_por_trayecto := TRUNC(
-            --    DBMS_RANDOM.VALUE(
-            --        TIEMPO_PKG.DIFF( fechas_base.fecha_inicio, fechas_base.fecha_fin, 'DAY' )*llenado,
-            --        TIEMPO_PKG.DIFF( fechas_base.fecha_inicio, fechas_base.fecha_fin, 'DAY' )
-            --    ));
+    WHILE ctray%FOUND LOOP
+        -- IF (DBMS_RANDOM.VALUE > 0.5 ) THEN
+            -- cantidad_vuelos_por_trayecto := TRUNC(
+            --     DBMS_RANDOM.VALUE(
+            --         TIEMPO_PKG.DIFF( fechas_base.fecha_inicio, fechas_base.fecha_fin, 'DAY' )*0.1,
+            --         TIEMPO_PKG.DIFF( fechas_base.fecha_inicio, fechas_base.fecha_fin, 'DAY' )*0.3
+            -- ));
             cantidad_vuelos_por_trayecto := DBMS_RANDOM.VALUE(3, 5);
 
-            precio := ROUND ( tray.distancia.cantidad / 8 );
-            fecha_salida_estimada := TIEMPO_PKG.RANDOM(PERIODO(fechas_base.fecha_inicio,fechas_base.fecha_fin - numToDSInterval( 70, 'HOUR' )));
+            WHILE cantidad_vuelos_por_trayecto > 0 LOOP
+                precio := ROUND ( tray.distancia.cantidad / 8 )*DBMS_RANDOM.VALUE(0.8,1.3);
+                fecha_salida_estimada := TIEMPO_PKG.RANDOM(PERIODO(fechas_base.fecha_inicio,fechas_base.fecha_fin));
+                avion := selectAvion(tray.distancia.cantidad,fecha_salida_estimada);
+                periodo_estimado := selectFecha(fecha_salida_estimada, tray, avion);
 
-            avion := selectAvion(tray.distancia.cantidad,fecha_salida_estimada);
-            WHILE cantidad_vuelos_por_trayecto > 0
-                LOOP
-                    periodo_estimado := selectFecha(fecha_salida_estimada, tray, avion);
-
-                    INSERT INTO Vuelo (fk_avion,fk_trayecto,estatus,precio_base,periodo_estimado)
-                        VALUES (
-                            avion,
-                            tray.id,
-                            'NO_INICIADO',
-                            UNIDAD('DIVISA','DOLAR',precio),
-                            periodo_estimado);
-                    
-                    fecha_salida_estimada := fecha_salida_estimada + numToDSInterval( 15, 'HOUR' );
-                    cantidad_vuelos_por_trayecto := cantidad_vuelos_por_trayecto - 1;
-                END LOOP;
+                INSERT INTO Vuelo (fk_avion,fk_trayecto,estatus,precio_base,periodo_estimado)
+                    VALUES (
+                        avion,
+                        tray.id,
+                        'NO_INICIADO',
+                        UNIDAD('DIVISA','DOLAR',precio),
+                        periodo_estimado);
+                
+                cantidad_vuelos_por_trayecto := cantidad_vuelos_por_trayecto - 1;
+            END LOOP;
 
             FETCH ctray INTO tray;
-        END LOOP;
+        --END IF;    
+    END LOOP;
     
     CLOSE ctray;
 END;   
@@ -62,15 +59,18 @@ BEGIN
     WHERE av.id = avion
         AND ta.id = av.fk_tipo_avion;
 
-    tiempo := promedioTiempo(trayecto.id);
+    -- tiempo := promedioTiempo(trayecto.id);
 
-    IF (tiempo = 0) THEN 
+    -- IF (tiempo = 0) THEN 
         tiempo := ( trayecto.distancia.cantidad * 3600 ) / ( 1234.8 * velocidad * 0.98 );
-    END IF;
+    -- END IF;
 
     fecha_llegada_estimada := fecha_salida_estimada + numToDSInterval( tiempo, 'SECOND' );
 
-    per := PERIODO(fecha_salida_estimada, fecha_llegada_estimada);
+    per := PERIODO(
+        TIEMPO_PKG.EXTRAER(fecha_salida_estimada, 'BORRAR_SEGUNDOS'), 
+        TIEMPO_PKG.EXTRAER(fecha_llegada_estimada, 'BORRAR_SEGUNDOS')
+    );
     RETURN per;
 END;
 
@@ -112,8 +112,8 @@ END;
 -- EJECUCION
 BEGIN
 	sim_generacion_de_vuelos(PERIODO(
-		TIMESTAMP '2019-09-19 11:24:50',
-		TIMESTAMP '2020-10-26 06:47:15'
+		TIMESTAMP '2019-05-19 11:24:50',
+		TIMESTAMP '2020-05-26 06:47:15'
 	));
 END;
 /
