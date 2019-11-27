@@ -222,14 +222,14 @@ BEGIN
 		mi_cursor => mi_cursor,
 		ciudad_origen_id => 6639,
     ciudad_destino_id => 6688,
-		orden_por => 'LLEGADA_MAS_TEMPRANA',
+		orden_por => 'MAS_BARATA',
 		fecha_deseada => TIEMPO_PKG.RANDOM(PERIODO(
 			TIMESTAMP '2019-09-19 11:24:50',
 			TIMESTAMP '2020-10-26 06:47:15'
 		)), 
 		dias_max_volando => 1000,
-		rango_dias_aceptable => 1000
-		--, limite_rows => 1
+		rango_dias_aceptable => 1000,
+		limite_rows => 1
 	);
   LOOP 
     FETCH mi_cursor INTO 
