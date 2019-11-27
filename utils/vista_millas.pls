@@ -5,15 +5,15 @@ CREATE VIEW Vista_Millas AS
             FROM Usuario u, Pago p, Reservacion r, Historico_Milla hm 
             WHERE p.fk_usuario = u.id
                 AND p.fk_reservacion = r.id
-                AND hm.fk_reservacion = r.id
+                AND hm.fk_reservacion_vuelo = r.id
                 AND r.tipo = 'V'
                 AND r.fk_reservacion IS NULL
-            GROUP BY idUsuario, cantidad) suma,
+            GROUP BY u.id) suma,
         (SELECT u.id idUsuario, SUM(hm.cantidad) cantidad
             FROM Usuario u, Pago p, Historico_Milla hm
             WHERE p.fk_usuario = u.id
                 AND hm.fk_pago = p.id
-            GROUP BY idUsuario, cantidad) resta
+            GROUP BY u.id) resta
     WHERE  u.id = suma.idUsuario
         AND u.id = resta.idUsuario;
 
