@@ -3,7 +3,6 @@ IS
     cant_user INTEGER DEFAULT 0;
     i_u INTEGER;
 
-    cantid_tarj INTEGER DEFAULT 0;
     i_t INTEGER;
 
     TYPE tipoArray IS VARRAY(2) OF VARCHAR2(10);
@@ -15,7 +14,6 @@ IS
     numero VARCHAR2(50);
 
     nbanco INTEGER;
-    ntipo INTEGER;
     ncompañia INTEGER;
 
     cant_total INTEGER DEFAULT 0;
@@ -52,16 +50,14 @@ BEGIN
     SELECT COUNT(id) INTO cant_user FROM Usuario;
 
     FOR i_u IN 1..cant_user LOOP
-        cantid_tarj := ROUND( DBMS_RANDOM.VALUE(1,3) );
-        FOR i_t IN 1..cantid_tarj LOOP
-            ntipo := ROUND( DBMS_RANDOM.VALUE(1,2) );
+        FOR i_t IN 1..2 LOOP
             nbanco := ROUND( DBMS_RANDOM.VALUE(1,10) );
             ncompañia := ROUND( DBMS_RANDOM.VALUE(1,2) );
             numero := TO_CHAR( ROUND ( DBMS_RANDOM.VALUE(10000000000000000000,99999999999999999999) ), '99999999999999999999');
             INSERT INTO Tarjeta (fk_usuario, tipo, banco, compañia, numero)
                 VALUES (
                     i_u,
-                    tipo(ntipo),
+                    tipo(i_t),
                     banco(nbanco),
                     compañia(ncompañia),
                     numero);
