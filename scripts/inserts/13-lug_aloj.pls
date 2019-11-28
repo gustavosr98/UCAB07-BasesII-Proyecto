@@ -99,3 +99,9 @@ BEGIN
 	OUT_(1,'--> Total de LUG_ALOJ generados: ' || cant_total);
 	OUT_(1,'--> Total de HABITACIONES generadas: ' || cant_total_h);
 END;
+
+BEGIN
+
+    ins_lug_aloj;
+
+END;

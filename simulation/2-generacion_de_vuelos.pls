@@ -112,12 +112,17 @@ END;
 -- EJECUCION
 BEGIN
 	sim_generacion_de_vuelos(PERIODO(
-		TIMESTAMP '19-09-19 11:24:50',
-		TIMESTAMP '20-03-20 06:47:15'
+		TIMESTAMP '2019-09-19 11:24:50',
+		TIMESTAMP '2020-10-26 06:47:15'
 	));
 END;
+/
+SELECT COUNT(*) FROM VUELO;
+SELECT COUNT(*) FROM TRAYECTO;
+SELECT COUNT(*) FROM ( SELECT COUNT(*) FROM VUELO GROUP BY fk_trayecto );
+SELECT COUNT(*) FROM VUELO GROUP BY fk_trayecto;
 
-SELECT * FROM vuelo;
+SELECT id, estatus, PRECIO_BASE.cantidad, PERIODO_ESTIMADO.fecha_inicio, PERIODO_ESTIMADO.fecha_fin, FK_AVION, FK_TRAYECTO FROM vuelo;
 
 --Inserts de prueba
 INSERT INTO Vuelo (fk_avion,fk_trayecto,estatus,precio_base,periodo_estimado,periodo_real)
