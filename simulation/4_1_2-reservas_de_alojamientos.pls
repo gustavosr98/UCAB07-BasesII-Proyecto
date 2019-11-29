@@ -29,6 +29,7 @@ IS
 
 BEGIN
 
+    --  AGREGACION DE RESERVAS DE ALOJAMIENTOS | PASO 1
     --  Usuarios que tienen reservaciones de vuelo no iniciado
 
         SELECT COUNT(*) INTO cant_usuarios_con_reservaciones_de_vuelo
@@ -38,14 +39,17 @@ BEGIN
         AND r.v_fk_vuelo = v.id
         AND v.estatus = 'NO_INICIADO'; 
 
+    --  AGREGACION DE RESERVAS DE ALOJAMIENTOS | PASO 1
     --  Random de usuarios a reservar
 
         cant_usuarios_a_reservar := ROUND(DBMS_RANDOM.VALUE(1,cant_usuarios_con_reservaciones_de_vuelo));
 
+    --  AGREGACION DE RESERVAS DE ALOJAMIENTOS | PASO 1
     --  Se reserva la cantidad indicada
 
         FOR i IN 1..cant_usuarios_a_reservar LOOP
 
+            --  AGREGACION DE RESERVAS DE ALOJAMIENTOS | PASO 2
             --  Se elige un usuario random
 
                 SELECT tabla.idu, tabla.idv, tabla.idr INTO id_usuario_a_reservar, id_vuelo_no_iniciado, id_reservacion_vuelo
@@ -58,11 +62,13 @@ BEGIN
                         ORDER BY DBMS_RANDOM.VALUE) tabla
                 WHERE ROWNUM = 1;
 
-           --  Se cuentan cuantos alojamientos hay
+            --  AGREGACION DE RESERVAS DE ALOJAMIENTOS | PASO 2
+            --  Se cuentan cuantos alojamientos hay
 
                 SELECT COUNT(*) INTO cant_alojamientos
                 FROM alojamiento;
 
+            --  AGREGACION DE RESERVAS DE ALOJAMIENTOS | PASO 3
             -- Se elige TIPO de alojamiento random
 
                 SELECT * INTO tipo_alojamiento_a_reservar
@@ -71,18 +77,21 @@ BEGIN
                         ORDER BY DBMS_RANDOM.VALUE)
                 WHERE ROWNUM = 1;
                 
+            --  AGREGACION DE RESERVAS DE ALOJAMIENTOS | PASO 3
             --  Se guarda la fecha de llegada del vuelo
 
                 SELECT v.periodo_estimado.fecha_fin INTO fecha_llegada_vuelo
                 FROM vuelo v
                 WHERE v.id = id_vuelo_no_iniciado;
 
+            --  AGREGACION DE RESERVAS DE ALOJAMIENTOS | PASO 3
             -- Se guarda la fecha de reservacion del vuelo
 
                 SELECT FECHA_RESERVACION INTO fecha_reservacion_vuelo
                 FROM reservacion r 
                 WHERE id = id_reservacion_vuelo;
 
+            --  AGREGACION DE RESERVAS DE ALOJAMIENTOS | PASO 3
             -- Se elige el periodo de reserva del alojamiento
 
                 fecha_base := TIEMPO_PKG.EXTRAER(fecha_llegada_vuelo,'DATE');
@@ -97,9 +106,13 @@ BEGIN
                 fin_estadia
                 );
 
+            --  AGREGACION DE RESERVAS DE ALOJAMIENTOS | PASO 4
             --  Se elige un criterio random
 
                 criterio := ROUND(DBMS_RANDOM.VALUE(1,2));
+
+            --  AGREGACION DE RESERVAS DE ALOJAMIENTOS | PASO 5
+            -- Se elige un alojamiento en función del criterio elegido
 
                 if criterio = 1 THEN  -- Más barato
 
@@ -194,6 +207,7 @@ BEGIN
 
                 END IF;
 
+                --  AGREGACION DE RESERVAS DE ALOJAMIENTOS | PASO 6
                 -- Se inserta la reservacion
 
                     INSERT INTO RESERVACION(tipo,precio_total,esta_cancelada,fecha_reservacion, a_fk_habitacion, a_periodo,fk_reservacion) 
