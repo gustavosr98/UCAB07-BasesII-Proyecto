@@ -9,16 +9,28 @@ IS
     fecha_reservacion_vuelo TIMESTAMP;
     fecha_base TIMESTAMP;
 
+    ini_alquiler TIMESTAMP;
+    fin_alquiler TIMESTAMP;
+    criterio NUMBER;
+
     alquiler varchar2(10);
     id_vehiculo NUMBER;
-    precio_vehiculo NUMBER;
+    precio_vehiculo UNIDAD;
     condi NUMBER;
-    fecha_max TIMESTAMP;
+    año_mas_reciente NUMBER;
 
-    id_calle_destino TIMESTAMP;
-    id_ciudad_destino TIMESTAMP;
-    id_estado_destino TIMESTAMP;
-    id_pais_destino TIMESTAMP;
+    id_calle_destino NUMBER;
+    id_ciudad_destino NUMBER;
+    id_estado_destino NUMBER;
+    id_pais_destino NUMBER;
+
+    id_sucursal_ini NUMBER;
+    fk_lugar_sucu_ini NUMBER;
+    id_sucursal_fin NUMBER;
+    fk_lugar_sucu_fin NUMBER;
+    booly BOOLEAN;
+
+    p PERIODO;
 
 BEGIN
    
@@ -74,7 +86,7 @@ BEGIN
 
                 ini_alquiler := fecha_base + INTERVAL '13' HOUR;
                 fin_alquiler := fecha_base + numToDSInterval(alquiler,'DAY');
-                fin_alquiler := fin_estadia + INTERVAL '11' HOUR;
+                fin_alquiler := fin_alquiler + INTERVAL '11' HOUR;
 
                 p := PERIODO(
                 ini_alquiler,
@@ -89,7 +101,7 @@ BEGIN
 
                 if criterio = 1 THEN  -- Más barato
 
-                        SELECT COUNT(*) into condi FROM RESERVACION WHERE tipo = 'V';
+                        SELECT COUNT(*) into condi FROM RESERVACION WHERE tipo = 'C';
 
                         if condi = 0 THEN
 
@@ -105,7 +117,7 @@ BEGIN
                             FROM (SELECT  v.id as idVeh, v.precio_por_dia as precioVeh
                                     FROM vehiculo v
                                     -- valida fecha
-                                    AND NOT EXISTS (SELECT r.id 
+                                    WHERE NOT EXISTS (SELECT r.id 
                                                     FROM reservacion r
                                                     WHERE r.c_periodo.fecha_inicio < ini_alquiler
                                                     AND r.c_periodo.fecha_fin > fin_alquiler
@@ -118,11 +130,11 @@ BEGIN
 
                 ELSIF criterio = 2 THEN  -- Más actual
 
-                        SELECT COUNT(*) into condi FROM RESERVACION WHERE tipo = 'V';
+                        SELECT COUNT(*) into condi FROM RESERVACION WHERE tipo = 'C';
 
                         if condi = 0 THEN
 
-                            SELECT MAX(mv.año) into fecha_max 
+                            SELECT MAX(mv.año) into año_mas_reciente 
                             FROM vehiculo v, modelo_vehiculo mv
                             WHERE v.fk_modelo_vehiculo = mv.id;
 
@@ -130,13 +142,13 @@ BEGIN
                             FROM (SELECT  v.id as idVeh, v.precio_por_dia as precioVeh
                                 FROM vehiculo v, modelo_vehiculo mv
                                 WHERE v.fk_modelo_vehiculo = mv.id
-                                AND mv.año= fecha_max
+                                AND mv.año= año_mas_reciente
                                 ORDER BY DBMS_RANDOM.VALUE) tabla
                             WHERE ROWNUM = 1;
 
                         ELSE 
                     
-                            SELECT MAX(mv.año) into fecha_max 
+                            SELECT MAX(mv.año) into año_mas_reciente 
                             FROM vehiculo v, modelo_vehiculo mv
                             WHERE v.fk_modelo_vehiculo = mv.id;
 
@@ -144,13 +156,13 @@ BEGIN
                             FROM (SELECT  v.id as idVeh, v.precio_por_dia as precioVeh
                                 FROM vehiculo v, modelo_vehiculo mv
                                 WHERE v.fk_modelo_vehiculo = mv.id
-                                AND mv.año= fecha_max
+                                AND mv.año= año_mas_reciente
 
                                 AND NOT EXISTS (SELECT r.id 
                                                 FROM reservacion r
                                                 WHERE r.c_periodo.fecha_inicio < ini_alquiler
                                                 AND r.c_periodo.fecha_fin > fin_alquiler
-                                                AND r.c_fk_habitacion = v.id)
+                                                AND r.c_fk_vehiculo = v.id)
                                 
                                 ORDER BY DBMS_RANDOM.VALUE) tabla
                             WHERE ROWNUM =1;
@@ -163,7 +175,7 @@ BEGIN
 
                     -- calle
                 
-                        SELECT a.fk_lugar, l.nombre INTO id_calle_destino
+                        SELECT a.fk_lugar INTO id_calle_destino
                         FROM trayecto t, aeropuerto a, vuelo v, lugar l
                         WHERE v.fk_trayecto = t.id
                         AND t.FK_AEROPUERTO_DESTINO = a.id
@@ -180,7 +192,7 @@ BEGIN
 
                         SELECT FK_LUGAR INTO id_estado_destino
                         FROM LUGAR 
-                        WHERE ID = 2;
+                        WHERE ID = id_ciudad_destino;
 
                     -- pais
 
@@ -190,24 +202,50 @@ BEGIN
 
                 -- Se guarda el id de la sucursal de inicio
 
-                    SELECT * FROM (SELECT id            --hay que hacer que la calle de la sucursal pertenezca al pais de destino 
-                                    FROM sucursal
-                                    WHERE fk_lugar = )
+                    WHILE booly = FALSE
+                    LOOP
+                    
+                        SELECT tabla.id, tabla.fk_lugar INTO id_sucursal_ini, fk_lugar_sucu_ini  
+                        FROM (SELECT s.id, s.fk_lugar           --hay que hacer que la calle de la sucursal pertenezca al pais de destino 
+                                FROM sucursal s, lugar l
+                                WHERE s.fk_lugar = l.id
+                                ORDER BY DBMS_RANDOM.VALUE) tabla
+                        WHERE ROWNUM = 1;
+
+                        booly := es_mismo_pais(fk_lugar_sucu_ini,id_pais_destino);
+
+                    END LOOP;
 
                 -- Se guarda el id de la sucursal de fin
 
+                    booly := FALSE;
 
+                    WHILE booly = FALSE
+                    LOOP
+                    
+                        SELECT tabla.id, tabla.fk_lugar INTO id_sucursal_fin, fk_lugar_sucu_fin  
+                        FROM (SELECT s.id, s.fk_lugar           --hay que hacer que la calle de la sucursal pertenezca al pais de destino 
+                                FROM sucursal s, lugar l
+                                WHERE s.fk_lugar = l.id
+                                ORDER BY DBMS_RANDOM.VALUE) tabla
+                        WHERE ROWNUM = 1;
+
+                        booly := es_mismo_pais(fk_lugar_sucu_fin,id_pais_destino);
+
+                    END LOOP;                    
 
                 --  AGREGACION DE RESERVAS DE VEHICULOS | PASO 6
                 -- Se inserta la reservacion
 
-                    INSERT INTO RESERVACION(tipo,precio_total,esta_cancelada,fecha_reservacion, c_fk_vehiculo, c_fk_sucursal_inicio,c_fk_sucursal_fin,c_periodo) 
-                    VALUES('V',
+                    INSERT INTO RESERVACION(tipo,precio_total,esta_cancelada,fecha_reservacion,FK_RESERVACION, c_fk_vehiculo, c_fk_sucursal_inicio,c_fk_sucursal_fin,c_periodo) 
+                    VALUES('C',
                             get_precio_total(ini_alquiler,fin_alquiler,precio_vehiculo),
                             'F',
                             fecha_reservacion_vuelo,
-                            id_vehiculo,
                             id_reservacion_vuelo,
+                            id_vehiculo,
+                            id_sucursal_ini,
+                            id_sucursal_fin,
                             p
                             );
 
@@ -215,4 +253,73 @@ BEGIN
 
 END;
 
+CREATE OR REPLACE FUNCTION es_mismo_pais(id_calle NUMBER, id_pais NUMBER )
+RETURN BOOLEAN
+IS
+
+    booly BOOLEAN := FALSE;
+    fk NUMBER;
+
+BEGIN
+
+-- ciudad
+
+    SELECT FK_LUGAR INTO fk
+    FROM LUGAR 
+    WHERE ID = id_calle;
+
+-- estado
+
+    SELECT FK_LUGAR INTO fk
+    FROM LUGAR 
+    WHERE ID = fk;
+
+-- pais
+
+    SELECT FK_LUGAR INTO fk
+    FROM LUGAR 
+    WHERE ID = fk;
+
+    IF fk = id_pais THEN
+        booly := TRUE;
+    END IF;
+    
+    RETURN booly;
+
+END;
+
 SELECT ID,FK_AEROPUERTO_ORIGEN,FK_AEROPUERTO_DESTINO FROM TRAYECTO
+
+SELECT id,nombre, fk_lugar,tipo FROM LUGAR WHERE TIPO = 'CALLE';
+SELECT id,nombre, fk_lugar,tipo FROM LUGAR WHERE TIPO = 'CIUDAD' AND ID = 9901;
+SELECT id,nombre, fk_lugar,tipo FROM LUGAR WHERE TIPO = 'ESTADO' AND ID = 4527;
+SELECT id,nombre, fk_lugar,tipo FROM LUGAR WHERE TIPO = 'PAIS' AND ID = 232;
+
+BEGIN
+
+    sim_reservas_de_vehiculos;
+    --DBMS_OUTPUT.PUT_LINE(sys.diutil.bool_to_int(es_mismo_pais(11000,232)));
+
+END;
+
+SELECT ID FROM RESERVACION WHERE TIPO = 'C'
+
+-- INSERTS DE PRUEBA
+
+    INSERT INTO SUCURSAL(FK_LUGAR,FK_PROVEEDOR_VEHICULO) VALUES(11006,4);
+    INSERT INTO SUCURSAL(FK_LUGAR,FK_PROVEEDOR_VEHICULO) VALUES(11007,5);
+    INSERT INTO SUCURSAL(FK_LUGAR,FK_PROVEEDOR_VEHICULO) VALUES(11008,6);
+    INSERT INTO SUCURSAL(FK_LUGAR,FK_PROVEEDOR_VEHICULO) VALUES(11018,7);
+    INSERT INTO SUCURSAL(FK_LUGAR,FK_PROVEEDOR_VEHICULO) VALUES(11010,8);
+    INSERT INTO SUCURSAL(FK_LUGAR,FK_PROVEEDOR_VEHICULO) VALUES(11011,9);
+    INSERT INTO SUCURSAL(FK_LUGAR,FK_PROVEEDOR_VEHICULO) VALUES(11012,10);
+    INSERT INTO SUCURSAL(FK_LUGAR,FK_PROVEEDOR_VEHICULO) VALUES(11013,11);
+
+
+SELECT V.ID, A.NOMBRE AS NAERO, L.NOMBRE AS NLUG
+FROM VUELO V, TRAYECTO T, AEROPUERTO A, LUGAR L
+WHERE V.FK_TRAYECTO = T.ID 
+AND T.FK_AEROPUERTO_ORIGEN = A.ID
+AND T.FK_AEROPUERTO_DESTINO = A.ID
+AND A.FK_LUGAR = L.ID
+AND ID = 47;
