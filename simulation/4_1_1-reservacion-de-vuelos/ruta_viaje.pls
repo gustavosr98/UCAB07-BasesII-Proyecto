@@ -224,12 +224,12 @@ BEGIN
     ciudad_destino_id => 4855,
 		orden_por => 'MAS_BARATA',
 		fecha_deseada => TIEMPO_PKG.RANDOM(PERIODO(
-			TIMESTAMP '2020-05-19 11:24:50',
-			TIMESTAMP '2020-05-26 06:47:15'
+			TIMESTAMP '2019-11-01 11:24:50',
+			TIMESTAMP '2020-01-31 06:47:15'
 		)), 
 		dias_max_volando => 1,
-		rango_dias_aceptable => 1,
-		limite_rows => 1
+		rango_dias_aceptable => 10,
+		limite_rows => 5
 	);
   LOOP 
     FETCH mi_cursor INTO 
