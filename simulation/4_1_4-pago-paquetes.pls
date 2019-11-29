@@ -27,7 +27,7 @@ IS
             AND r.fk_cliente = cl.id
             AND cl.fk_cliente IS NULL;
     rcliente Cliente%ROWTYPE;
-BEGIN
+BEGIN 
     OPEN creservacion;
     FETCH creservacion INTO rreservacion;
 
@@ -47,11 +47,11 @@ BEGIN
                     FROM Usuario 
                     WHERE fk_cliente = rcliente.id;
 
-                    -- FALTA VER SI EL USUARIO TIENE MILLAS SUFICIENTES
-                    -- SELECT m.cantidad INTO cantMillas FROM Historico_Milla m, Reserva r, 
-                    -- WHERE r.fk_reservacion = rreservacion.id,
-                    --     AND r.fk_cliente = ccliente.id
-                    --     AND m.fk_reservacion = rreservacion.id;
+                    SELECT SUM(m.cantidad) into cantMillas
+                    FROM Historico_Milla m, Usuario u, Reservacion r, Pago p
+                    WHERE u.id = p.fk_usuario
+                        AND r.id = p.fk_reservacion
+                        AND m.fk_reservacion_vuelo = r.id;
 
                     IF (cantMillas >= costo) THEN
                         opciones := 4;
