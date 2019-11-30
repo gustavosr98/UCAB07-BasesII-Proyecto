@@ -29,6 +29,7 @@ IS
 
 BEGIN
 
+    --  AGREGACION DE RESERVAS DE ALOJAMIENTOS | PASO 1
     --  Usuarios que tienen reservaciones de vuelo no iniciado
 
         SELECT COUNT(*) INTO cant_usuarios_con_reservaciones_de_vuelo
@@ -38,14 +39,17 @@ BEGIN
         AND r.v_fk_vuelo = v.id
         AND v.estatus = 'NO_INICIADO'; 
 
+    --  AGREGACION DE RESERVAS DE ALOJAMIENTOS | PASO 1
     --  Random de usuarios a reservar
 
         cant_usuarios_a_reservar := ROUND(DBMS_RANDOM.VALUE(1,cant_usuarios_con_reservaciones_de_vuelo));
 
+    --  AGREGACION DE RESERVAS DE ALOJAMIENTOS | PASO 1
     --  Se reserva la cantidad indicada
 
         FOR i IN 1..cant_usuarios_a_reservar LOOP
 
+            --  AGREGACION DE RESERVAS DE ALOJAMIENTOS | PASO 2
             --  Se elige un usuario random
 
                 SELECT tabla.idu, tabla.idv, tabla.idr INTO id_usuario_a_reservar, id_vuelo_no_iniciado, id_reservacion_vuelo
@@ -58,11 +62,13 @@ BEGIN
                         ORDER BY DBMS_RANDOM.VALUE) tabla
                 WHERE ROWNUM = 1;
 
-           --  Se cuentan cuantos alojamientos hay
+            --  AGREGACION DE RESERVAS DE ALOJAMIENTOS | PASO 2
+            --  Se cuentan cuantos alojamientos hay
 
                 SELECT COUNT(*) INTO cant_alojamientos
                 FROM alojamiento;
 
+            --  AGREGACION DE RESERVAS DE ALOJAMIENTOS | PASO 3
             -- Se elige TIPO de alojamiento random
 
                 SELECT * INTO tipo_alojamiento_a_reservar
@@ -71,18 +77,21 @@ BEGIN
                         ORDER BY DBMS_RANDOM.VALUE)
                 WHERE ROWNUM = 1;
                 
+            --  AGREGACION DE RESERVAS DE ALOJAMIENTOS | PASO 3
             --  Se guarda la fecha de llegada del vuelo
 
                 SELECT v.periodo_estimado.fecha_fin INTO fecha_llegada_vuelo
                 FROM vuelo v
                 WHERE v.id = id_vuelo_no_iniciado;
 
+            --  AGREGACION DE RESERVAS DE ALOJAMIENTOS | PASO 3
             -- Se guarda la fecha de reservacion del vuelo
 
                 SELECT FECHA_RESERVACION INTO fecha_reservacion_vuelo
                 FROM reservacion r 
                 WHERE id = id_reservacion_vuelo;
 
+            --  AGREGACION DE RESERVAS DE ALOJAMIENTOS | PASO 3
             -- Se elige el periodo de reserva del alojamiento
 
                 fecha_base := TIEMPO_PKG.EXTRAER(fecha_llegada_vuelo,'DATE');
@@ -90,16 +99,20 @@ BEGIN
 
                 ini_estadia := fecha_base + INTERVAL '13' HOUR;
                 fin_estadia := fecha_base + numToDSInterval(estadia,'DAY');
-                fin_estadia := fecha_base + INTERVAL '11' HOUR;
+                fin_estadia := fin_estadia + INTERVAL '11' HOUR;
 
                 p := PERIODO(
                 ini_estadia,
                 fin_estadia
                 );
 
+            --  AGREGACION DE RESERVAS DE ALOJAMIENTOS | PASO 4
             --  Se elige un criterio random
 
                 criterio := ROUND(DBMS_RANDOM.VALUE(1,2));
+
+            --  AGREGACION DE RESERVAS DE ALOJAMIENTOS | PASO 5
+            -- Se elige un alojamiento en función del criterio elegido
 
                 if criterio = 1 THEN  -- Más barato
 
@@ -140,8 +153,6 @@ BEGIN
 
                                     ORDER BY h.precio_base_noche.cantidad ASC, DBMS_RANDOM.VALUE ) tabla
                             WHERE ROWNUM = 1;
-
-                            -- DBMS_OUTPUT.PUT_LINE(alojamiento_a_reservar.id);
 
                         END IF;
 
@@ -196,6 +207,7 @@ BEGIN
 
                 END IF;
 
+                --  AGREGACION DE RESERVAS DE ALOJAMIENTOS | PASO 6
                 -- Se inserta la reservacion
 
                     INSERT INTO RESERVACION(tipo,precio_total,esta_cancelada,fecha_reservacion, a_fk_habitacion, a_periodo,fk_reservacion) 
@@ -207,6 +219,7 @@ BEGIN
                             p,
                             id_reservacion_vuelo
                             );
+
         END LOOP;   
 END;
 
@@ -215,92 +228,6 @@ BEGIN
     sim_reservas_de_alojamientos();
 
 END;
-
-SELECT * FROM RESERVACION WHERE TIPO = 'A'
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-CREATE OR REPLACE FUNCTION get_id()
-RETURN NUMBER;
-
-IS
-    id_resul NUMBER;
-
-BEGIN
-
-    SELECT id --into id_resul 
-    from reservacion
-    where ROWNUM = 1;
-
-    RETURN id_resul;
-
-END;
-
-
-
-
-
-
-
-
-
-
 
 CREATE OR REPLACE FUNCTION get_precio_total(ini TIMESTAMP, fin TIMESTAMP, precio_noche UNIDAD)
 RETURN UNIDAD
@@ -410,76 +337,58 @@ END;
         ORDER BY DBMS_RANDOM.VALUE)
         WHERE ROWNUM = 1;
 
-    INSERT INTO RESERVACION(tipo,precio_total,esta_cancelada,fecha_reservacion, v_fk_asiento, v_fk_vuelo, v_es_ida_vuelta)
-                VALUES('V',UNIDAD('DIVISA','DOLAR',2000),'F',TIMESTAMP '19-02-03 12:00:00',1,1,'F');
+    -- VUELO
+
+    SELECT V.ID ID_V, ASI.ID ID_ASI, A.ID ID_AVI
+    FROM VUELO V, ASIENTO ASI, AVION A
+    WHERE V.FK_AVION = A.ID
+    AND ASI.FK_AVION = A.ID;
+
+    SELECT COUNT(*) FROM VUELO 
+
+    INSERT INTO RESERVACION(ID,tipo,precio_total,esta_cancelada,fecha_reservacion, v_fk_asiento, v_fk_vuelo, v_es_ida_vuelta)
+                VALUES(1,'V',UNIDAD('DIVISA','DOLAR',2000),'F',TIMESTAMP '19-02-03 12:00:00',1,138,'F');
     INSERT INTO PAGO(pagado,FK_USUARIO,FK_RESERVACION) VALUES(UNIDAD('DIVISA','DOLAR',2000),1,1);
 
-    INSERT INTO RESERVACION(tipo,precio_total,esta_cancelada,fecha_reservacion, v_fk_asiento, v_fk_vuelo, v_es_ida_vuelta)
-                VALUES('V',UNIDAD('DIVISA','DOLAR',2000),'F',TIMESTAMP '19-02-03 12:00:00',1,4,'F');
+    INSERT INTO RESERVACION(ID,tipo,precio_total,esta_cancelada,fecha_reservacion, v_fk_asiento, v_fk_vuelo, v_es_ida_vuelta)
+                VALUES(2,'V',UNIDAD('DIVISA','DOLAR',2000),'F',TIMESTAMP '19-02-03 12:00:00',1,73,'F');
     INSERT INTO PAGO(pagado,FK_USUARIO,FK_RESERVACION) VALUES(UNIDAD('DIVISA','DOLAR',2000),2,2);
     
-    INSERT INTO RESERVACION(tipo,precio_total,esta_cancelada,fecha_reservacion, v_fk_asiento, v_fk_vuelo, v_es_ida_vuelta)
-                VALUES('V',UNIDAD('DIVISA','DOLAR',2000),'F',TIMESTAMP '19-02-03 12:00:00',1,41,'F');
+    INSERT INTO RESERVACION(ID,tipo,precio_total,esta_cancelada,fecha_reservacion, v_fk_asiento, v_fk_vuelo, v_es_ida_vuelta)
+                VALUES(3,'V',UNIDAD('DIVISA','DOLAR',2000),'F',TIMESTAMP '19-02-03 12:00:00',1,163,'F');
     INSERT INTO PAGO(pagado,FK_USUARIO,FK_RESERVACION) VALUES(UNIDAD('DIVISA','DOLAR',2000),3,3);
 
-    INSERT INTO RESERVACION(tipo,precio_total,esta_cancelada,fecha_reservacion, v_fk_asiento, v_fk_vuelo, v_es_ida_vuelta)
-                VALUES('V',UNIDAD('DIVISA','DOLAR',2000),'F',TIMESTAMP '19-02-03 12:00:00',2,1,'F');
+    INSERT INTO RESERVACION(ID,tipo,precio_total,esta_cancelada,fecha_reservacion, v_fk_asiento, v_fk_vuelo, v_es_ida_vuelta)
+                VALUES(4,'V',UNIDAD('DIVISA','DOLAR',2000),'F',TIMESTAMP '19-02-03 12:00:00',129,199,'F');
     INSERT INTO PAGO(pagado,FK_USUARIO,FK_RESERVACION) VALUES(UNIDAD('DIVISA','DOLAR',2000),4,4);
 
-    INSERT INTO RESERVACION(tipo,precio_total,esta_cancelada,fecha_reservacion, v_fk_asiento, v_fk_vuelo, v_es_ida_vuelta)
-                VALUES('V',UNIDAD('DIVISA','DOLAR',2000),'F',TIMESTAMP '19-02-03 12:00:00',2,4,'F');
+    INSERT INTO RESERVACION(ID,tipo,precio_total,esta_cancelada,fecha_reservacion, v_fk_asiento, v_fk_vuelo, v_es_ida_vuelta)
+                VALUES(5,'V',UNIDAD('DIVISA','DOLAR',2000),'F',TIMESTAMP '19-02-03 12:00:00',131,202,'F');
     INSERT INTO PAGO(pagado,FK_USUARIO,FK_RESERVACION) VALUES(UNIDAD('DIVISA','DOLAR',2000),5,5);
 
-    INSERT INTO RESERVACION(tipo,precio_total,esta_cancelada,fecha_reservacion, v_fk_asiento, v_fk_vuelo, v_es_ida_vuelta)
-                VALUES('V',UNIDAD('DIVISA','DOLAR',2000),'F',TIMESTAMP '19-02-03 12:00:00',1,1,'F');
+    INSERT INTO RESERVACION(ID,tipo,precio_total,esta_cancelada,fecha_reservacion, v_fk_asiento, v_fk_vuelo, v_es_ida_vuelta)
+                VALUES(6,'V',UNIDAD('DIVISA','DOLAR',2000),'F',TIMESTAMP '19-02-03 12:00:00',132,100,'F');
     INSERT INTO PAGO(pagado,FK_USUARIO,FK_RESERVACION) VALUES(UNIDAD('DIVISA','DOLAR',2000),6,6);
 
-    INSERT INTO RESERVACION(tipo,precio_total,esta_cancelada,fecha_reservacion, v_fk_asiento, v_fk_vuelo, v_es_ida_vuelta)
-                VALUES('V',UNIDAD('DIVISA','DOLAR',2000),'F',TIMESTAMP '19-02-03 12:00:00',108,50,'F');
+    INSERT INTO RESERVACION(ID,tipo,precio_total,esta_cancelada,fecha_reservacion, v_fk_asiento, v_fk_vuelo, v_es_ida_vuelta)
+                VALUES(7,'V',UNIDAD('DIVISA','DOLAR',2000),'F',TIMESTAMP '19-02-03 12:00:00',133,162,'F');
     INSERT INTO PAGO(pagado,FK_USUARIO,FK_RESERVACION) VALUES(UNIDAD('DIVISA','DOLAR',2000),7,7);
 
-    INSERT INTO RESERVACION(tipo,precio_total,esta_cancelada,fecha_reservacion, v_fk_asiento, v_fk_vuelo, v_es_ida_vuelta)
-                VALUES('V',UNIDAD('DIVISA','DOLAR',2000),'F',TIMESTAMP '19-02-03 12:00:00',110,47,'F');
+    INSERT INTO RESERVACION(ID,tipo,precio_total,esta_cancelada,fecha_reservacion, v_fk_asiento, v_fk_vuelo, v_es_ida_vuelta)
+                VALUES(8,'V',UNIDAD('DIVISA','DOLAR',2000),'F',TIMESTAMP '19-02-03 12:00:00',137,114,'F');
     INSERT INTO PAGO(pagado,FK_USUARIO,FK_RESERVACION) VALUES(UNIDAD('DIVISA','DOLAR',2000),8,8);
 
-    INSERT INTO RESERVACION(tipo,precio_total,esta_cancelada,fecha_reservacion, v_fk_asiento, v_fk_vuelo, v_es_ida_vuelta)
-                VALUES('V',UNIDAD('DIVISA','DOLAR',2000),'F',TIMESTAMP '19-02-03 12:00:00',110,48,'F');
+    INSERT INTO RESERVACION(ID,tipo,precio_total,esta_cancelada,fecha_reservacion, v_fk_asiento, v_fk_vuelo, v_es_ida_vuelta)
+                VALUES(9,'V',UNIDAD('DIVISA','DOLAR',2000),'F',TIMESTAMP '19-02-03 12:00:00',139,129,'F');
     INSERT INTO PAGO(pagado,FK_USUARIO,FK_RESERVACION) VALUES(UNIDAD('DIVISA','DOLAR',2000),9,9);
  
+    DELETE FROM RESERVACION WHERE TIPO = 'V' AND ID = 29
+
     DELETE FROM PAGO WHERE FK_USUARIO = 7;
 
     SELECT * FROM alojamiento
 
     SELECT ID FROM HABITACION
-
-
-BEGIN
-
-    DBMS_OUTPUT.PUT_LINE(TO_CHAR(TIEMPO_PKG.EXTRAER(TIMESTAMP '2019-02-03 12:00:00','DATE'), 'YYYY-MM-DD HH24:MI:SS'));
-
-END;
-
-SELECT * FROM RESERVACION
-
-DELETE FROM RESERVACION 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 --  ASIENTOS
 

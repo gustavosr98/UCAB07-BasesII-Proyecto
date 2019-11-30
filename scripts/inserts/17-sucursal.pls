@@ -48,3 +48,9 @@ BEGIN
 
 	OUT_(1,'--> Total de SUCURSALES generadas: ' || cant_total);
 END;
+
+BEGIN
+
+    ins_sucursal;
+
+END;
