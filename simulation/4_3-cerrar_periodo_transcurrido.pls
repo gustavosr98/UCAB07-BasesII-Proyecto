@@ -103,9 +103,11 @@ BEGIN
 
             WHILE creservacion%FOUND    
                 LOOP
-                    UPDATE Historico_Milla
-                    SET cantidad = dist * 0.621371
-                    WHERE fk_reservacion_vuelo = rreservacion.id;
+                    INSERT INTO Historico_Milla (fk_reservacion_vuelo,cantidad,fecha)
+                        VALUES (
+                            rreservacion.id,
+                            dist * 0.621371,
+                            rvuelo.periodo_real.fecha_fin);
                 END LOOP;
 
             CLOSE creservacion;
