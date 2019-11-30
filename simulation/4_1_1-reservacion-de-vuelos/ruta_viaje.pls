@@ -106,6 +106,8 @@ BEGIN
 			AND
 			L_Origen1.fk_lugar = ' ||ciudad_origen_id||' AND L_Destino2.fk_lugar = ' ||ciudad_destino_id||'
 			AND
+			T1.id != T2.id
+			AND
 			V1.fk_trayecto = T1.id AND
 			V2.fk_trayecto = T2.id
 			AND
@@ -172,6 +174,10 @@ BEGIN
 			Destino3.fk_lugar = L_Destino3.id 
 			AND
 			L_Origen1.fk_lugar = ' ||ciudad_origen_id||' AND L_Destino3.fk_lugar = ' ||ciudad_destino_id||'
+			AND
+			T1.id != T2.id AND
+			T2.id != T3.id AND
+			T3.id != T1.id
 			AND
 			V1.fk_trayecto = T1.id AND
 			V2.fk_trayecto = T2.id AND

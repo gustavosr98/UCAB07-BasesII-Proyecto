@@ -16,12 +16,20 @@ BEGIN
 
     WHILE ctray%FOUND LOOP
         -- IF (DBMS_RANDOM.VALUE > 0.5 ) THEN
+            cantidad_vuelos_por_trayecto := TRUNC(
+                DBMS_RANDOM.VALUE(
+                    TIEMPO_PKG.DIFF( fechas_base.fecha_inicio, fechas_base.fecha_fin, 'DAY' )*1,
+                    TIEMPO_PKG.DIFF( fechas_base.fecha_inicio, fechas_base.fecha_fin, 'DAY' )*2
+            ));
+
             -- cantidad_vuelos_por_trayecto := TRUNC(
             --     DBMS_RANDOM.VALUE(
             --         TIEMPO_PKG.DIFF( fechas_base.fecha_inicio, fechas_base.fecha_fin, 'DAY' )*0.1,
             --         TIEMPO_PKG.DIFF( fechas_base.fecha_inicio, fechas_base.fecha_fin, 'DAY' )*0.3
             -- ));
-            cantidad_vuelos_por_trayecto := DBMS_RANDOM.VALUE(3, 5);
+
+
+            --cantidad_vuelos_por_trayecto := DBMS_RANDOM.VALUE(3, 5);
 
             WHILE cantidad_vuelos_por_trayecto > 0 LOOP
                 precio := ROUND ( tray.distancia.cantidad / 8 )*DBMS_RANDOM.VALUE(0.8,1.3);

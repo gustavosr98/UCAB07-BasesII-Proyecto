@@ -68,10 +68,16 @@ BEGIN
 
 	-- RESERVACION DE VUELOS | PASO 1
 	-- Se genera un número aleatorio para la cantidad de usuarios a reservar vuelos.
-	cant_users_a_reservar := TRUNC( DBMS_RANDOM.VALUE(1,cant_users) );
-  cant_users_a_reservar := 1;
+	
+	SELECT valor_numerico INTO cant_users_a_reservar FROM CONFIGURACION WHERE nombre_variable = 'cant_users_a_reservar';
+	IF ( cant_users_a_reservar IS NULL) THEN
+		cant_users_a_reservar := TRUNC( DBMS_RANDOM.VALUE(1,cant_users) );
+	END IF;
+
 	OUT_(2, 'Cant. usuarios a reservar vuelos: ' || cant_users_a_reservar);
 	OUT_BREAK;
+	OUT_(0,'-----------------------------------------------------------------------');
+
 	
 	-- RESERVACION DE VUELOS | PASO 2
 	-- Se inicia con un usuario elegido aleatoriamente.
@@ -99,18 +105,27 @@ BEGIN
 		SELECT * INTO origen FROM ( 
 			SELECT * FROM LUGAR 
 			WHERE id IN ( -- Ciudades que se decidieron para la simulacion
-				9901,10240,8453,10542,10559,5547,4855,7507,5944,6151,7632,
-				10624,6639,6688,6471,8923,5151,10726,6757,5165,5102,8392
+				SELECT DISTINCT L2.id FROM LUGAR L1, LUGAR L2, AEROPUERTO A, TRAYECTO T
+				WHERE
+					T.fk_aeropuerto_origen = A.id AND
+					A.fk_lugar = L1.id AND
+					L1.fk_lugar = L2.id
 			) ORDER BY DBMS_RANDOM.VALUE
 		) WHERE ROWNUM = 1; 
 		
 		SELECT * INTO destino FROM ( 
 			SELECT * FROM LUGAR
 			WHERE id IN ( -- Ciudades que se decidieron para la simulacion
-				9901,10240,8453,10542,10559,5547,4855,7507,5944,6151,7632,
-				10624,6639,6688,6471,8923,5151,10726,6757,5165,5102,8392
-			) AND id != origen.id
-			ORDER BY DBMS_RANDOM.VALUE
+				SELECT DISTINCT LC2.id FROM LUGAR L1, AEROPUERTO A1, AEROPUERTO A2, LUGAR L2, LUGAR LC2, TRAYECTO T
+				WHERE
+					T.fk_aeropuerto_origen = A1.id AND
+					A1.fk_lugar = L1.id  AND
+					L1.fk_lugar = origen.id
+					AND
+					T.fk_aeropuerto_destino = A2.id AND
+					A2.fk_lugar = L2.id AND
+					L2.fk_lugar = LC2.id
+			) ORDER BY DBMS_RANDOM.VALUE
 		) WHERE ROWNUM = 1; 
 
 		es_ida_vuelta := 'F';
@@ -131,6 +146,11 @@ BEGIN
 		-- Se elige aleatoriamente uno de los criterios de selección de ruta de vuelo. Se toma en cuenta la cantidad de acompañantes.
 		IF ( DBMS_RANDOM.VALUE > 0.5 ) THEN criterio_vuelo := 'MAS_BARATA'; ELSE criterio_vuelo := 'LLEGADA_MAS_TEMPRANA'; END IF;
 
+		OUT_(3,'VIAJE DESEADO: ' || origen.nombre || ' ---> ' || destino.nombre || ' | Salida: ' || TIEMPO_PKG.PRINT(fecha_salida,'FECHA') ||
+			( CASE WHEN es_ida_vuelta='T' THEN ' | Regreso: ' || TIEMPO_PKG.PRINT(fecha_viaje.fecha_fin,'FECHA') ELSE ' | Sin regreso' END ));
+		OUT_(4,'Reservacion: '||
+			TIEMPO_PKG.PRINT(fecha_reservacion,'FECHA')
+		);
 
 		-- RESERVACIÓN DE UNA RUTA DE VUELO | PASO 3
 		-- Se consultan los vuelos disponibles para las fecha indicadas con las diferentes posibilidades de viajes directos o con escala.
@@ -140,8 +160,8 @@ BEGIN
 			ciudad_destino_id => destino.id,
 			orden_por => criterio_vuelo,
 			fecha_deseada => fecha_salida, 
-			dias_max_volando => 1000,
-			rango_dias_aceptable => 1000,
+			dias_max_volando => 1,
+			rango_dias_aceptable => 1,
 			limite_rows => 1
 		);		
  
@@ -158,7 +178,14 @@ BEGIN
 			costo_total,
 			fecha_final
 		;
-		WHILE (c_vuelos%FOUND) LOOP
+		IF ( c_vuelos%NOTFOUND ) THEN
+			WHILE (c_acompanantes%FOUND) LOOP
+				IF (c_acompanantes%ROWCOUNT > 1) THEN
+					OUT_(3,'Acompanante ('||c_acompanantes%ROWCOUNT||') | ' || v_acompanante.primer_nombre || ' ' || v_acompanante.primer_apellido || ' (id: '|| v_acompanante.id ||')' );
+				END IF;
+			END LOOP;
+			OUT_(3,'No se encontraron vuelos disponibles');
+		ELSE WHILE (c_vuelos%FOUND) LOOP
 
 			FETCH c_acompanantes INTO v_acompanante;
 			WHILE (c_acompanantes%FOUND) LOOP
@@ -168,18 +195,22 @@ BEGIN
 
 				-- ! FALTA: REVISAR ANTES QUE HAYAN SUFICIENTES ASIENTOS
 				v_asiento := ASIENTO_RESERVAR(v1id,'ECONOMICA'); -- ! FALTA OBTENER CLASE
-				INSERT INTO RESERVACION (id,tipo, precio_total, esta_cancelada, fecha_reservacion) VALUES (DEFAULT, 'V', PRECIO_VUELO(v1id, 'ECONOMICA', 1), 'F', fecha_reservacion) RETURNING id INTO reservacion_id;
+				INSERT INTO RESERVACION (id,tipo, precio_total, esta_cancelada, fecha_reservacion, v_fk_vuelo, v_fk_asiento) VALUES (DEFAULT, 'V', PRECIO_VUELO(v1id, 'ECONOMICA', 1), 'F', fecha_reservacion, v1id, v_asiento.id) RETURNING id INTO reservacion_id;
 				OUT_(4,'Asiento vuelo 1: ' || 'E-' || v_asiento.fila || v_asiento.columna); -- ! PONERLE INICIAL DE CLASE
+				INSERT INTO RESERVA (id,fk_cliente,fk_reservacion) VALUES (DEFAULT, v_acompanante.id ,reservacion_id);
 				
 				IF ( v2id IS NOT NULL ) THEN
 					v_asiento := ASIENTO_RESERVAR(v2id,'ECONOMICA'); -- ! FALTA OBTENER CLASE
-					INSERT INTO RESERVACION (id,tipo, precio_total, esta_cancelada, fecha_reservacion) VALUES (DEFAULT, 'V', PRECIO_VUELO(v2id, 'ECONOMICA', 1), 'F', fecha_reservacion) RETURNING id INTO reservacion_id;
+					INSERT INTO RESERVACION (id,tipo, precio_total, esta_cancelada, fecha_reservacion, v_fk_vuelo, v_fk_asiento) VALUES (DEFAULT, 'V', PRECIO_VUELO(v2id, 'ECONOMICA', 1), 'F', fecha_reservacion, v2id, v_asiento.id) RETURNING id INTO reservacion_id;
 					OUT_(4,'Asiento vuelo 2: ' || 'E-' || v_asiento.fila || v_asiento.columna); -- ! PONERLE INICIAL DE CLASE
+					INSERT INTO RESERVA (id,fk_cliente,fk_reservacion) VALUES (DEFAULT, v_acompanante.id ,reservacion_id);
 
 					IF ( v3id IS NOT NULL ) THEN
 						v_asiento := ASIENTO_RESERVAR(v3id,'ECONOMICA'); -- ! FALTA OBTENER CLASE
-						INSERT INTO RESERVACION (id,tipo, precio_total, esta_cancelada, fecha_reservacion) VALUES (DEFAULT, 'V', PRECIO_VUELO(v3id, 'ECONOMICA', 1), 'F', fecha_reservacion) RETURNING id INTO reservacion_id;
+						INSERT INTO RESERVACION (id,tipo, precio_total, esta_cancelada, fecha_reservacion, v_fk_vuelo, v_fk_asiento) VALUES (DEFAULT, 'V', PRECIO_VUELO(v3id, 'ECONOMICA', 1), 'F', fecha_reservacion, v3id, v_asiento.id) RETURNING id INTO reservacion_id;
 						OUT_(4,'Asiento vuelo 3: ' || 'E-' || v_asiento.fila || v_asiento.columna); -- ! PONERLE INICIAL DE CLASE
+						INSERT INTO RESERVA (id,fk_cliente,fk_reservacion) VALUES (DEFAULT, v_acompanante.id ,reservacion_id);
+
 					END IF;
 
 				END IF;
@@ -188,7 +219,7 @@ BEGIN
 			END LOOP;
 
 			OUT_(3, 'TRAYECTO');
-			OUT_(4, 'Costo Total: ' || costo_total || 'Fecha llegada final: ' || fecha_final );
+			OUT_(4, 'Costo Total: ' || costo_total || ' | Fecha llegada final: ' || fecha_final );
 			OUT_(4, 'VUELO 1:');
 			OUT_(5,
 				origen1 || ' - ' ||
@@ -204,12 +235,12 @@ BEGIN
           destino2
         );
         IF ( v3id IS NOT NULL ) THEN
-        OUT_(4,'VUELO 3:');
-        OUT_(5,
-          destino2 || ' - ' ||
-          v3id || ' - ' || v3e || ' - ' || v3fi || ' - ' || v3ff || ' - ' ||
-          destino3
-        );
+					OUT_(4,'VUELO 3:');
+					OUT_(5,
+						destino2 || ' - ' ||
+						v3id || ' - ' || v3e || ' - ' || v3fi || ' - ' || v3ff || ' - ' ||
+						destino3
+					);
         END IF;
       END IF;
 
@@ -227,17 +258,12 @@ BEGIN
 				costo_total,
 				fecha_final
 			; 
-		END LOOP;
+		END LOOP; END IF;
   	CLOSE c_vuelos;
 		CLOSE	c_acompanantes;
 
-		OUT_(3,'Viaje Deseado: ' || origen.nombre || ' ---> ' || destino.nombre || ' | Regreso (' || es_ida_vuelta ||')');
-		OUT_(4,'Reservacion: '||
-			TIEMPO_PKG.PRINT(fecha_reservacion,'FECHA') ||
-			' | Salida: ' || TIEMPO_PKG.PRINT(fecha_salida,'FECHA') ||
-			( CASE WHEN es_ida_vuelta='T' THEN ' | Regreso: ' || TIEMPO_PKG.PRINT(fecha_viaje.fecha_fin,'FECHA') ELSE ' | Sin regreso' END )
-		);
 		
+		OUT_(0,'-----------------------------------------------------------------------');
 		OUT_BREAK;
 		FETCH c_usuarios INTO v_usuario;
 		cant_users_a_reservar := cant_users_a_reservar -1;
@@ -254,10 +280,14 @@ END;
 -- EJECUTANDO
 DECLARE
 BEGIN
-	sim_reservacion_de_vuelos(
+	SIM_CONFIGURACION(
+		reset => 1
+		--cant_users_a_reservar => 8
+	);
+	SIM_RESERVACION_DE_VUELOS(
 		PERIODO(
-			TIMESTAMP '2019-09-19 12:00:00',
-			TIMESTAMP '2019-09-26 12:00:00'
+			TIMESTAMP '2019-05-19 12:00:00',
+			TIMESTAMP '2019-05-26 12:00:00'
 		),
 		PERIODO(
 				TIMESTAMP '2019-11-01 11:24:50',
