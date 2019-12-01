@@ -230,34 +230,40 @@ BEGIN
 								OUT_(3,'Acompanante ('||TO_CHAR(c_acompanantes%ROWCOUNT-1)||') | ' || v_acompanante.primer_nombre || ' ' || v_acompanante.primer_apellido || ' (id: '|| v_acompanante.id ||')' );
 							END IF;
 
-						-- LIMPIAR ID RESERVACION PADRE
 							IF (c_acompanantes%ROWCOUNT = 1) THEN
+								-- RESERVACION PADRE
 								reserva_padre_id := NULL;
-							END IF;
 
-						-- RESERVACIONES IDA
-							v_asiento := ASIENTO_RESERVAR(v1id,clase_de_asiento);
-							INSERT INTO RESERVACION (id,tipo, precio_total, esta_cancelada, fecha_reservacion, v_fk_vuelo, v_fk_asiento, fk_reservacion) 
-								VALUES (DEFAULT, 'V', PRECIO_VUELO(v1id, clase_de_asiento, 1), 'F', fecha_reservacion, v1id, v_asiento.id, 
-									reserva_padre_id 
-								) RETURNING id INTO reservacion_id;
-							OUT_(4,'Asiento vuelo 1: ' || SUBSTR(clase_de_asiento,0,3) ||'-' || v_asiento.fila || v_asiento.columna);
-							INSERT INTO RESERVA (id,fk_cliente,fk_reservacion) VALUES (DEFAULT, v_acompanante.id ,reservacion_id);
-						
-							-- ASIGNAR ID RESERVACION PADRE
-								IF (c_acompanantes%ROWCOUNT = 1) THEN
-									reserva_padre_id := reservacion_id;
-								END IF;
+								v_asiento := ASIENTO_RESERVAR(v1id,clase_de_asiento);
+								INSERT INTO RESERVACION (id,tipo, precio_total, esta_cancelada, fecha_reservacion, v_fk_vuelo, v_fk_asiento, fk_reservacion, v_es_ida_vuelta) 
+									VALUES (DEFAULT, 'V', PRECIO_VUELO(v1id, clase_de_asiento, 1), 'F', fecha_reservacion, v1id, v_asiento.id, 
+										reserva_padre_id, es_ida_vuelta
+									) RETURNING id INTO reservacion_id;
+								OUT_(4,'Asiento vuelo 1: ' || SUBSTR(clase_de_asiento,0,3) ||'-' || v_asiento.fila || v_asiento.columna);
+								INSERT INTO RESERVA (id,fk_cliente,fk_reservacion) VALUES (DEFAULT, v_acompanante.id ,reservacion_id);
+							
+								reserva_padre_id := reservacion_id;
+							ELSE 
+								v_asiento := ASIENTO_RESERVAR(v1id,clase_de_asiento);
+								INSERT INTO RESERVACION (id,tipo, precio_total, esta_cancelada, fecha_reservacion, v_fk_vuelo, v_fk_asiento, fk_reservacion) 
+									VALUES (DEFAULT, 'V', PRECIO_VUELO(v1id, clase_de_asiento, 1), 'F', fecha_reservacion, v1id, v_asiento.id, 
+										reserva_padre_id
+									) RETURNING id INTO reservacion_id;
+								OUT_(4,'Asiento vuelo 1: ' || SUBSTR(clase_de_asiento,0,3) ||'-' || v_asiento.fila || v_asiento.columna);
+								INSERT INTO RESERVA (id,fk_cliente,fk_reservacion) VALUES (DEFAULT, v_acompanante.id ,reservacion_id);
+							END IF;
 
 							IF ( v2id IS NOT NULL ) THEN
 								v_asiento := ASIENTO_RESERVAR(v2id,clase_de_asiento);
-								INSERT INTO RESERVACION (id,tipo, precio_total, esta_cancelada, fecha_reservacion, v_fk_vuelo, v_fk_asiento, fk_reservacion) VALUES (DEFAULT, 'V', PRECIO_VUELO(v2id, clase_de_asiento, 1), 'F', fecha_reservacion, v2id, v_asiento.id, reserva_padre_id ) RETURNING id INTO reservacion_id;
+								INSERT INTO RESERVACION (id,tipo, precio_total, esta_cancelada, fecha_reservacion, v_fk_vuelo, v_fk_asiento, fk_reservacion) 
+								VALUES (DEFAULT, 'V', PRECIO_VUELO(v2id, clase_de_asiento, 1), 'F', fecha_reservacion, v2id, v_asiento.id, reserva_padre_id ) RETURNING id INTO reservacion_id;
 								OUT_(4,'Asiento vuelo 2: ' || SUBSTR(clase_de_asiento,0,3) ||'-' || v_asiento.fila || v_asiento.columna);
 								INSERT INTO RESERVA (id,fk_cliente,fk_reservacion) VALUES (DEFAULT, v_acompanante.id ,reservacion_id);
 
 								IF ( v3id IS NOT NULL ) THEN
 									v_asiento := ASIENTO_RESERVAR(v3id,clase_de_asiento);
-									INSERT INTO RESERVACION (id,tipo, precio_total, esta_cancelada, fecha_reservacion, v_fk_vuelo, v_fk_asiento, fk_reservacion) VALUES (DEFAULT, 'V', PRECIO_VUELO(v3id, clase_de_asiento, 1), 'F', fecha_reservacion, v3id, v_asiento.id, reserva_padre_id ) RETURNING id INTO reservacion_id;
+									INSERT INTO RESERVACION (id,tipo, precio_total, esta_cancelada, fecha_reservacion, v_fk_vuelo, v_fk_asiento, fk_reservacion) 
+									VALUES (DEFAULT, 'V', PRECIO_VUELO(v3id, clase_de_asiento, 1), 'F', fecha_reservacion, v3id, v_asiento.id, reserva_padre_id ) RETURNING id INTO reservacion_id;
 									OUT_(4,'Asiento vuelo 3: ' || SUBSTR(clase_de_asiento,0,3) ||'-' || v_asiento.fila || v_asiento.columna);
 									INSERT INTO RESERVA (id,fk_cliente,fk_reservacion) VALUES (DEFAULT, v_acompanante.id ,reservacion_id);
 
