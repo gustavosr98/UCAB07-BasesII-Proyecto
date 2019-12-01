@@ -20,7 +20,7 @@ BEGIN
         TIEMPO_PKG.PRINT(v.periodo_estimado.fecha_fin,'HORA') || ' - ' || getLugar(lDestino.fk_lugar, 'CIUDAD'),
         TIEMPO_PKG.DIFF(v.periodo_estimado.fecha_inicio, v.periodo_estimado.fecha_fin, 'HOUR') || 'h ' ||
         TIEMPO_PKG.DIFF(v.periodo_estimado.fecha_inicio, v.periodo_estimado.fecha_fin, 'MINUTE') || 'm',
-        v.precio_base.cantidad || ' ' || v.precio_base.nombre
+        v.precio_base.cantidad || ' ' || getMoneda(v.precio_base.nombre)
         INTO logo, correo, vuelo, fechaSalida, fechaRegreso, salida, llegada, duracion, precio
     FROM Aerolinea ae, Avion av, Usuario u, Cliente cl, Reservacion r, Reserva s, Vuelo v, Trayecto t, Lugar lOrigen, 
         Lugar lDestino, Aeropuerto aOrigen, Aeropuerto aDestino
@@ -44,15 +44,17 @@ END;
 
 CREATE OR REPLACE FUNCTION getMoneda (nombre IN VARCHAR2) RETURN VARCHAR2
 IS 
-    signo VARCHAR2(10)
+    signo VARCHAR2(10);
 BEGIN
     IF (nombre = 'DOLAR') THEN
-
+        signo := '$';
     ELSIF (nombre = 'BOLIVAR') THEN
-        
+        signo := 'Bs';
+    ELSIF (nombre = 'EURO') THEN
+        signo := '€';
     END IF;
 
-    RETURN lugarCompleto;
+    RETURN signo;
 END;
 
 
