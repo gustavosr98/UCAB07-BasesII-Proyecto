@@ -136,8 +136,7 @@ BEGIN
 				fecha_deseada => fecha_salida, 
 				dias_max_volando => 1,
 				rango_dias_aceptable => 1,
-				limite_rows => 1,
-				cant_boletos => cant_estimada_acompanantes +1
+				limite_rows => 1
 			);		
 	
 			-- RESERVACIÓN DE UNA RUTA DE VUELO | PASO 4
