@@ -1,5 +1,5 @@
-CREATE OR REPLACE PROCEDURE ins_trayecto
-IS
+CREATE OR REPLACE PROCEDURE ins_trayecto_auto IS
+BEGIN
 	CURSOR cursor_aeropuerto_origen IS
 		SELECT Aer.id, L.localizacion 
 		FROM Aeropuerto Aer, Lugar L

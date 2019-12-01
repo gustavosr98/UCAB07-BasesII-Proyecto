@@ -33,11 +33,11 @@ END;
 
 -- PROBANDO
 	BEGIN
-		OUT_(0, precio_vuelo(65, 'ECONOMICA', 1).cantidad || ' ' || precio_vuelo(65, 'ECONOMICA', 1).nombre );
-		OUT_(0, precio_vuelo(65, 'ECONOMICA', 2).cantidad || ' ' || precio_vuelo(65, 'ECONOMICA', 2).nombre );
-		OUT_(0, precio_vuelo(65, 'EJECUTIVA', 1).cantidad || ' ' || precio_vuelo(65, 'EJECUTIVA', 1).nombre );
-		OUT_(0, precio_vuelo(65, 'EJECUTIVA', 2).cantidad || ' ' || precio_vuelo(65, 'EJECUTIVA', 2).nombre );
-		OUT_(0, precio_vuelo(65, 'PRIMERA_CLASE', 1).cantidad || ' ' || precio_vuelo(65, 'PRIMERA_CLASE', 1).nombre );
-		OUT_(0, precio_vuelo(65, 'PRIMERA_CLASE', 4).cantidad || ' ' || precio_vuelo(65, 'PRIMERA_CLASE', 4).nombre );
+		OUT_(0, precio_vuelo(300000, 'ECONOMICA', 1).cantidad || ' ' || precio_vuelo(300000, 'ECONOMICA', 1).nombre );
+		OUT_(0, precio_vuelo(300000, 'ECONOMICA', 2).cantidad || ' ' || precio_vuelo(300000, 'ECONOMICA', 2).nombre );
+		OUT_(0, precio_vuelo(300000, 'EJECUTIVA', 1).cantidad || ' ' || precio_vuelo(300000, 'EJECUTIVA', 1).nombre );
+		OUT_(0, precio_vuelo(300000, 'EJECUTIVA', 2).cantidad || ' ' || precio_vuelo(300000, 'EJECUTIVA', 2).nombre );
+		OUT_(0, precio_vuelo(300000, 'PRIMERA_CLASE', 1).cantidad || ' ' || precio_vuelo(300000, 'PRIMERA_CLASE', 1).nombre );
+		OUT_(0, precio_vuelo(300000, 'PRIMERA_CLASE', 4).cantidad || ' ' || precio_vuelo(300000, 'PRIMERA_CLASE', 4).nombre );
 	END;
 	/

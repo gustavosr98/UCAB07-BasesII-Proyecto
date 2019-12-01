@@ -100,8 +100,8 @@ BEGIN
 	OUT_(1,'--> Total de HABITACIONES generadas: ' || cant_total_h);
 END;
 
-BEGIN
+/* BEGIN
 
     ins_lug_aloj;
 
-END;
+END; */
