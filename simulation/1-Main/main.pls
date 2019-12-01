@@ -29,14 +29,16 @@ BEGIN
 	-- COMPONENTES
 		SIM_GENERACION_DE_VUELOS(fb);
 		SIM_RESERVACION_DE_VUELOS(fq, fb);
-
+		-- SIM_RESERVAS_DE_ALOJAMIENTOS;
+		-- SIM_RESERVAS_DE_VEHICULOS;
+		-- SIM_CERRAR_PAGO_PAQUETES(fq);
 END;
 
 -- EJECUCION
 BEGIN
 	SIM_CONFIGURACION(
 		reset => 0,
-		cant_users_a_reservar => 10
+		cant_users_a_reservar => 1
 	);
 	MAIN(
 		PERIODO(
