@@ -191,13 +191,6 @@
 					</textElement>
 					<textFieldExpression><![CDATA["Página "+$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
 				</textField>
-				<textField pattern="EEEEE dd MMMMM yyyy">
-					<reportElement style="Column header" x="2" y="3" width="197" height="20" forecolor="#FFFFFF" uuid="0c9f7e91-d3f5-47f9-82b7-0b2b3a43a5d6"/>
-					<textElement verticalAlignment="Middle">
-						<font size="10" isBold="false"/>
-					</textElement>
-					<textFieldExpression><![CDATA[Universidad Católica Andrés Bello]]></textFieldExpression>
-				</textField>
 			</frame>
 		</band>
 	</pageFooter>
