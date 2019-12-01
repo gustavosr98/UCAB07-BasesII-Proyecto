@@ -1,4 +1,4 @@
-CREATE OR REPLACE PROCEDURE ins_modelo_vehiculo
+CREATE OR REPLACE PROCEDURE ins_modelo_vehiculo IS
 BEGIN
         INSERT INTO modelo_vehiculo(foto,tipo,marca,nombre,año,cantidad_personas,cantidad_puertas,capacidad_maleta,es_automatico)
                 VALUES(BFILENAME('DIR_IMG_PROYECTO','/Modelo_Vehiculo/01-Toyota_Corolla.jpg'),'CARRO','Toyota','Corolla',2015,5,4,450,'T');

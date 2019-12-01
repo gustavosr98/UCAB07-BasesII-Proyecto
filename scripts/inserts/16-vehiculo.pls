@@ -45,9 +45,9 @@ BEGIN
 END;
 
 
-DECLARE
+/* DECLARE
 BEGIN
 
     ins_vehiculo;
 
-END;
+END; */
