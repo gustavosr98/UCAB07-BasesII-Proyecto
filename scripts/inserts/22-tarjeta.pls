@@ -68,8 +68,8 @@ BEGIN
 	OUT_(1,'--> Total de TARJETAS generadas: ' || cant_total);
 END;
 
-BEGIN
+/* BEGIN
 
     insertar_tarjeta;
 
-END;
+END; */
