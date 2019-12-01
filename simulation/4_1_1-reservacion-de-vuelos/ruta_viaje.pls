@@ -1,11 +1,14 @@
 CREATE OR REPLACE PROCEDURE ruta_viaje(
 	mi_cursor OUT SYS_REFCURSOR, 
-	ciudad_origen_id INTEGER, ciudad_destino_id INTEGER, 
 	orden_por VARCHAR2, 
 	limite_rows INTEGER DEFAULT 0,
 	--
 	rango_dias_aceptable INTEGER DEFAULT 5,
 	dias_max_volando INTEGER DEFAULT 2,
+	--
+	ciudad_origen_id INTEGER, 
+	ciudad_destino_id INTEGER, 
+	--
 	fecha_deseada TIMESTAMP DEFAULT NULL,
 	clase_asiento VARCHAR DEFAULT NULL
 ) 
