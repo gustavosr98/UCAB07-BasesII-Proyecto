@@ -52,6 +52,8 @@ BEGIN
 			AND
 			L_Origen1.fk_lugar = ' ||ciudad_origen_id||' AND L_Destino1.fk_lugar = ' ||ciudad_destino_id||'
 			AND
+			Origen1.id != Destino1.id
+			AND
 			V1.fk_trayecto = T1.id
 			AND
 			EXTRACT (
@@ -63,7 +65,7 @@ BEGIN
 				DAY FROM (
 					TIEMPO_PKG.EXTRAER(V1.periodo_estimado.fecha_inicio, ''DATE'') 
 					- TIEMPO_PKG.EXTRAER( :fecha_deseada , ''DATE'')
-			)) < '|| rango_dias_aceptable ||' 
+			)) < '|| rango_dias_aceptable ||'
 
 	UNION
 
@@ -106,7 +108,9 @@ BEGIN
 			AND
 			L_Origen1.fk_lugar = ' ||ciudad_origen_id||' AND L_Destino2.fk_lugar = ' ||ciudad_destino_id||'
 			AND
-			T1.id != T2.id
+			Origen1.id NOT IN (Destino1.id, Destino2.id) AND
+			Destino1.id NOT IN (Origen1.id, Destino2.id) AND
+			Destino2.id NOT IN (Destino1.id, Origen1.id)
 			AND
 			V1.fk_trayecto = T1.id AND
 			V2.fk_trayecto = T2.id
@@ -175,9 +179,10 @@ BEGIN
 			AND
 			L_Origen1.fk_lugar = ' ||ciudad_origen_id||' AND L_Destino3.fk_lugar = ' ||ciudad_destino_id||'
 			AND
-			T1.id != T2.id AND
-			T2.id != T3.id AND
-			T3.id != T1.id
+			Origen1.id NOT IN (Destino1.id, Destino2.id, Destino3.id) AND
+			Destino1.id NOT IN (Origen1.id, Destino2.id, Destino3.id) AND
+			Destino2.id NOT IN (Destino1.id, Origen1.id, Destino3.id) AND
+			Destino3.id NOT IN (Origen1.id, Destino2.id, Destino1.id)
 			AND
 			V1.fk_trayecto = T1.id AND
 			V2.fk_trayecto = T2.id AND
