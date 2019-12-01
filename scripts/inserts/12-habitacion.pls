@@ -11,12 +11,6 @@ IS
     cant INTEGER;
     i_t INTEGER;
 BEGIN
-OUT_BREAK(2);
-	OUT_(0,'***************************************************************');
-	OUT_(0,'******************** PROCEDURE: INS_HABITACION ****************');
-	OUT_(0,'***************************************************************');
-	OUT_BREAK;
-
     descripcion := descripArray(
         'Acceso a cocina. Excelente vista.',
         'Chimenea interior. Jacuzzi.',
