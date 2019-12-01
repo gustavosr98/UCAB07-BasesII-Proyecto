@@ -8,7 +8,8 @@ BEGIN
   IF (reset = 1) THEN
     UPDATE CONFIGURACION 
     SET valor_numerico = NULL,
-      valor_string = NULL;
+      valor_string = NULL,
+      valor_fecha = NULL;
   END IF;
 
   IF (cant_users_a_reservar != 0) THEN

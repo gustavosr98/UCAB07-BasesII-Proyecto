@@ -6,7 +6,8 @@ CREATE OR REPLACE PROCEDURE ruta_viaje(
 	--
 	rango_dias_aceptable INTEGER DEFAULT 5,
 	dias_max_volando INTEGER DEFAULT 2,
-	fecha_deseada TIMESTAMP
+	fecha_deseada TIMESTAMP DEFAULT NULL,
+	clase_asiento VARCHAR DEFAULT NULL
 ) 
 AS  
 	col_order_by VARCHAR(50);
@@ -33,7 +34,7 @@ BEGIN
 			NULL destino2,
 			NULL v3id, NULL v3e, NULL v3fi, NULL v3ff,
 			NULL destino3,
-			ROUND( V1.precio_base.cantidad ,2) costo_total,
+			ROUND( precio_vuelo(V1.id, '''||clase_asiento||''', 1).cantidad ,2) costo_total,
 			V1.periodo_estimado.fecha_fin fecha_final
 
 		FROM 
@@ -79,7 +80,8 @@ BEGIN
 			NULL v3id, NULL v3e, NULL v3fi, NULL v3ff,
 			NULL destino3,
 			ROUND( 
-				V1.precio_base.cantidad + V2.precio_base.cantidad
+				precio_vuelo(V1.id, '''||clase_asiento||''', 1).cantidad +
+				precio_vuelo(V2.id, '''||clase_asiento||''', 1).cantidad
 				,2
 			) costo_total,
 			V2.periodo_estimado.fecha_fin fecha_final
@@ -140,7 +142,9 @@ BEGIN
 			V3.id v3id, V3.estatus v3e, V3.periodo_estimado.fecha_inicio v3fi, V3.periodo_estimado.fecha_fin v3ff,
 			LC_Destino3.nombre || '' ('' || Destino3.codigo_iata || '')'' destino3,
 			ROUND( 
-				V1.precio_base.cantidad + V2.precio_base.cantidad + V3.precio_base.cantidad
+				precio_vuelo(V1.id, '''||clase_asiento||''', 1).cantidad
+				+ precio_vuelo(V2.id, '''||clase_asiento||''', 1).cantidad 
+				+ precio_vuelo(V3.id, '''||clase_asiento||''', 1).cantidad 
 				,2
 			) costo_total,
 			V3.periodo_estimado.fecha_fin fecha_final
