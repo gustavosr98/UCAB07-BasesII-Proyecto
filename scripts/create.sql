@@ -418,6 +418,7 @@
 					v_fk_asiento NUMBER,
 					v_fk_vuelo NUMBER,
 
+					v_es_ida CHAR(1) CHECK (v_es_ida = 'T' OR v_es_ida = 'F'),
 					v_es_ida_vuelta CHAR(1) CHECK ( v_es_ida_vuelta = 'T' OR  v_es_ida_vuelta = 'F' ),
 
 					CONSTRAINT reservacion_v_fk_asiento FOREIGN KEY (v_fk_asiento) REFERENCES Asiento(id),
