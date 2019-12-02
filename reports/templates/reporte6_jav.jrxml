@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.6.0.final using JasperReports Library version 6.6.0  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="reporte6_jav" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="7a5c9b49-9dc5-422a-ac69-e92cf61ef530">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="Oracle Adapter "/>
+	<style name="Title" forecolor="#FFFFFF" fontName="Times New Roman" fontSize="50" isBold="false"/>
+	<style name="SubTitle" forecolor="#CCCCCC" fontName="Times New Roman" fontSize="18" isBold="false"/>
+	<style name="Column header" forecolor="#666666" fontName="Times New Roman" fontSize="14" isBold="true"/>
+	<style name="Detail" mode="Transparent" fontName="Times New Roman"/>
+	<style name="Row" mode="Transparent" fontName="Times New Roman" pdfFontName="Times-Roman">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$V{REPORT_COUNT}%2 == 0]]></conditionExpression>
+			<style mode="Opaque" backcolor="#F0EFEF"/>
+		</conditionalStyle>
+	</style>
+	<parameter name="idReserva" class="java.math.BigDecimal"/>
+	<queryString language="plsql">
+		<![CDATA[{CALL reporte6 ($P{ORACLE_REF_CURSOR}, $P{idReserva})}]]>
+	</queryString>
+	<field name="LOGO" class="java.awt.Image">
+		<property name="com.jaspersoft.studio.field.label" value="LOGO"/>
+	</field>
+	<field name="CORREO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="CORREO"/>
+	</field>
+	<field name="GETLUGAR(LORIGEN.FK_LUGAR,&apos;COMPLETO&apos;)||&apos;-&apos;||GETLUGAR(LDESTINO.FK_LUGAR,&apos;COMPLETO&apos;)||&apos;-&apos;||TIEMPO_PKG.PRINT(V.PERIODO_ESTIMADO.FECHA_INICIO,&apos;MUY_HUMANO&apos;)" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label">
+			<![CDATA[GETLUGAR(LORIGEN.FK_LUGAR,'COMPLETO')||'-'||GETLUGAR(LDESTINO.FK_LUGAR,'COMPLETO')||'-'||TIEMPO_PKG.PRINT(V.PERIODO_ESTIMADO.FECHA_INICIO,'MUY_HUMANO')]]>
+		</property>
+	</field>
+	<field name="TIEMPO_PKG.PRINT(V.PERIODO_ESTIMADO.FECHA_INICIO,&apos;FECHA&apos;)" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label">
+			<![CDATA[TIEMPO_PKG.PRINT(V.PERIODO_ESTIMADO.FECHA_INICIO,'FECHA')]]>
+		</property>
+	</field>
+	<field name="GETREGRESO(R.ID)" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="GETREGRESO(R.ID)"/>
+	</field>
+	<field name="V.PRECIO_BASE.CANTIDAD||&apos;&apos;||GETMONEDA(V.PRECIO_BASE.NOMBRE)" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label">
+			<![CDATA[V.PRECIO_BASE.CANTIDAD||''||GETMONEDA(V.PRECIO_BASE.NOMBRE)]]>
+		</property>
+	</field>
+	<field name="GETFORMAPAGO(P.ID,U.ID)" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="GETFORMAPAGO(P.ID,U.ID)"/>
+	</field>
+	<field name="GETMONTO(P.ID)" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="GETMONTO(P.ID)"/>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="102" splitType="Stretch">
+			<frame>
+				<reportElement mode="Opaque" x="0" y="0" width="802" height="66" backcolor="#000000" uuid="d8d9e644-3a32-491d-97cb-a277aff17133"/>
+				<staticText>
+					<reportElement style="Title" x="0" y="0" width="370" height="66" uuid="27d8f6ee-f0a9-44f6-a160-1763c3b00f30"/>
+					<box topPadding="4" leftPadding="4" bottomPadding="4" rightPadding="4"/>
+					<textElement verticalAlignment="Bottom">
+						<font isBold="false"/>
+					</textElement>
+					<text><![CDATA[REPORTE 6]]></text>
+				</staticText>
+				<staticText>
+					<reportElement style="SubTitle" x="481" y="30" width="316" height="29" uuid="cfa21334-0634-4605-9ea7-aca4981f67e4"/>
+					<textElement textAlignment="Right">
+						<font size="22" isBold="false"/>
+					</textElement>
+					<text><![CDATA[Reporte de pago de reservaciones de viaje]]></text>
+				</staticText>
+			</frame>
+			<frame>
+				<reportElement mode="Opaque" x="0" y="70" width="802" height="28" forecolor="#000000" backcolor="#CC0000" uuid="b0c895f6-6dbd-477d-9858-9ad66af087e1"/>
+				<textField pattern="EEEEE dd MMMMM yyyy">
+					<reportElement x="656" y="6" width="144" height="20" forecolor="#FFFFFF" uuid="a33fce3b-20c1-4696-873a-fe134d1e7d88"/>
+					<textElement textAlignment="Right">
+						<font size="12"/>
+					</textElement>
+					<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+				</textField>
+			</frame>
+		</band>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="37" splitType="Stretch">
+			<staticText>
+				<reportElement x="80" y="0" width="90" height="36" uuid="dba740b3-67d6-4a8f-a756-97370968a18f">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="670ac05a-b7ff-4546-a263-84e5512274ac"/>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Correo de Usuario]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="180" y="0" width="100" height="36" uuid="b6fc4338-c5b4-4255-9a13-db8f0ea177ec">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="b91d99c1-8e7f-48a2-a9df-3b61424d6e10"/>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Vuelo]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="290" y="0" width="100" height="36" uuid="972031b3-0392-4cb1-899f-5f0820bdf105">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6ab0c377-f7da-4af4-8946-935dd3188863"/>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Fecha de Salida]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="400" y="0" width="100" height="36" uuid="57658ed9-a3f9-4453-88b9-676a03913c7b">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="34db9b9c-7b40-40a9-9895-0da1b4c1f287"/>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Fecha de Llegada]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="510" y="0" width="100" height="36" uuid="e31daf9f-9467-45eb-8201-d6338acfbb96">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="72e943c4-1cb2-4fbb-abca-77dbaceb8a72"/>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Precio Total]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="620" y="0" width="100" height="36" uuid="ff45eb48-61a6-40a6-b52a-f792d667e474">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="f5b83033-c7b8-49bb-8018-ceaaa531f576"/>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Forma de Pago]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="727" y="0" width="74" height="36" uuid="8ee09500-0b3c-4e97-8a04-47068cadae2b">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="55b48e34-a2ef-43fb-81d7-2610a00cdae7"/>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Monto Pagado]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="0" width="70" height="36" uuid="95922424-68b9-482e-b5af-8bff13d1b51c"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Logo de Aerolínea]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="67" splitType="Stretch">
+			<frame>
+				<reportElement style="Row" mode="Opaque" x="0" y="7" width="802" height="60" uuid="34a2ae4b-4055-476b-8676-d499f6af510b"/>
+				<textField>
+					<reportElement x="80" y="0" width="90" height="60" uuid="e2c7f60c-eada-442d-b6f1-efa7d96fbadb">
+						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="670ac05a-b7ff-4546-a263-84e5512274ac"/>
+					</reportElement>
+					<textElement textAlignment="Center" verticalAlignment="Middle"/>
+					<textFieldExpression><![CDATA[$F{CORREO}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="180" y="0" width="100" height="60" uuid="350b782b-8a38-4746-a20b-6894a893baee">
+						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="b91d99c1-8e7f-48a2-a9df-3b61424d6e10"/>
+					</reportElement>
+					<textElement textAlignment="Center" verticalAlignment="Middle"/>
+					<textFieldExpression><![CDATA[$F{GETLUGAR(LORIGEN.FK_LUGAR,'COMPLETO')||'-'||GETLUGAR(LDESTINO.FK_LUGAR,'COMPLETO')||'-'||TIEMPO_PKG.PRINT(V.PERIODO_ESTIMADO.FECHA_INICIO,'MUY_HUMANO')}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="290" y="0" width="100" height="60" uuid="25a7b16e-b36f-4579-b8e2-12fad89f01c0">
+						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6ab0c377-f7da-4af4-8946-935dd3188863"/>
+					</reportElement>
+					<textElement textAlignment="Center" verticalAlignment="Middle"/>
+					<textFieldExpression><![CDATA[$F{TIEMPO_PKG.PRINT(V.PERIODO_ESTIMADO.FECHA_INICIO,'FECHA')}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="400" y="0" width="100" height="60" uuid="366950a8-d487-41ca-b3ac-a9b067993e91">
+						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="34db9b9c-7b40-40a9-9895-0da1b4c1f287"/>
+					</reportElement>
+					<textElement textAlignment="Center" verticalAlignment="Middle"/>
+					<textFieldExpression><![CDATA[$F{GETREGRESO(R.ID)}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="510" y="0" width="100" height="60" uuid="77b71439-4dab-48ec-905f-8d47a0b15471">
+						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="72e943c4-1cb2-4fbb-abca-77dbaceb8a72"/>
+					</reportElement>
+					<textElement textAlignment="Center" verticalAlignment="Middle"/>
+					<textFieldExpression><![CDATA[$F{V.PRECIO_BASE.CANTIDAD||''||GETMONEDA(V.PRECIO_BASE.NOMBRE)}]]></textFieldExpression>
+				</textField>
+				<image hAlign="Center" vAlign="Middle">
+					<reportElement x="0" y="0" width="70" height="60" uuid="b3de2228-01e1-48d3-8c70-e4ac9390a639"/>
+					<imageExpression><![CDATA[$F{LOGO}]]></imageExpression>
+				</image>
+				<textField>
+					<reportElement x="620" y="0" width="100" height="60" uuid="a76437e5-0f60-4bb8-bb4f-fcad8ad86991">
+						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="f5b83033-c7b8-49bb-8018-ceaaa531f576"/>
+					</reportElement>
+					<textElement textAlignment="Center" verticalAlignment="Middle"/>
+					<textFieldExpression><![CDATA[$F{GETFORMAPAGO(P.ID,U.ID)}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="727" y="0" width="74" height="60" uuid="b571ea10-49ee-454a-a2b0-2c7530c26686">
+						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="55b48e34-a2ef-43fb-81d7-2610a00cdae7"/>
+					</reportElement>
+					<textElement textAlignment="Center" verticalAlignment="Middle"/>
+					<textFieldExpression><![CDATA[$F{GETMONTO(P.ID)}]]></textFieldExpression>
+				</textField>
+			</frame>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="7" splitType="Stretch">
+			<line>
+				<reportElement positionType="FixRelativeToBottom" x="0" y="3" width="555" height="1" uuid="501ac6c4-e9d4-43cb-ba6b-7f2f44394cf3"/>
+				<graphicElement>
+					<pen lineWidth="0.5" lineColor="#999999"/>
+				</graphicElement>
+			</line>
+		</band>
+	</columnFooter>
+	<pageFooter>
+		<band height="25" splitType="Stretch">
+			<frame>
+				<reportElement mode="Opaque" x="0" y="0" width="802" height="25" forecolor="#D0B48E" backcolor="#000000" uuid="ffb10ec8-0371-4545-8eaa-96d62ad3cec0"/>
+				<textField evaluationTime="Report">
+					<reportElement style="Column header" x="757" y="3" width="40" height="20" forecolor="#FFFFFF" uuid="b5521ea6-5f36-4864-856f-58d0bcd011f2"/>
+					<textElement verticalAlignment="Middle">
+						<font size="10" isBold="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement style="Column header" x="677" y="3" width="80" height="20" forecolor="#FFFFFF" uuid="e625ea3c-1741-4cfe-81cf-fbbdd00162c8"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="10" isBold="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA["Página "+$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
+				</textField>
+			</frame>
+		</band>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

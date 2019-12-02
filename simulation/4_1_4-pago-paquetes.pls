@@ -1,4 +1,4 @@
-CREATE OR REPLACE PROCEDURE sim_cerrar_pago_paquetes(fechas_base IN PERIODO)
+CREATE OR REPLACE PROCEDURE sim_pago_de_paquetes(fechas_base IN PERIODO)
 IS
     costo NUMBER;
     opciones INTEGER DEFAULT 3;
@@ -17,7 +17,7 @@ IS
     CURSOR creservacion IS 
         SELECT * FROM Reservacion
         WHERE fk_reservacion IS NULL    
-            AND fecha_reservacion < LOCALTIMESTAMP;
+            AND fecha_reservacion < fechas_base.fecha_fin;
     rreservacion Reservacion%ROWTYPE;
 
     CURSOR ccliente (idr Reserva.id%TYPE) IS 
@@ -28,6 +28,12 @@ IS
             AND cl.fk_cliente IS NULL;
     rcliente Cliente%ROWTYPE;
 BEGIN 
+    OUT_BREAK(2);
+	OUT_(0,'***************************************************************');
+	OUT_(0,'************** SIMULACION: 4.1.4 PAGO PAQUETES ****************');
+	OUT_(0,'***************************************************************');
+	OUT_BREAK;
+
     OPEN creservacion;
     FETCH creservacion INTO rreservacion;
 
@@ -41,11 +47,21 @@ BEGIN
             OPEN ccliente(rreservacion.id);
             FETCH ccliente INTO rcliente;
 
+            OUT_(2, 'RESERVACIÓN: ' || rreservacion.id || ' - Costo Total: ' || costo);
+            OUT_BREAK;
+            OUT_(0,'-----------------------------------------------------------------------');
+            OUT_BREAK;
+
             WHILE ccliente%FOUND
                 LOOP
                     SELECT id INTO idUsuario 
                     FROM Usuario 
                     WHERE fk_cliente = rcliente.id;
+
+                    OUT_(3, 'Usuario: ' || idUsuario || ' - Cliente: ' || rcliente.primer_nombre || ' ' || rcliente.primer_apellido);
+                    OUT_BREAK;
+                    OUT_(0,'-----------------------------------------------------------------------');
+                    OUT_BREAK;
 
                     SELECT SUM(m.cantidad) into cantMillas
                     FROM Historico_Milla m, Usuario u, Reservacion r, Pago p
@@ -65,10 +81,20 @@ BEGIN
 
                             idPago := insertPago(costo, idUsuario, tarjC.id, rreservacion.id);
 
+                            OUT_(4, 'Método de pago: CREDITO - Pagado (dólares): ' || costo);
+                            OUT_BREAK;
+                            OUT_(0,'-----------------------------------------------------------------------');
+                            OUT_BREAK;
+
                         WHEN 2 THEN
                             tarjD := buscarTarjeta('DEBITO',idUsuario);
                             
                             idPago := insertPago(costo, idUsuario, tarjD.id, rreservacion.id);
+
+                            OUT_(4, 'Método de pago: DEBITO - Pagado (dólares): ' || costo);
+                            OUT_BREAK;
+                            OUT_(0,'-----------------------------------------------------------------------');
+                            OUT_BREAK;
 
                         WHEN 3 THEN
                             tarjC := buscarTarjeta('CREDITO',idUsuario);
@@ -81,6 +107,12 @@ BEGIN
                             idPago := insertPago(costoC, idUsuario, tarjC.id, rreservacion.id);
                             idPago := insertPago(costoD, idUsuario, tarjD.id, rreservacion.id);
 
+                            OUT_(4, 'Método de pago: CREDITO - Pagado (dólares): ' || costoC);
+                            OUT_(4, 'Método de pago: DEBITO - Pagado (dólares): ' || costoD);
+                            OUT_BREAK;
+                            OUT_(0,'-----------------------------------------------------------------------');
+                            OUT_BREAK;
+
                         WHEN 4 THEN
                             idPago := insertPago(costo, idUsuario, NULL, rreservacion.id);
 
@@ -89,6 +121,12 @@ BEGIN
                                     idPago,
                                     costo,
                                     rreservacion.fecha_reservacion);
+
+                            OUT_(4, 'Método de pago: Millas - Pagado (millas): ' || costoC);
+                            OUT_BREAK;
+                            OUT_(0,'-----------------------------------------------------------------------');
+                            OUT_BREAK;
+
                     END CASE;
 
                     FETCH ccliente INTO rcliente;
