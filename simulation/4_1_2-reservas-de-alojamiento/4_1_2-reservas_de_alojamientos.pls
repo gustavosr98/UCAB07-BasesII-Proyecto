@@ -55,18 +55,18 @@ BEGIN
             --  Se elige un usuario random
 
                 SELECT tabla.idu, tabla.idv, tabla.idr 
-									INTO id_usuario_a_reservar, id_vuelo_no_iniciado, id_reservacion_vuelo
+					INTO id_usuario_a_reservar, id_vuelo_no_iniciado, id_reservacion_vuelo
                 FROM (
-									SELECT u.id idu, v.id idv, r.id idr
-									FROM usuario u, reserva res, cliente cl, reservacion r, vuelo v
-									WHERE 
-										res.fk_reservacion = r.id
-										AND res.fk_cliente = cl.id
-										AND u.fk_cliente = cl.id
-										AND r.v_fk_vuelo = v.id
-										AND r.fk_reservacion = NULL
-										AND v.estatus = 'NO_INICIADO'
-									ORDER BY DBMS_RANDOM.VALUE
+                    SELECT u.id idu, v.id idv, r.id idr
+                    FROM usuario u, reserva res, cliente cl, reservacion r, vuelo v
+                    WHERE 
+                        res.fk_reservacion = r.id
+                        AND res.fk_cliente = cl.id
+                        AND u.fk_cliente = cl.id
+                        AND r.v_fk_vuelo = v.id
+                        AND r.fk_reservacion = NULL
+                        AND v.estatus = 'NO_INICIADO'
+                    ORDER BY DBMS_RANDOM.VALUE
 								) tabla
                 WHERE ROWNUM = 1;
 
@@ -88,19 +88,17 @@ BEGIN
                 
             --  AGREGACION DE RESERVAS DE ALOJAMIENTOS | PASO 3
             --  Se guarda la fecha de llegada del vuelo
-								/* SELECT * INTO id_vuelo_no_iniciado
-                FROM (
-									SELECT V.id 
-									FROM Vuelo V, Reservacion RV
-									WHERE RV.v_fk_vuelo = V.id AND 
-										RV.tipo = 'V' AND
-										RV.fk_reservacion = id_reservacion_vuelo -- ! Atributo v_es_ida 
-									ORDER BY DBMS_RANDOM.VALUE
-								) WHERE ROWNUM = 1; */
+				
+                SELECT MAX(V.periodo_estimado.fecha_fin) INTO fecha_llegada_vuelo-- PENDIENTE PUEDE QUE SEA MIN
+                FROM Vuelo V, Reservacion RV
+                WHERE RV.v_fk_vuelo = V.id 
+                AND RV.tipo = 'V' 
+                AND RV.fk_reservacion = id_reservacion_vuelo -- ! Atributo v_es_ida 
+                AND RV.v_es_ida = 'F');
 
-                SELECT v.periodo_estimado.fecha_fin INTO fecha_llegada_vuelo
-                FROM vuelo v
-                WHERE v.id = id_vuelo_no_iniciado;
+                -- SELECT v.periodo_estimado.fecha_fin INTO fecha_llegada_vuelo
+                -- FROM vuelo v
+                -- WHERE v.id = id_vuelo_no_iniciado;
 
             --  AGREGACION DE RESERVAS DE ALOJAMIENTOS | PASO 3
             -- Se guarda la fecha de reservacion del vuelo
