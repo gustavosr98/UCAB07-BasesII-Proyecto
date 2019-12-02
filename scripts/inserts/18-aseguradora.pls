@@ -43,7 +43,7 @@ BEGIN
 	INSERT INTO Aseguradora (
 		id,logo,nombre) 
 	VALUES (
-		DEFAULT,
+		6,
 		BFILENAME('DIR_IMG_PROYECTO','aseguradora/06-Seguros_Horizonte.jpg'),
 		'Seguros Horizonte'
 	);
@@ -51,7 +51,7 @@ BEGIN
 	INSERT INTO Aseguradora (
 		id,logo,nombre) 
 	VALUES (
-		6,
+		7,
 		BFILENAME('DIR_IMG_PROYECTO','aseguradora/07-Seguros_Universitas.png'),
 		'Seguros Universitas'
 	);
@@ -59,7 +59,7 @@ BEGIN
 	INSERT INTO Aseguradora (
 		id,logo,nombre) 
 	VALUES (
-		7,
+		8,
 		BFILENAME('DIR_IMG_PROYECTO','aseguradora/08-Seguros_Qualitas.png'),
 		'Seguros Qualitas'
 	);
