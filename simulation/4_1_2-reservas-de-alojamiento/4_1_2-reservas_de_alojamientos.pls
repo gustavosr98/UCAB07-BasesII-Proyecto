@@ -10,6 +10,7 @@ IS
     tipo_alojamiento_a_reservar VARCHAR2(20);
     fecha_base TIMESTAMP;
     fecha_llegada_vuelo TIMESTAMP;
+    fecha_regreso TIMESTAMP := NULL;
     fecha_reservacion_vuelo TIMESTAMP;
     criterio NUMBER;    
     alojamiento_a_reservar habitacion%ROWTYPE;
@@ -88,17 +89,24 @@ BEGIN
                 
             --  AGREGACION DE RESERVAS DE ALOJAMIENTOS | PASO 3
             --  Se guarda la fecha de llegada del vuelo
-				
-                SELECT MAX(V.periodo_estimado.fecha_fin) INTO fecha_llegada_vuelo-- PENDIENTE PUEDE QUE SEA MIN
-                FROM Vuelo V, Reservacion RV
-                WHERE RV.v_fk_vuelo = V.id 
-                AND RV.tipo = 'V' 
-                AND RV.fk_reservacion = id_reservacion_vuelo -- ! Atributo v_es_ida 
-                AND RV.v_es_ida = 'F');
 
-                -- SELECT v.periodo_estimado.fecha_fin INTO fecha_llegada_vuelo
-                -- FROM vuelo v
-                -- WHERE v.id = id_vuelo_no_iniciado;
+                SELECT v.periodo_estimado.fecha_fin INTO fecha_llegada_vuelo
+                FROM vuelo v
+                WHERE v.id = id_vuelo_no_iniciado;
+				
+            --  AGREGACION DE RESERVAS DE ALOJAMIENTOS | PASO 3
+            --  Si hay viaje de regreso, se guarda la fecha 
+
+                if hay_regreso(id_reservacion_vuelo) THEN 
+
+                    SELECT MIN(V.periodo_estimado.fecha_fin) INTO fecha_regreso-- PENDIENTE PUEDE QUE SEA MIN
+                    FROM Vuelo V, Reservacion RV
+                    WHERE RV.v_fk_vuelo = V.id 
+                    --AND RV.tipo = 'V' 
+                    AND RV.v_fk_vuelo = id_reservacion_vuelo 
+                    AND RV.v_es_ida = 'F';
+
+                END IF;
 
             --  AGREGACION DE RESERVAS DE ALOJAMIENTOS | PASO 3
             -- Se guarda la fecha de reservacion del vuelo
@@ -110,17 +118,25 @@ BEGIN
             --  AGREGACION DE RESERVAS DE ALOJAMIENTOS | PASO 3
             -- Se elige el periodo de reserva del alojamiento
 
-							fecha_base := TIEMPO_PKG.EXTRAER(fecha_llegada_vuelo,'DATE');
-							estadia := TO_CHAR(ROUND(DBMS_RANDOM.VALUE(1,10)));
+                fecha_base := TIEMPO_PKG.EXTRAER(fecha_llegada_vuelo,'DATE');
+                estadia := TO_CHAR(ROUND(DBMS_RANDOM.VALUE(1,10)));
 
-							ini_estadia := fecha_base + INTERVAL '13' HOUR;
-							fin_estadia := fecha_base + numToDSInterval(estadia,'DAY');
-							fin_estadia := fin_estadia + INTERVAL '11' HOUR;
+                --si hay vuelo de regreso se hace la estadia en base a la cantidad de dias
+                if fecha_regreso is not null THEN
 
-							p := PERIODO(
-								ini_estadia,
-								fin_estadia
-							);
+                    estadia := TIEMPO_PKG.DIFF(fecha_base, fecha_regreso, 'DAY');
+                    estadia := TO_CHAR(ROUND(DBMS_RANDOM.VALUE(1,estadia)));
+
+                END IF;
+
+                ini_estadia := fecha_base + INTERVAL '13' HOUR;
+                fin_estadia := fecha_base + numToDSInterval(estadia,'DAY');
+                fin_estadia := fin_estadia + INTERVAL '11' HOUR;
+
+                p := PERIODO(
+                    ini_estadia,
+                    fin_estadia
+                );
 
             --  AGREGACION DE RESERVAS DE ALOJAMIENTOS | PASO 4
             --  Se elige un criterio random
