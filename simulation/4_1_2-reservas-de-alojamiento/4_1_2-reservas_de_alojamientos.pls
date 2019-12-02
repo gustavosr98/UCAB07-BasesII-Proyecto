@@ -10,7 +10,7 @@ IS
     tipo_alojamiento_a_reservar VARCHAR2(20);
     fecha_base TIMESTAMP;
     fecha_llegada_vuelo TIMESTAMP;
-    fecha_regreso TIMESTAMP := NULL;
+    fecha_regreso TIMESTAMP;
     fecha_reservacion_vuelo TIMESTAMP;
     criterio NUMBER;    
     alojamiento_a_reservar habitacion%ROWTYPE;
@@ -21,6 +21,7 @@ IS
     ini_estadia TIMESTAMP;
     fin_estadia TIMESTAMP;
     estadia VARCHAR2(10);
+    dif_dias NUMBER;
     i INTEGER;
     p PERIODO;
     condi NUMBER;
@@ -65,7 +66,7 @@ BEGIN
                         AND res.fk_cliente = cl.id
                         AND u.fk_cliente = cl.id
                         AND r.v_fk_vuelo = v.id
-                        AND r.fk_reservacion = NULL
+                        AND r.fk_reservacion is NULL
                         AND v.estatus = 'NO_INICIADO'
                     ORDER BY DBMS_RANDOM.VALUE
 								) tabla
@@ -93,18 +94,43 @@ BEGIN
                 SELECT v.periodo_estimado.fecha_fin INTO fecha_llegada_vuelo
                 FROM vuelo v
                 WHERE v.id = id_vuelo_no_iniciado;
+
+                IF hay_escala(id_vuelo_no_iniciado) THEN 
+
+                    SELECT V.periodo_estimado.fecha_fin INTO fecha_llegada_vuelo
+                    FROM Vuelo V, Reservacion RV
+                    WHERE RV.v_fk_vuelo = V.id 
+                    --AND RV.tipo = 'V' 
+                    AND RV.fk_reservacion = 8 
+                    AND RV.v_es_ida = 'T';
+                    
+                END IF;
 				
             --  AGREGACION DE RESERVAS DE ALOJAMIENTOS | PASO 3
             --  Si hay viaje de regreso, se guarda la fecha 
 
-                if hay_regreso(id_reservacion_vuelo) THEN 
+                out_(1,'hay regreso?   ');
+                dbms_output.put_line(sys.diutil.bool_to_int(hay_regreso(id_reservacion_vuelo))); 
+                OUT_BREAK;
+                OUT_BREAK;
+                OUT_BREAK;
+                OUT_BREAK;
 
-                    SELECT MIN(V.periodo_estimado.fecha_fin) INTO fecha_regreso-- PENDIENTE PUEDE QUE SEA MIN
+                if hay_regreso(id_reservacion_vuelo) = TRUE THEN 
+
+                    SELECT MAX(V.periodo_estimado.fecha_fin) INTO fecha_regreso
                     FROM Vuelo V, Reservacion RV
                     WHERE RV.v_fk_vuelo = V.id 
                     --AND RV.tipo = 'V' 
-                    AND RV.v_fk_vuelo = id_reservacion_vuelo 
+                    AND RV.fk_reservacion = id_reservacion_vuelo
                     AND RV.v_es_ida = 'F';
+
+                    out_(1,'se agarro la fecha_regreso:  ' || TO_CHAR(fecha_regreso));
+                    dbms_output.put_line(sys.diutil.bool_to_int(hay_regreso(id_reservacion_vuelo))); 
+                    OUT_BREAK;
+                    OUT_BREAK;
+                    OUT_BREAK;
+                    OUT_BREAK;
 
                 END IF;
 
@@ -119,15 +145,21 @@ BEGIN
             -- Se elige el periodo de reserva del alojamiento
 
                 fecha_base := TIEMPO_PKG.EXTRAER(fecha_llegada_vuelo,'DATE');
+                fecha_regreso := TIEMPO_PKG.EXTRAER(fecha_regreso,'DATE');
+
                 estadia := TO_CHAR(ROUND(DBMS_RANDOM.VALUE(1,10)));
 
                 --si hay vuelo de regreso se hace la estadia en base a la cantidad de dias
                 if fecha_regreso is not null THEN
 
-                    estadia := TIEMPO_PKG.DIFF(fecha_base, fecha_regreso, 'DAY');
-                    estadia := TO_CHAR(ROUND(DBMS_RANDOM.VALUE(1,estadia)));
+                    dif_dias := TIEMPO_PKG.DIFF(fecha_base, fecha_regreso, 'DAY');
+                    estadia := TO_CHAR(ROUND(DBMS_RANDOM.VALUE(1,dif_dias)));
 
                 END IF;
+
+                DBMS_OUTPUT.PUT_LINE('id reservacion: ' || id_reservacion_vuelo || ' id vuelo: ' || id_vuelo_no_iniciado || ' fecha base: ' || fecha_base || ' fecha regreso: ' || fecha_regreso || ' dif_dias: ' || dif_dias || ' estadia: ' || estadia);
+                OUT_BREAK;
+                OUT_BREAK;
 
                 ini_estadia := fecha_base + INTERVAL '13' HOUR;
                 fin_estadia := fecha_base + numToDSInterval(estadia,'DAY');
