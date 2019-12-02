@@ -10,7 +10,16 @@ IS
 
     llenado NUMBER;
     cantidad_vuelos_por_trayecto NUMBER;
+
+    lOrigen NUMBER;
+    lDestino NUMBER;
 BEGIN
+    OUT_BREAK(2);
+	OUT_(0,'***************************************************************');
+	OUT_(0,'************** SIMULACION: 2 GENERA VUELOS ********************');
+	OUT_(0,'***************************************************************');
+	OUT_BREAK;
+
     OPEN ctray;
     FETCH ctray INTO tray;
 
@@ -28,8 +37,15 @@ BEGIN
             --         TIEMPO_PKG.DIFF( fechas_base.fecha_inicio, fechas_base.fecha_fin, 'DAY' )*0.3
             -- ));
 
-
             --cantidad_vuelos_por_trayecto := DBMS_RANDOM.VALUE(3, 5);
+            SELECT fk_lugar INTO lOrigen FROM Aeropuerto WHERE id = tray.fk_aeropuerto_origen;
+            SELECT fk_lugar INTO lDestino FROM Aeropuerto WHERE id = tray.fk_aeropuerto_destino;
+
+            -- OUT_(2, 'TRAYECTO: ' || tray.id || ' - Distancia: ' || tray.distancia.cantidad || ' ' || tray.distancia.nombre || 'S');
+            -- OUT_(3, 'Origen: ' || getLugar(lOrigen, 'CIUDAD') || ' - Destino: ' || getLugar(lDestino, 'CIUDAD'));
+            -- OUT_(3, 'Cant. vuelos por trayecto: ' || cantidad_vuelos_por_trayecto);
+            -- OUT_BREAK;
+            -- OUT_(0,'-----------------------------------------------------------------------');
 
             WHILE cantidad_vuelos_por_trayecto > 0 LOOP
                 precio := ROUND ( tray.distancia.cantidad / 8 )*DBMS_RANDOM.VALUE(0.8,1.3);
@@ -46,6 +62,12 @@ BEGIN
                         periodo_estimado);
                 
                 cantidad_vuelos_por_trayecto := cantidad_vuelos_por_trayecto - 1;
+
+                -- OUT_(4, 'Avion: ' || avion || ' - Precio: ' || precio);
+                -- OUT_(4, 'Fecha Salida: ' || periodo_estimado.fecha_inicio || ' - Fecha Llegada: ' || periodo_estimado.fecha_fin);
+                -- OUT_BREAK;
+                -- OUT_(0,'-----------------------------------------------------------------------');
+                -- OUT_BREAK;
             END LOOP;
 
             FETCH ctray INTO tray;
@@ -117,6 +139,8 @@ BEGIN
     RETURN promedio;
 END;
 
+
+
 -- EJECUCION
 BEGIN
 	sim_generacion_de_vuelos(PERIODO(
@@ -125,12 +149,17 @@ BEGIN
     ));
 END;
 /
+
+
+
 SELECT COUNT(*) FROM VUELO;
 SELECT COUNT(*) FROM TRAYECTO;
 SELECT COUNT(*) FROM ( SELECT COUNT(*) FROM VUELO GROUP BY fk_trayecto );
 SELECT COUNT(*) FROM VUELO GROUP BY fk_trayecto;
 
 SELECT id, estatus, PRECIO_BASE.cantidad, PERIODO_ESTIMADO.fecha_inicio, PERIODO_ESTIMADO.fecha_fin, FK_AVION, FK_TRAYECTO FROM vuelo;
+
+
 
 --Inserts de prueba
 INSERT INTO Vuelo (fk_avion,fk_trayecto,estatus,precio_base,periodo_estimado,periodo_real)

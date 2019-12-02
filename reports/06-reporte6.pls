@@ -40,8 +40,8 @@ END;
 CREATE OR REPLACE FUNCTION getFormaPago (idPago IN NUMBER, idUsuario IN NUMBER) RETURN VARCHAR2
 IS 
     pag Pago%ROWTYPE;
-
     forma VARCHAR2(100);
+    md NUMBER;
 BEGIN
     SELECT * INTO pag FROM Pago WHERE id = idPago;
 
@@ -49,7 +49,9 @@ BEGIN
         SELECT tipo || ' - ' || compañia || ' - ' SUBSTR(numero, LENGTH(numero) - 3, 4) INTO forma
         FROM Tarjeta WHERE id = pag.fk_tarjeta;
     ELSE
-        forma := 'Millas - ' || getMillasDisponibles(idUsuario) || ' Millas restantes'
+        --forma := 'Millas - ' || getMillasDisponibles(idUsuario) || ' Millas restantes'
+        SELECT millas_disponibles INTO md FROM Vista_Millas WHERE id_usuario = idUsuario;
+        forma := 'Millas - ' || TO_CHAR(md) || ' Millas restantes'
     END IF;
 
     RETURN forma;

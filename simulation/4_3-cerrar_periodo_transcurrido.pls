@@ -1,60 +1,78 @@
 CREATE OR REPLACE PROCEDURE sim_cerrar_periodo_transcurrido (fechas_base IN PERIODO)
 IS 
 BEGIN
+    OUT_BREAK(2);
+	OUT_(0,'***************************************************************');
+	OUT_(0,'************** SIMULACION: 4.3 CERRAR PERIODO *****************');
+	OUT_(0,'***************************************************************');
+	OUT_BREAK;
+
     fechasReales(fechas_base);
     sumarMillas();
-    puntuar();
-    entregarVehicolo();
+    puntuar(fechas_base);
+    entregarVehicolo(fechas_base);
 END;
 
-CREATE OR REPLACE PROCEDURE entregarVehicolo --FALTA HACERLO BIEN
+CREATE OR REPLACE PROCEDURE entregarVehicolo (fechas_base IN PERIODO)
 IS
-    CURSOR creservacion IS 
+    CURSOR creservacion (periodo PERIODO) IS 
         SELECT *
-        FROM Reservacion 
-        WHERE tipo = 'C';
+        FROM Reservacion r
+        WHERE tipo = 'C'
+            AND r.c_periodo.fecha_fin < periodo.fecha_fin;
     rreservacion Reservacion%ROWTYPE;
 
-    locInicial GEOLOCALIZACION;
-    locFinal GEOLOCALIZACION;
-    locVehiculo GEOLOCALIZACION;
+    lCiudad Lugar%ROWTYPE;
+    sDestino Sucursal%ROWTYPE;
 BEGIN
-    OPEN creservacion;
+    OPEN creservacion(fechas_base);
     FETCH creservacion INTO rreservacion;
 
     WHILE creservacion%FOUND 
         LOOP
-            IF (rreservacion.c_periodo.fecha_fin < LOCALTIMESTAMP) THEN
-                SELECT l.localizacion INTO locInicial FROM Sucursal s, Lugar l
-                WHERE s.id = rreservacion.c_fk_sucursal_inicio
-                    AND l.id = s.fk_lugar;
+            SELECT lci.* INTO lCiudad
+            FROM Sucursal s, Lugar lca, Lugar lci
+            WHERE s.id = rreservacion.c_fk_sucursal_inicio
+                AND lca.id = s.fk_lugar
+                AND lci.id = lca.fk_lugar;
 
-                SELECT l.localizacion INTO locFinal FROM Sucursal s, Lugar l
-                WHERE s.id = rreservacion.c_fk_sucursal_fin
-                    AND l.id = s.fk_lugar;
+            SELECT s.* INTO sDestino 
+            FROM Sucursal s, Lugar lca
+            WHERE s.fk_lugar = lca.id
+                AND lca.fk_lugar = lCiudad.id
+                AND ROWNUM = 1
+            ORDER BY DBMS_RANDOM.VALUE;
 
-                SELECT v.localizacion INTO locVehiculo FROM Vehiculo v
-                WHERE v.id = rreservacion.c_fk_vehiculo;
+            UPDATE Reservacion
+            SET c_fk_sucursal_fin = sDestino.id
+            WHERE id = rreservacion.id; 
 
+            UPDATE Vehiculo
+            SET localizacion = lCiudad.localizacion
+            WHERE id = rreservacion.c_fk_vehiculo;
 
-            END IF;
+            OUT_(2, 'Reservacion: ' || rreservacion.id);
+            OUT_(3, 'Ciudad: ' || lCiudad.nombre || ' - Sucursal Origen: ' || rreservacion.c_fk_sucursal_inicio || ' - Sucursal Origen: ' || sDestino.id);
+            OUT_BREAK;
+            OUT_(0,'-----------------------------------------------------------------------');
+            OUT_BREAK;
         END LOOP;
 
     CLOSE creservacion;
 END;
 
-CREATE OR REPLACE PROCEDURE puntuar 
+CREATE OR REPLACE PROCEDURE puntuar (fechas_base IN PERIODO)
 IS 
-    CURSOR chabitacion IS 
+    CURSOR chabitacion (periodo PERIODO) IS 
         SELECT * FROM Reservacion r
         WHERE r.tipo = 'A'
-            AND r.c_periodo.fecha_fin < LOCALTIMESTAMP;
+            AND r.a_periodo.fecha_fin < periodo.fecha_fin;
     rhabitacion Reservacion%ROWTYPE;
 
     puntua INTEGER;
     puntuacion INTEGER;
 BEGIN
-    OPEN chabitacion;
+    OPEN chabitacion(fechas_base);
     FETCH chabitacion INTO rhabitacion;
     
     WHILE chabitacion%FOUND
@@ -67,6 +85,11 @@ BEGIN
                 UPDATE Reservacion
                 SET a_puntuacion = puntuacion
                 WHERE id = rhabitacion.id;
+
+                OUT_(2, 'Reservacion: ' || rhabitacion.id || ' - Puntuación: ' || puntuacion);
+                OUT_BREAK;
+                OUT_(0,'-----------------------------------------------------------------------');
+                OUT_BREAK;
             END IF;
 
             FETCH chabitacion INTO rhabitacion;
@@ -83,8 +106,7 @@ IS
     CURSOR creservacion (idv Vuelo.id%TYPE) IS 
         SELECT *
         FROM Reservacion 
-        WHERE tipo = 'V'    
-            AND v_fk_vuelo = idv;
+        WHERE v_fk_vuelo = idv;
     rreservacion Reservacion%ROWTYPE;
 
     dist NUMBER;
@@ -101,14 +123,21 @@ BEGIN
             WHERE v.id = rvuelo.id
                 AND t.id = rvuelo.fk_trayecto;
 
+            dist := dist * 0.621371;
+
             WHILE creservacion%FOUND    
                 LOOP
                     INSERT INTO Historico_Milla (fk_reservacion_vuelo,cantidad,fecha)
                         VALUES (
                             rreservacion.id,
-                            dist * 0.621371,
+                            dist,
                             rvuelo.periodo_real.fecha_fin);
                 END LOOP;
+
+                OUT_(2, 'Reservacion: ' || rreservacion.id || ' - Millas: ' || dist);
+                OUT_BREAK;
+                OUT_(0,'-----------------------------------------------------------------------');
+                OUT_BREAK;
 
             CLOSE creservacion;
         END LOOP;
@@ -118,45 +147,58 @@ END;
 
 CREATE OR REPLACE PROCEDURE fechasReales (fechas_base IN PERIODO)
 IS 
-    CURSOR cvuelos IS SELECT * FROM Vuelo;
+    CURSOR cvuelos (periodo PERIODO) IS 
+        SELECT v.* FROM Vuelo v
+        WHERE TIEMPO_PKG.DIFF(v.periodo_estimado.fecha_inicio,periodo.fecha_fin, 'MINUTE') < 10;
     rvuelo Vuelo%ROWTYPE;
 
     fecha_salida_real TIMESTAMP;
     fecha_llegada_real TIMESTAMP;
 
     retrasado INTEGER;
-    estatus VARCHAR2(20);
+    estatus VARCHAR2(30);
+
+    tray Trayecto%ROWTYPE;
+    per PERIODO;
 BEGIN
-    OPEN cvuelos;
+    OPEN cvuelos(fechas_base);
     FETCH cvuelos INTO rvuelo;
 
     WHILE cvuelos%FOUND
         LOOP
-            retrasado := ROUND( DBMS_RANDOM.VALUE(1,2) );
+            SELECT * INTO tray FROM Trayecto WHERE id = rvuelo.fk_trayecto;
+
+            retrasado := ROUND( DBMS_RANDOM.VALUE(1,3) );
 
             IF (retrasado = 1) THEN
+                fecha_salida_real := TIEMPO_PKG.RANDOM(PERIODO(rvuelo.periodo_estimado.fecha_inicio,rvuelo.periodo_estimado.fecha_inicio + numToDSInterval( 1, 'HOUR' )));
+                estatus := 'RETRASADO';
+            ELSE
                 fecha_salida_real := rvuelo.periodo_estimado.fecha_inicio;
                 estatus := 'NO_INICIADO';
-            ELSE
-                fecha_salida_real := TIEMPO_PKG.RANDOM(PERIODO(rvuelo.periodo_estimado.fecha_inicio,fechas_base.fecha_fin));
-                estatus := 'RETRASADO';
             END IF;
-            fecha_llegada_real := TIEMPO_PKG.RANDOM(PERIODO(fecha_salida_real + numToDSInterval( 1, 'HOUR' ), fecha_salida_real + numToDSInterval( 15, 'HOUR' )));
-            
-            IF (fecha_llegada_real < LOCALTIMESTAMP) THEN
+
+            per := selectFecha (fecha_salida_real, tray, rvuelo.fk_avion);
+            fecha_llegada_real := per.fecha_fin;
+
+            IF (fecha_llegada_real < fechas_base.fecha_fin) THEN
                 estatus := 'COMPLETADO';
-            ELSIF (TIEMPO_PKG.DIFF(fecha_salida_real, LOCALTIMESTAMP, 'MINUTE') > 5 AND TIEMPO_PKG.DIFF(fecha_salida_real, LOCALTIMESTAMP, 'MINUTE') < 10) THEN
+            ELSIF (TIEMPO_PKG.DIFF(fecha_salida_real, fechas_base.fecha_fin, 'MINUTE') > 5 AND TIEMPO_PKG.DIFF(fecha_salida_real, fechas_base.fecha_fin, 'MINUTE') < 10) THEN
                 estatus := 'EN_TRANSITO';
-            ELSIF (fecha_salida_real < LOCALTIMESTAMP AND fecha_llegada_real > LOCALTIMESTAMP) THEN
+            ELSIF (fecha_salida_real < fechas_base.fecha_fin AND fecha_llegada_real > fechas_base.fecha_fin) THEN
                 estatus := 'EN_VUELO';
             END IF;
             
-            IF (rvuelo.periodo_estimado.fecha_inicio < LOCALTIMESTAMP + numToDSInterval( 10, 'MINUTE' )) THEN
-                UPDATE Vuelo
-                    SET periodo_real = PERIODO(fecha_salida_real,fecha_llegada_real),
-                        estatus = estatus 
-                    WHERE id = rvuelo.id;
-            END IF;
+            UPDATE Vuelo
+                SET periodo_real = per,
+                    estatus = estatus 
+                WHERE id = rvuelo.id;
+
+            OUT_(2, 'Vuelo: ' || rvuelo.id || ' - Estatus: ' || estatus);
+            OUT_(3, 'Fecha Salida Real: ' || per.fecha_inicio || ' - Fecha Llegada Real: ' || per.fecha_fin);
+            OUT_BREAK;
+            OUT_(0,'-----------------------------------------------------------------------');
+            OUT_BREAK;
 
             FETCH cvuelos INTO rvuelo;
         END LOOP;
