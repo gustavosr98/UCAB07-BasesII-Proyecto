@@ -4,21 +4,21 @@ IS
     i_c INTEGER;
     cantVuelos NUMBER;
 
-    CURSOR cvuelo IS SELECT * FROM Vuelo WHERE estatus = 'NO_INICIADO' ORDER BY dbms_random.value;
+    CURSOR cvuelo IS SELECT * FROM Vuelo WHERE estatus = 'NO_INICIADO' AND id IN (SELECT v_fk_vuelo FROM Reservacion) ORDER BY dbms_random.value;
     rvuelo Vuelo%ROWTYPE;
 
     CURSOR creservacion (idv Vuelo.id%TYPE) IS 
         SELECT r.*
-        FROM Usuario u, Pago p, Reservacion r
-        WHERE p.fk_usuario = u.id
-            AND p.fk_reservacion = r.id
-            AND r.v_fk_vuelo = idv;
+        FROM Reservacion r
+        WHERE r.v_fk_vuelo = idv;
     rreservacion Reservacion%ROWTYPE;
 
     vueloNuevo NUMBER;
 
     lOrigen NUMBER;
     lDestino NUMBER;
+
+    cantReservaciones INTEGER;
 BEGIN
     OUT_BREAK(2);
 	OUT_(0,'***************************************************************');
@@ -42,15 +42,18 @@ BEGIN
             WHERE t.id = rvuelo.fk_trayecto 
                 AND ae.id = t.fk_aeropuerto_destino;
 
+            SELECT COUNT(*) INTO cantReservaciones
+            FROM Usuario u, Pago p, Reservacion r
+            WHERE r.v_fk_vuelo = rvuelo.id;
+
             OUT_(2, 'Vuelo a reprogramar: ' || rvuelo.id);
+            OUT_(3, 'Número de reservaciones asociadas a ese vuelo: ' || cantReservaciones);
             OUT_(3, 'Origen: ' || getLugar(lOrigen, 'CIUDAD') || ' - Destino: ' || getLugar(lDestino, 'CIUDAD'));
             OUT_(3, 'Fecha Salida Vieja: ' || rvuelo.periodo_estimado.fecha_inicio || ' - Fecha Llegada Vieja: ' || rvuelo.periodo_estimado.fecha_fin);
             
             updateFechaNueva(fechas_base, rvuelo.periodo_estimado, rvuelo.fk_trayecto, rvuelo.id, rvuelo.fk_avion);
             
-            OUT_BREAK;
-            OUT_(0,'-----------------------------------------------------------------------');
-            OUT_BREAK;
+            OUT_BREAK(2);
 
             OPEN creservacion(rvuelo.id);
             FETCH creservacion INTO rreservacion;
@@ -75,6 +78,9 @@ BEGIN
             
             FETCH cvuelo INTO rvuelo;
             cantidad := cantidad - 1;
+
+            OUT_(0,'-----------------------------------------------------------------------');
+            OUT_BREAK(2);
         END LOOP;
 
     CLOSE cvuelo;
@@ -87,10 +93,12 @@ IS
     segundos_estimados NUMBER;
     per PERIODO;
     tray Trayecto%ROWTYPE;
+    num INTEGER;
 BEGIN
     SELECT * INTO tray FROM Trayecto WHERE id = idTrayecto;
 
-    fecha_salida_estimada := TIEMPO_PKG.RANDOM(PERIODO(periodo_estimado.fecha_inicio,fechas_base.fecha_fin));
+    num := ROUND(DBMS_RANDOM.VALUE(3,5));
+    fecha_salida_estimada := periodo_estimado.fecha_inicio + numToDSInterval( num, 'DAY' );
     per := selectFecha (fecha_salida_estimada, tray, idAvion);
     OUT_(3, 'Fecha Salida Nueva: ' || per.fecha_inicio || ' - Fecha Llegada Nueva: ' || per.fecha_fin);
 
