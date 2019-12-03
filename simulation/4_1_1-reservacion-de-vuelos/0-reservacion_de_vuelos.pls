@@ -308,7 +308,7 @@ BEGIN
 
 					-- PRINT IDA
 						OUT_(3, 'TRAYECTO IDA');
-						OUT_(4, 'Costo Total: ' || costo_total || ' | Fecha llegada final: ' || fecha_final );
+						OUT_(4, 'Costo Total: ' || TO_CHAR(costo_total) || ' | Fecha llegada final: ' || fecha_final );
 						OUT_(4, 'VUELO 1:');
 						OUT_(5,
 							origen1 || ' - ' ||
@@ -336,7 +336,7 @@ BEGIN
 					-- PRINT REGRESO
 						IF (es_ida_vuelta = 'T') THEN
 							OUT_(3, 'TRAYECTO REGRESO');
-							OUT_(4, 'Costo Total: ' || r_costo_total || ' | Fecha llegada final: ' || r_fecha_final );
+							OUT_(4, 'Costo Total: ' || TO_CHAR(r_costo_total) || ' | Fecha llegada final: ' || r_fecha_final );
 							OUT_(4, 'VUELO R_1:');
 							OUT_(5,
 								r_origen1 || ' - ' ||
@@ -426,7 +426,7 @@ BEGIN
 			TIMESTAMP '2019-05-26 12:00:00'
 		),
 		PERIODO(
-				TIMESTAMP '2019-11-01 11:24:50',
+			TIMESTAMP '2019-11-01 11:24:50',
 			TIMESTAMP '2020-01-31 06:47:15'
 		)
 	);
