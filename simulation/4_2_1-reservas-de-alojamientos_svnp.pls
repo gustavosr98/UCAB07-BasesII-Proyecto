@@ -3,6 +3,8 @@ IS
     cant_usuarios NUMBER;
     cant_usuarios_a_reservar NUMBER;
     id_usuario_a_reservar NUMBER;
+    id_cliente NUMBER;
+
 
     tipo_alojamiento_a_reservar VARCHAR2(20);
     fecha_base TIMESTAMP;
@@ -25,6 +27,13 @@ IS
 
     fecha_max TIMESTAMP;
 
+        alojamiento_nombre VARCHAR2(150);
+
+
+    nombre_cliente VARCHAR2(150);
+    id_reservacion_alojamiento NUMBER;
+
+
 BEGIN
 
     --  AGREGACION DE RESERVAS DE ALOJAMIENTOS SVNP| PASO 1
@@ -46,11 +55,13 @@ BEGIN
             --  AGREGACION DE RESERVAS DE ALOJAMIENTOS | PASO 2
             --  Se elige un usuario random
 
-                SELECT tabla.idu
-					INTO id_usuario_a_reservar
+                SELECT tabla.idu, tabla.idcl
+					INTO id_cliente, id_usuario_a_reservar
                 FROM (
-                    SELECT u.id idu
-                    FROM usuario u
+                    SELECT u.id idu, cl.id idcl
+                    FROM usuario u, cliente cl
+                    WHERE u.fk_cliente = cl.id
+
                     ORDER BY DBMS_RANDOM.VALUE
 								) tabla
                 WHERE ROWNUM = 1;
@@ -120,8 +131,8 @@ BEGIN
 
                             while disp = FALSE
                             LOOP
-                                SELECT tabla.idHab, tabla.precioHab INTO id_habitacion, precio_habitacion
-                                FROM (SELECT  h.id as idHab, h.precio_base_noche as precioHab
+                                SELECT tabla.idHab, tabla.precioHab, tabla.aloj INTO id_habitacion, precio_habitacion, alojamiento_nombre
+                                FROM (SELECT  h.id as idHab, h.precio_base_noche as precioHab, al.nombre aloj
                                     FROM alojamiento al, lug_aloj la, habitacion h
                                     WHERE al.tipo = tipo_alojamiento_a_reservar
                                     AND la.fk_alojamiento = al.id
@@ -134,9 +145,9 @@ BEGIN
 
                         ELSE
 
-                            SELECT tabla.idHab, tabla.precioHab INTO  id_habitacion, precio_habitacion
+                            SELECT tabla.idHab, tabla.precioHab, tabla.aloj INTO  id_habitacion, precio_habitacion, alojamiento_nombre
                             FROM (
-															SELECT  h.id as idHab, h.precio_base_noche as precioHab
+															SELECT  h.id as idHab, h.precio_base_noche as precioHab, a.nombre aloj
 															FROM alojamiento a, lug_aloj la, habitacion h
 															WHERE a.tipo = tipo_alojamiento_a_reservar
 																AND la.fk_alojamiento = a.id
@@ -166,9 +177,9 @@ BEGIN
                             AND la.fk_alojamiento = alo.id
                             AND h.fk_lug_aloj = la.id;
 
-                            SELECT tabla.idHab, tabla.precioHab INTO  id_habitacion, precio_habitacion
+                            SELECT tabla.idHab, tabla.precioHab, tabla.aloj INTO  id_habitacion, precio_habitacion, alojamiento_nombre
                             FROM (
-															SELECT  h.id as idHab, h.precio_base_noche as precioHab 
+															SELECT  h.id as idHab, h.precio_base_noche as precioHab, alo.nombre aloj
 															FROM alojamiento alo, lug_aloj la, habitacion h
 															WHERE alo.tipo = tipo_alojamiento_a_reservar
 																AND la.fk_alojamiento = alo.id
@@ -186,9 +197,9 @@ BEGIN
                                 AND la.fk_alojamiento = alo.id
                                 AND h.fk_lug_aloj = la.id;
 
-                                SELECT tabla.idHab, tabla.precioHab INTO  id_habitacion, precio_habitacion
+                                SELECT tabla.idHab, tabla.precioHab, tabla.aloj INTO  id_habitacion, precio_habitacion, alojamiento_nombre
                                 FROM (
-																	SELECT  h.id as idHab, h.precio_base_noche as precioHab   
+																	SELECT  h.id as idHab, h.precio_base_noche as precioHab , alo.nombre aloj  
 																	FROM alojamiento alo, lug_aloj la, habitacion h
 																	WHERE alo.tipo = tipo_alojamiento_a_reservar
 																		AND la.fk_alojamiento = alo.id
@@ -218,7 +229,18 @@ BEGIN
                             fecha_reservacion,
                             id_habitacion,
                             p
-                            );
+                            ) RETURNING id INTO id_reservacion_alojamiento;
+
+                    SELECT id || ': ' || primer_nombre || ' ' || primer_apellido INTO nombre_cliente FROM CLIENTE WHERE id = id_cliente;
+                    OUT_(1,'RESERVA ALOJAMIENTO (ID: '||id_reservacion_alojamiento ||')');
+                    OUT_(3,'Cliente: ' || nombre_cliente);
+                    OUT_(3,'Alojamiento: ' || alojamiento_nombre);
+                    OUT_(3,'Habitacion id: ' || id_habitacion);
+                    OUT_(3,'Reservó el ' || fecha_reservacion || ' para ' || p.fecha_inicio || ' hasta ' || p.fecha_fin);
+
+                    INSERT INTO RESERVA(fk_reservacion,fk_cliente)
+                    VALUES(id_reservacion_alojamiento,id_cliente);
+	                OUT_(0,'-----------------------------------------------------------------------');
 
         END LOOP;   
 
