@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.6.0.final using JasperReports Library version 6.6.0  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="reporte1_jav" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="7a5c9b49-9dc5-422a-ac69-e92cf61ef530">
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="Oracle Adapter "/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="Oracle"/>
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 	<style name="Title" forecolor="#FFFFFF" fontName="Times New Roman" fontSize="50" isBold="false"/>
 	<style name="SubTitle" forecolor="#CCCCCC" fontName="Times New Roman" fontSize="18" isBold="false"/>
@@ -64,7 +64,7 @@
 		<band splitType="Stretch"/>
 	</pageHeader>
 	<columnHeader>
-		<band height="33" splitType="Stretch">
+		<band height="35" splitType="Stretch">
 			<staticText>
 				<reportElement x="280" y="0" width="200" height="33" uuid="e3d28797-6db5-400f-a024-e838de79d8ee">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="a076d711-0184-4b1a-b1a4-96fbed4643da"/>
@@ -93,18 +93,9 @@
 		</band>
 	</columnHeader>
 	<detail>
-		<band height="66" splitType="Stretch"/>
-	</detail>
-	<columnFooter>
-		<band height="7" splitType="Stretch">
-			<line>
-				<reportElement positionType="FixRelativeToBottom" x="0" y="3" width="555" height="1" uuid="501ac6c4-e9d4-43cb-ba6b-7f2f44394cf3"/>
-				<graphicElement>
-					<pen lineWidth="0.5" lineColor="#999999"/>
-				</graphicElement>
-			</line>
+		<band height="73" splitType="Stretch">
 			<frame>
-				<reportElement style="Row" mode="Opaque" x="0" y="-57" width="802" height="64" uuid="34a2ae4b-4055-476b-8676-d499f6af510b"/>
+				<reportElement style="Row" mode="Opaque" x="0" y="4" width="802" height="64" uuid="34a2ae4b-4055-476b-8676-d499f6af510b"/>
 				<textField>
 					<reportElement x="280" y="0" width="200" height="64" uuid="e4ae060b-3294-4315-a8d2-036dd29619b2">
 						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="a076d711-0184-4b1a-b1a4-96fbed4643da"/>
@@ -125,7 +116,7 @@
 				</image>
 			</frame>
 		</band>
-	</columnFooter>
+	</detail>
 	<pageFooter>
 		<band height="40" splitType="Stretch">
 			<frame>
