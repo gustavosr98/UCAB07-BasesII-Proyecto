@@ -32,6 +32,8 @@ IS
     p PERIODO;
     condi NUMBER;
     disp BOOLEAN;
+    booly BOOLEAN;
+    lugar_hab NUMBER;
 
     fecha_max TIMESTAMP;
 
@@ -123,7 +125,9 @@ BEGIN
                     AND lci.id = lca.fk_lugar
                     AND les.id = lci.fk_lugar;
 
-                SELECT FK_LUGAR INTO id_ciudad_destino FROM LUGAR WHERE ID = ciudad_llegada;
+                SELECT FK_LUGAR INTO id_ciudad_destino 
+                FROM LUGAR 
+                WHERE ID = ciudad_llegada;
 
                 SELECT FK_LUGAR INTO pais_llegada 
                 FROM LUGAR 
@@ -212,12 +216,15 @@ BEGIN
 
                         if condi = 0 THEN
 
-                            disp := FALSE;
+                            -- booly := FALSE;
 
-                            while disp = FALSE
-                            LOOP
-                                SELECT tabla.idHab, tabla.precioHab INTO id_habitacion, precio_habitacion
-                                FROM (SELECT  h.id as idHab, la.FK_LUGAR, h.precio_base_noche as precioHab
+                            -- while booly = FALSE
+                            -- LOOP
+                            --     out_(1,'while 1');
+                            --     OUT_BREAK;
+
+                                SELECT tabla.idHab, tabla.precioHab, tabla.fk_lugar INTO id_habitacion, precio_habitacion, lugar_hab
+                                FROM (SELECT  h.id as idHab, h.precio_base_noche as precioHab, la.FK_LUGAR
                                     FROM alojamiento al, lug_aloj la, habitacion h
                                     WHERE al.tipo = tipo_alojamiento_a_reservar
                                     AND la.fk_alojamiento = al.id
@@ -228,14 +235,19 @@ BEGIN
                                     ORDER BY DBMS_RANDOM.VALUE) tabla
                                     WHERE ROWNUM = 1;
 
-                                disp := hab_esta_disponible(id_habitacion);
-                            END LOOP;
+                                booly := es_mismo_pais(lugar_hab,pais_llegada);
+                            -- END LOOP;
 
                         ELSE
 
-                            SELECT tabla.idHab, tabla.precioHab INTO  id_habitacion, precio_habitacion
-                            FROM (
-                                    SELECT  h.id as idHab, h.precio_base_noche as precioHab
+                            -- booly := FALSE;
+
+                            -- while booly = FALSE
+                            -- LOOP
+                            --     out_(1,'while 2');
+                            --     OUT_BREAK;
+                                SELECT tabla.idHab, tabla.precioHab, tabla.fk_lugar INTO id_habitacion, precio_habitacion, lugar_hab
+                                FROM (SELECT  h.id as idHab, h.precio_base_noche as precioHab, la.FK_LUGAR
                                     FROM alojamiento a, lug_aloj la, habitacion h
                                     WHERE a.tipo = tipo_alojamiento_a_reservar
                                         AND la.fk_alojamiento = a.id
@@ -254,6 +266,9 @@ BEGIN
                                     ORDER BY h.precio_base_noche.cantidad ASC, DBMS_RANDOM.VALUE ) tabla
                             WHERE ROWNUM = 1;
 
+                            -- booly := es_mismo_pais(lugar_hab,pais_llegada);
+                            -- END LOOP;
+
                         END IF;
 
                 ELSIF criterio = 2 THEN  -- Más actual
@@ -262,6 +277,12 @@ BEGIN
 
                         IF condi = 0 THEN
 
+                            -- booly := FALSE;
+
+                            -- while booly = FALSE
+                            -- LOOP
+                            -- out_(1,'while 3');
+                            --     OUT_BREAK;
                             SELECT  MAX(alo.fecha_fundacion) into fecha_max 
                             FROM alojamiento alo, lug_aloj la, habitacion h
                             WHERE alo.tipo = tipo_alojamiento_a_reservar
@@ -269,9 +290,8 @@ BEGIN
                             AND h.fk_lug_aloj = la.id
                             AND (SELECT FK_LUGAR FROM LUGAR WHERE ID = (SELECT FK_LUGAR FROM LUGAR WHERE ID = la.fk_lugar)) = pais_llegada; --la.fk_lugar IN (SELECT ID FROM LUGAR WHERE FK_LUGAR = ciudad_llegada)
 
-                            SELECT tabla.idHab, tabla.precioHab INTO  id_habitacion, precio_habitacion
-                            FROM (
-															SELECT  h.id as idHab, h.precio_base_noche as precioHab 
+                                SELECT tabla.idHab, tabla.precioHab, tabla.fk_lugar INTO id_habitacion, precio_habitacion, lugar_hab
+                                FROM (SELECT  h.id as idHab, h.precio_base_noche as precioHab, la.FK_LUGAR
 															FROM alojamiento alo, lug_aloj la, habitacion h
 															WHERE alo.tipo = tipo_alojamiento_a_reservar
 																AND la.fk_alojamiento = alo.id
@@ -280,11 +300,20 @@ BEGIN
                                                                 AND la.fk_lugar IN (SELECT ID FROM LUGAR WHERE FK_LUGAR = ciudad_llegada)
 																ORDER BY DBMS_RANDOM.VALUE
 														) tabla
-                            WHERE ROWNUM =1;
+                                WHERE ROWNUM = 1;
+
+                            -- booly := es_mismo_pais(lugar_hab,pais_llegada);
+                            -- END LOOP;
 
                         ELSE 
 
-                                SELECT h.id, h.precio_base_noche into id_habitacion, precio_habitacion 
+                            -- booly := FALSE;
+
+                            -- while booly = FALSE
+                            -- LOOP
+                                -- out_(1,'while 4');
+                                -- OUT_BREAK;
+                                SELECT h.id, h.precio_base_noche, la.fk_lugar INTO id_habitacion, precio_habitacion, lugar_hab
                                 FROM alojamiento alo, lug_aloj la, habitacion h
                                 WHERE alo.tipo = tipo_alojamiento_a_reservar
                                 AND la.fk_alojamiento = alo.id
@@ -292,15 +321,18 @@ BEGIN
                                 -- AND (SELECT FK_LUGAR FROM LUGAR WHERE ID = (SELECT FK_LUGAR FROM LUGAR WHERE ID = la.fk_lugar)) = pais_llegada --la.fk_lugar IN (SELECT ID FROM LUGAR WHERE FK_LUGAR = ciudad_llegada)
 
                                 AND NOT EXISTS (
-                                	SELECT r.id 
-                                	FROM reservacion r
-                                	WHERE r.a_periodo.fecha_inicio < ini_estadia
-                                		AND r.a_periodo.fecha_fin > fin_estadia
-                                		AND r.a_fk_habitacion = h.id
+                                    SELECT r.id 
+                                    FROM reservacion r
+                                    WHERE r.a_periodo.fecha_inicio < ini_estadia
+                                        AND r.a_periodo.fecha_fin > fin_estadia
+                                        AND r.a_fk_habitacion = h.id
                                 )
 
                                 AND ROWNUM = 1
                                 order by alo.fecha_fundacion DESC;
+
+                            -- booly := es_mismo_pais(lugar_hab,pais_llegada);
+                            -- END LOOP;
 
                         END IF;
 
@@ -330,6 +362,7 @@ BEGIN
 
         END LOOP;   
 END;    
+
 
 
 -- EJECUCION
