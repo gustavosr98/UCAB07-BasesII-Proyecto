@@ -300,7 +300,7 @@ BEGIN
                 --  AGREGACION DE RESERVAS DE VEHICULOS | PASO 6
                 -- Se inserta la reservacion
                     out_(1, 'voy a insertar');
-                    INSERT INTO RESERVACION(tipo,precio_total,esta_cancelada,fecha_reservacion,FK_RESERVACION, c_fk_vehiculo, c_fk_sucursal_inicio,c_fk_sucursal_fin,c_periodo) 
+                    INSERT INTO RESERVACION(tipo,precio_total,esta_cancelada,fecha_reservacion,FK_RESERVACION, c_fk_vehiculo, c_fk_sucursal_inicio,c_periodo) 
                     VALUES('C',
                             get_precio_total(ini_alquiler,fin_alquiler,precio_vehiculo),
                             'F',
@@ -308,7 +308,6 @@ BEGIN
                             id_reservacion_vuelo,
                             id_vehiculo,
                             id_sucursal_ini,
-                            id_sucursal_fin,
                             p
                             );
 
