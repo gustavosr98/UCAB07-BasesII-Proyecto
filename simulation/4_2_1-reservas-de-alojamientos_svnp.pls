@@ -1,15 +1,11 @@
 CREATE OR REPLACE PROCEDURE sim_reservas_de_alojamientos_svnp(rango PERIODO)
 IS
-    id_reservacion_vuelo NUMBER;
     cant_usuarios NUMBER;
     cant_usuarios_a_reservar NUMBER;
     id_usuario_a_reservar NUMBER;
-    id_vuelo_no_iniciado NUMBER;
 
-    cant_alojamientos NUMBER;
     tipo_alojamiento_a_reservar VARCHAR2(20);
     fecha_base TIMESTAMP;
-    fecha_llegada_vuelo TIMESTAMP;
     fecha_regreso TIMESTAMP;
     fecha_reservacion TIMESTAMP;
     criterio NUMBER;    
@@ -77,7 +73,7 @@ BEGIN
                 fecha_base := TIMESTAMP '1000-01-01 00:00:00';
 
                 while fecha_base < fecha_reservacion LOOP
-                    OUT_(1,'while 1');
+                    -- OUT_(1,'while 1');
                     fecha_base := TIEMPO_PKG.random(rango);
 
                 END LOOP;
@@ -86,7 +82,7 @@ BEGIN
 
                 while fecha_regreso < fecha_base LOOP
                    
-                    OUT_(1,'while 2');
+                    -- OUT_(1,'while 2');
                     fecha_regreso := TIEMPO_PKG.random(rango);
 
                 END LOOP;
@@ -215,14 +211,13 @@ BEGIN
                 --  AGREGACION DE RESERVAS DE ALOJAMIENTOS | PASO 6
                 -- Se inserta la reservacion
 
-                    INSERT INTO RESERVACION(tipo,precio_total,esta_cancelada,fecha_reservacion, a_fk_habitacion, a_periodo,fk_reservacion) 
+                    INSERT INTO RESERVACION(tipo,precio_total,esta_cancelada,fecha_reservacion, a_fk_habitacion, a_periodo) 
                     VALUES('A',
                             get_precio_total(ini_estadia,fin_estadia,precio_habitacion),
                             'F',
                             fecha_reservacion,
                             id_habitacion,
-                            p,
-                            id_reservacion_vuelo
+                            p
                             );
 
         END LOOP;   

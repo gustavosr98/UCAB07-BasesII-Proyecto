@@ -8,9 +8,8 @@ BEGIN
 	OUT_BREAK;
 
     fechasReales(fechas_base);
-    sumarMillas();
-    puntuar(fechas_base);
-    entregarVehicolo(fechas_base);
+    --puntuar(fechas_baswe);
+    --entregarVehicolo(fechas_base);
 END;
 
 CREATE OR REPLACE PROCEDURE entregarVehicolo (fechas_base IN PERIODO)
@@ -98,71 +97,32 @@ BEGIN
     CLOSE chabitacion;
 END;
 
-CREATE OR REPLACE PROCEDURE sumarMillas
-IS 
-    CURSOR cvuelos IS SELECT * FROM Vuelo WHERE estatus = 'COMPLETADO';
-    rvuelo Vuelo%ROWTYPE; 
-
-    CURSOR creservacion (idv Vuelo.id%TYPE) IS 
-        SELECT *
-        FROM Reservacion 
-        WHERE v_fk_vuelo = idv;
-    rreservacion Reservacion%ROWTYPE;
-
-    dist NUMBER;
-BEGIN
-    OPEN cvuelos;
-    FETCH cvuelos INTO rvuelo;
-
-    WHILE cvuelos%FOUND
-        LOOP
-            OPEN creservacion(rvuelo.id);
-            FETCH creservacion INTO rreservacion;
-
-            SELECT t.distancia.cantidad INTO dist FROM Trayecto t, Vuelo v
-            WHERE v.id = rvuelo.id
-                AND t.id = rvuelo.fk_trayecto;
-
-            dist := dist * 0.621371;
-
-            WHILE creservacion%FOUND    
-                LOOP
-                    INSERT INTO Historico_Milla (fk_reservacion_vuelo,cantidad,fecha)
-                        VALUES (
-                            rreservacion.id,
-                            dist,
-                            rvuelo.periodo_real.fecha_fin);
-                END LOOP;
-
-                OUT_(2, 'Reservacion: ' || rreservacion.id || ' - Millas: ' || dist);
-                OUT_BREAK;
-                OUT_(0,'-----------------------------------------------------------------------');
-                OUT_BREAK;
-
-            CLOSE creservacion;
-        END LOOP;
-
-    CLOSE cvuelos; 
-END;
-
 CREATE OR REPLACE PROCEDURE fechasReales (fechas_base IN PERIODO)
 IS 
     CURSOR cvuelos (periodo PERIODO) IS 
         SELECT v.* FROM Vuelo v
-        WHERE TIEMPO_PKG.DIFF(v.periodo_estimado.fecha_inicio,periodo.fecha_fin, 'MINUTE') < 10;
+        WHERE v.periodo_estimado.fecha_inicio < periodo.fecha_fin + numToDSInterval( 1, 'HOUR' ) AND
+            v.periodo_estimado.fecha_inicio >= periodo.fecha_inicio AND
+            v.estatus = 'NO_INICIADO';  
     rvuelo Vuelo%ROWTYPE;
 
     fecha_salida_real TIMESTAMP;
     fecha_llegada_real TIMESTAMP;
 
     retrasado INTEGER;
-    estatus VARCHAR2(30);
+    est VARCHAR2(20);
 
     tray Trayecto%ROWTYPE;
     per PERIODO;
+    cantR INTEGER;
 BEGIN
     OPEN cvuelos(fechas_base);
     FETCH cvuelos INTO rvuelo;
+
+    OUT_(2, 'Fecha Periodo Inicio: ' ||fechas_base.fecha_inicio || ' - Fecha Periodo Fin: ' ||fechas_base.fecha_fin);
+    OUT_BREAK;
+    OUT_(0,'-----------------------------------------------------------------------');
+    OUT_BREAK;
 
     WHILE cvuelos%FOUND
         LOOP
@@ -172,36 +132,87 @@ BEGIN
 
             IF (retrasado = 1) THEN
                 fecha_salida_real := TIEMPO_PKG.RANDOM(PERIODO(rvuelo.periodo_estimado.fecha_inicio,rvuelo.periodo_estimado.fecha_inicio + numToDSInterval( 1, 'HOUR' )));
-                estatus := 'RETRASADO';
+                est := 'RETRASADO';
             ELSE
                 fecha_salida_real := rvuelo.periodo_estimado.fecha_inicio;
-                estatus := 'NO_INICIADO';
+                est := 'NO_INICIADO';
             END IF;
 
             per := selectFecha (fecha_salida_real, tray, rvuelo.fk_avion);
             fecha_llegada_real := per.fecha_fin;
 
             IF (fecha_llegada_real < fechas_base.fecha_fin) THEN
-                estatus := 'COMPLETADO';
+                est := 'COMPLETADO';
             ELSIF (TIEMPO_PKG.DIFF(fecha_salida_real, fechas_base.fecha_fin, 'MINUTE') > 5 AND TIEMPO_PKG.DIFF(fecha_salida_real, fechas_base.fecha_fin, 'MINUTE') < 10) THEN
-                estatus := 'EN_TRANSITO';
+                est := 'EN_TRANSITO';
             ELSIF (fecha_salida_real < fechas_base.fecha_fin AND fecha_llegada_real > fechas_base.fecha_fin) THEN
-                estatus := 'EN_VUELO';
+                est := 'EN_VUELO';
+                OUT_(2, 'Vuelo: ' || rvuelo.id || ' - Estatus: ' || est || ' - Cantidad Reservaciones: ' || cantR);
+                OUT_(3, 'Fecha Salida Estimada: ' || rvuelo.periodo_estimado.fecha_inicio || ' - Fecha Llegada Estimada: ' || rvuelo.periodo_estimado.fecha_fin);
+                OUT_(3, 'Fecha Salida Real: ' || per.fecha_inicio || ' - Fecha Llegada Real: ' || per.fecha_fin);
+                OUT_BREAK;
+                OUT_(0,'-----------------------------------------------------------------------');
+                OUT_BREAK;
             END IF;
             
             UPDATE Vuelo
                 SET periodo_real = per,
-                    estatus = estatus 
+                    estatus = est 
                 WHERE id = rvuelo.id;
 
-            OUT_(2, 'Vuelo: ' || rvuelo.id || ' - Estatus: ' || estatus);
-            OUT_(3, 'Fecha Salida Real: ' || per.fecha_inicio || ' - Fecha Llegada Real: ' || per.fecha_fin);
-            OUT_BREAK;
-            OUT_(0,'-----------------------------------------------------------------------');
-            OUT_BREAK;
+            SELECT COUNT(*) INTO cantR 
+            FROM Reservacion
+            WHERE v_fk_vuelo = rvuelo.id;
+
+
+            IF (est = 'COMPLETADO' AND cantR > 0) THEN
+                OUT_(2, 'Vuelo: ' || rvuelo.id || ' - Estatus: ' || est || ' - Cantidad Reservaciones: ' || cantR);
+                OUT_(3, 'Fecha Salida Estimada: ' || rvuelo.periodo_estimado.fecha_inicio || ' - Fecha Llegada Estimada: ' || rvuelo.periodo_estimado.fecha_fin);
+                OUT_(3, 'Fecha Salida Real: ' || per.fecha_inicio || ' - Fecha Llegada Real: ' || per.fecha_fin);
+                OUT_BREAK;
+                OUT_(0,'-----------------------------------------------------------------------');
+                OUT_BREAK;
+                sumarMillas(rvuelo.id, rvuelo.fk_trayecto, fecha_llegada_real);
+            END IF;
 
             FETCH cvuelos INTO rvuelo;
         END LOOP;
 
     CLOSE cvuelos;
+END;
+
+CREATE OR REPLACE PROCEDURE sumarMillas (idVuelo IN NUMBER, idTrayecto IN NUMBER, fechaFin IN TIMESTAMP)
+IS 
+    CURSOR creservacion (idv Vuelo.id%TYPE) IS 
+        SELECT r.*
+        FROM Reservacion r
+        WHERE r.v_fk_vuelo = idv;
+    rreservacion Reservacion%ROWTYPE;
+
+    dist NUMBER;
+BEGIN
+	OPEN creservacion(idVuelo);
+	FETCH creservacion INTO rreservacion;
+
+	SELECT ROUND(t.distancia.cantidad * 0.621371) INTO dist FROM Trayecto t
+	WHERE t.id = idTrayecto;
+
+	WHILE creservacion%FOUND LOOP
+		INSERT INTO Historico_Milla (fk_reservacion_vuelo,cantidad,fecha)
+				VALUES (
+						rreservacion.id,
+						dist,
+						fechaFin
+				);
+
+		OUT_(2, 'Reservacion: ' || rreservacion.id || ' - Millas: ' || dist);
+		OUT_BREAK;
+
+		FETCH creservacion INTO rreservacion;
+	END LOOP;
+
+	OUT_(0,'-----------------------------------------------------------------------');
+	OUT_BREAK;
+
+	CLOSE creservacion;
 END;
