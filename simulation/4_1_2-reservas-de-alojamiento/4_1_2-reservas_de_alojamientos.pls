@@ -37,7 +37,15 @@ IS
 
     fecha_max TIMESTAMP;
 
+    --
+    alojamiento_nombre VARCHAR2(150);
+    nombre_cliente VARCHAR2(150);
 BEGIN
+    OUT_BREAK(2);
+	OUT_(0,'***************************************************************');
+	OUT_(0,'********** SIMULACION: 4.1.2 RESERVA ALOJAMIENTOS *************');
+	OUT_(0,'***************************************************************');
+	OUT_BREAK;
 
     --  AGREGACION DE RESERVAS DE ALOJAMIENTOS | PASO 1
     --  Usuarios que tienen reservaciones de vuelo no iniciado
@@ -133,18 +141,6 @@ BEGIN
                 FROM LUGAR 
                 WHERE ID = ciudad_llegada;
 
-                -- out_(1, 'CIUDAD LLEGADA: ' || ciudad_llegada || 'CIUDAD DESTINO' || id_ciudad_destino);
-                -- OUT_BREAK;
-				
-            --  AGREGACION DE RESERVAS DE ALOJAMIENTOS | PASO 3
-            --  Si hay viaje de regreso, se guarda la fecha 
-
-                -- out_(1,'hay regreso?   ');
-                -- dbms_output.put_line(sys.diutil.bool_to_int(hay_regreso(id_reservacion_vuelo))); 
-                -- OUT_BREAK;
-                -- OUT_BREAK;
-                -- OUT_BREAK;
-                -- OUT_BREAK;
 
                 if hay_regreso(id_reservacion_vuelo) = TRUE THEN 
 
@@ -155,12 +151,6 @@ BEGIN
                     AND RV.fk_reservacion = id_reservacion_vuelo
                     AND RV.v_es_ida = 'F';
 
-                    -- out_(1,'se agarro la fecha_regreso:  ' || TO_CHAR(fecha_regreso));
-                    -- dbms_output.put_line(sys.diutil.bool_to_int(hay_regreso(id_reservacion_vuelo))); 
-                    -- OUT_BREAK;
-                    -- OUT_BREAK;
-                    -- OUT_BREAK;
-                    -- OUT_BREAK;
 
                 END IF;
 
@@ -223,8 +213,8 @@ BEGIN
                             --     out_(1,'while 1');
                             --     OUT_BREAK;
 
-                                SELECT tabla.idHab, tabla.precioHab, tabla.fk_lugar INTO id_habitacion, precio_habitacion, lugar_hab
-                                FROM (SELECT  h.id as idHab, h.precio_base_noche as precioHab, la.FK_LUGAR
+                                SELECT tabla.idHab, tabla.precioHab, tabla.fk_lugar, tabla.aloj INTO id_habitacion, precio_habitacion, lugar_hab, alojamiento_nombre
+                                FROM (SELECT  h.id as idHab, h.precio_base_noche as precioHab, la.FK_LUGAR, al.nombre aloj
                                     FROM alojamiento al, lug_aloj la, habitacion h
                                     WHERE al.tipo = tipo_alojamiento_a_reservar
                                     AND la.fk_alojamiento = al.id
@@ -246,8 +236,8 @@ BEGIN
                             -- LOOP
                             --     out_(1,'while 2');
                             --     OUT_BREAK;
-                                SELECT tabla.idHab, tabla.precioHab, tabla.fk_lugar INTO id_habitacion, precio_habitacion, lugar_hab
-                                FROM (SELECT  h.id as idHab, h.precio_base_noche as precioHab, la.FK_LUGAR
+                                SELECT tabla.idHab, tabla.precioHab, tabla.fk_lugar, tabla.aloj INTO id_habitacion, precio_habitacion, lugar_hab, alojamiento_nombre
+                                FROM (SELECT  h.id as idHab, h.precio_base_noche as precioHab, la.FK_LUGAR, a.nombre aloj
                                     FROM alojamiento a, lug_aloj la, habitacion h
                                     WHERE a.tipo = tipo_alojamiento_a_reservar
                                         AND la.fk_alojamiento = a.id
@@ -290,8 +280,8 @@ BEGIN
                             AND h.fk_lug_aloj = la.id;
                             -- AND (SELECT FK_LUGAR FROM LUGAR WHERE ID = (SELECT FK_LUGAR FROM LUGAR WHERE ID = la.fk_lugar)) = pais_llegada; --la.fk_lugar IN (SELECT ID FROM LUGAR WHERE FK_LUGAR = ciudad_llegada)
 
-                                SELECT tabla.idHab, tabla.precioHab, tabla.fk_lugar INTO id_habitacion, precio_habitacion, lugar_hab
-                                FROM (SELECT  h.id as idHab, h.precio_base_noche as precioHab, la.FK_LUGAR
+                                SELECT tabla.idHab, tabla.precioHab, tabla.fk_lugar, tabla.aloj INTO id_habitacion, precio_habitacion, lugar_hab, alojamiento_nombre
+                                FROM (SELECT  h.id as idHab, h.precio_base_noche as precioHab, la.FK_LUGAR, alo.nombre aloj
 															FROM alojamiento alo, lug_aloj la, habitacion h
 															WHERE alo.tipo = tipo_alojamiento_a_reservar
 																AND la.fk_alojamiento = alo.id
@@ -313,7 +303,7 @@ BEGIN
                             -- LOOP
                                 -- out_(1,'while 4');
                                 -- OUT_BREAK;
-                                SELECT h.id, h.precio_base_noche, la.fk_lugar INTO id_habitacion, precio_habitacion, lugar_hab
+                                SELECT h.id, h.precio_base_noche, la.fk_lugar, alo.nombre INTO id_habitacion, precio_habitacion, lugar_hab, alojamiento_nombre
                                 FROM alojamiento alo, lug_aloj la, habitacion h
                                 WHERE alo.tipo = tipo_alojamiento_a_reservar
                                 AND la.fk_alojamiento = alo.id
@@ -349,16 +339,18 @@ BEGIN
                             id_habitacion,
                             p,
                             id_reservacion_vuelo
-                            ) RETURNING id INTO id_reservacion_alojamiento;
-
-                    -- OUT_BREAK;
-                    -- OUT_(1,id_reservacion_alojamiento || ' <- reservacion alojamiento , cliente-> ' || id_cliente);
-                    -- OUT_BREAK;
-                    -- OUT_BREAK;
-
+                    ) RETURNING id INTO id_reservacion_alojamiento;
+                    
+                    SELECT id || ': ' || primer_nombre || ' ' || primer_apellido INTO nombre_cliente FROM CLIENTE WHERE id = id_cliente;
+                    OUT_(1,'RESERVA ALOJAMIENTO (ID: '||id_reservacion_alojamiento ||')');
+                    OUT_(3,'Cliente: ' || nombre_cliente);
+                    OUT_(3,'Alojamiento: ' || alojamiento_nombre);
+                    OUT_(3,'Habitacion id: ' || id_habitacion);
+                    OUT_(3,'Reservó el ' || fecha_reservacion_vuelo || ' para ' || p.fecha_inicio || ' hasta ' || p.fecha_fin);
 
                     INSERT INTO RESERVA(fk_reservacion,fk_cliente)
                     VALUES(id_reservacion_alojamiento,id_cliente);
+	                OUT_(0,'-----------------------------------------------------------------------');
 
         END LOOP;   
 END;    
