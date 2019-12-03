@@ -6,10 +6,15 @@ BEGIN
 	OUT_(0,'************** SIMULACION: 4.3 CERRAR PERIODO *****************');
 	OUT_(0,'***************************************************************');
 	OUT_BREAK;
-
+	
+    OUT_(0,'************* SIMULATION: CERRAR VUELOS  **********************');
     fechasReales(fechas_base);
-    --puntuar(fechas_baswe);
-    --entregarVehicolo(fechas_base);
+  
+    OUT_(0,'************** SIMULATION: PUNTUAR ALOJAMIENTOS ***************');
+    puntuar(fechas_base);
+    
+    OUT_(0,'************** SIMULATION: ENTREGAR VEHICULOS *****************');
+    entregarVehicolo(fechas_base);
 END;
 
 CREATE OR REPLACE PROCEDURE entregarVehicolo (fechas_base IN PERIODO)
@@ -52,7 +57,6 @@ BEGIN
 
             OUT_(2, 'Reservacion: ' || rreservacion.id);
             OUT_(3, 'Ciudad: ' || lCiudad.nombre || ' - Sucursal Origen: ' || rreservacion.c_fk_sucursal_inicio || ' - Sucursal Origen: ' || sDestino.id);
-            OUT_BREAK;
             OUT_(0,'-----------------------------------------------------------------------');
             OUT_BREAK;
         END LOOP;
@@ -86,7 +90,6 @@ BEGIN
                 WHERE id = rhabitacion.id;
 
                 OUT_(2, 'Reservacion: ' || rhabitacion.id || ' - Puntuación: ' || puntuacion);
-                OUT_BREAK;
                 OUT_(0,'-----------------------------------------------------------------------');
                 OUT_BREAK;
             END IF;
@@ -120,7 +123,6 @@ BEGIN
     FETCH cvuelos INTO rvuelo;
 
     OUT_(2, 'Fecha Periodo Inicio: ' ||fechas_base.fecha_inicio || ' - Fecha Periodo Fin: ' ||fechas_base.fecha_fin);
-    OUT_BREAK;
     OUT_(0,'-----------------------------------------------------------------------');
     OUT_BREAK;
 
