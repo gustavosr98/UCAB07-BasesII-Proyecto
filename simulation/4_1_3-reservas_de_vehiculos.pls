@@ -298,7 +298,7 @@ BEGIN
 
 
                     SELECT id || ': ' || primer_nombre || ' ' || primer_apellido INTO nombre_cliente FROM CLIENTE WHERE id = id_cliente;
-                    OUT_(1,'RESERVA ALOJAMIENTO (ID: '||id_reservacion_vehiculo ||')');
+                    OUT_(1,'RESERVA VEHICULO (ID: '||id_reservacion_vehiculo ||')');
                     OUT_(3,'Cliente: ' || nombre_cliente);
                     OUT_(3,'ID vehiculo: ' || id_vehiculo);
                     OUT_(3,'Reservó el ' || fecha_reservacion_vuelo || ' para ' || p.fecha_inicio || ' hasta ' || p.fecha_fin);
