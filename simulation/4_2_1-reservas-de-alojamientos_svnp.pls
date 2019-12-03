@@ -1,7 +1,7 @@
-CREATE OR REPLACE PROCEDURE sim_reservas_de_alojamientos
+CREATE OR REPLACE PROCEDURE sim_reservas_de_alojamientos_svnp(rango PERIODO)
 IS
     id_reservacion_vuelo NUMBER;
-    cant_usuarios_con_reservaciones_de_vuelo NUMBER;
+    cant_usuarios NUMBER;
     cant_usuarios_a_reservar NUMBER;
     id_usuario_a_reservar NUMBER;
     id_vuelo_no_iniciado NUMBER;
@@ -11,7 +11,7 @@ IS
     fecha_base TIMESTAMP;
     fecha_llegada_vuelo TIMESTAMP;
     fecha_regreso TIMESTAMP;
-    fecha_reservacion_vuelo TIMESTAMP;
+    fecha_reservacion TIMESTAMP;
     criterio NUMBER;    
     alojamiento_a_reservar habitacion%ROWTYPE;
 
@@ -31,23 +31,17 @@ IS
 
 BEGIN
 
-    --  AGREGACION DE RESERVAS DE ALOJAMIENTOS | PASO 1
-    --  Usuarios que tienen reservaciones de vuelo no iniciado
+    --  AGREGACION DE RESERVAS DE ALOJAMIENTOS SVNP| PASO 1
+    --  Cantidad de usuarios
 
-			SELECT COUNT(*) INTO cant_usuarios_con_reservaciones_de_vuelo
-			FROM usuario u, reserva res, cliente cl, reservacion r, vuelo v
-			WHERE 
-				r.v_fk_vuelo = v.id
-				AND res.fk_reservacion = r.id
-				AND res.fk_cliente = cl.id
-				AND u.fk_cliente = cl.id
-				AND v.estatus = 'NO_INICIADO'; 
+			SELECT COUNT(*) INTO cant_usuarios
+			FROM usuario u;
 
-    --  AGREGACION DE RESERVAS DE ALOJAMIENTOS | PASO 1
+    --  AGREGACION DE RESERVAS DE ALOJAMIENTOS SVNP| PASO 1
     --  Random de usuarios a reservar
 
-        cant_usuarios_a_reservar := ROUND(DBMS_RANDOM.VALUE(1,cant_usuarios_con_reservaciones_de_vuelo));
-
+        cant_usuarios_a_reservar := ROUND(DBMS_RANDOM.VALUE(1,cant_usuarios));
+    
     --  AGREGACION DE RESERVAS DE ALOJAMIENTOS | PASO 1
     --  Se reserva la cantidad indicada
 
@@ -56,27 +50,14 @@ BEGIN
             --  AGREGACION DE RESERVAS DE ALOJAMIENTOS | PASO 2
             --  Se elige un usuario random
 
-                SELECT tabla.idu, tabla.idv, tabla.idr 
-					INTO id_usuario_a_reservar, id_vuelo_no_iniciado, id_reservacion_vuelo
+                SELECT tabla.idu
+					INTO id_usuario_a_reservar
                 FROM (
-                    SELECT u.id idu, v.id idv, r.id idr
-                    FROM usuario u, reserva res, cliente cl, reservacion r, vuelo v
-                    WHERE 
-                        res.fk_reservacion = r.id
-                        AND res.fk_cliente = cl.id
-                        AND u.fk_cliente = cl.id
-                        AND r.v_fk_vuelo = v.id
-                        AND r.fk_reservacion is NULL
-                        AND v.estatus = 'NO_INICIADO'
+                    SELECT u.id idu
+                    FROM usuario u
                     ORDER BY DBMS_RANDOM.VALUE
 								) tabla
                 WHERE ROWNUM = 1;
-
-            --  AGREGACION DE RESERVAS DE ALOJAMIENTOS | PASO 2
-            --  Se cuentan cuantos alojamientos hay
-
-                SELECT COUNT(*) INTO cant_alojamientos
-                FROM alojamiento;
 
             --  AGREGACION DE RESERVAS DE ALOJAMIENTOS | PASO 3
             -- Se elige TIPO de alojamiento random
@@ -89,77 +70,32 @@ BEGIN
                 WHERE ROWNUM = 1;
                 
             --  AGREGACION DE RESERVAS DE ALOJAMIENTOS | PASO 3
-            --  Se guarda la fecha de llegada del vuelo
-
-                SELECT v.periodo_estimado.fecha_fin INTO fecha_llegada_vuelo
-                FROM vuelo v
-                WHERE v.id = id_vuelo_no_iniciado;
-
-                IF hay_escala(id_vuelo_no_iniciado) THEN 
-
-                    SELECT V.periodo_estimado.fecha_fin INTO fecha_llegada_vuelo
-                    FROM Vuelo V, Reservacion RV
-                    WHERE RV.v_fk_vuelo = V.id 
-                    --AND RV.tipo = 'V' 
-                    AND RV.fk_reservacion = 8 
-                    AND RV.v_es_ida = 'T';
-                    
-                END IF;
-				
-            --  AGREGACION DE RESERVAS DE ALOJAMIENTOS | PASO 3
-            --  Si hay viaje de regreso, se guarda la fecha 
-
-                out_(1,'hay regreso?   ');
-                dbms_output.put_line(sys.diutil.bool_to_int(hay_regreso(id_reservacion_vuelo))); 
-                OUT_BREAK;
-                OUT_BREAK;
-                OUT_BREAK;
-                OUT_BREAK;
-
-                if hay_regreso(id_reservacion_vuelo) = TRUE THEN 
-
-                    SELECT MAX(V.periodo_estimado.fecha_fin) INTO fecha_regreso
-                    FROM Vuelo V, Reservacion RV
-                    WHERE RV.v_fk_vuelo = V.id 
-                    --AND RV.tipo = 'V' 
-                    AND RV.fk_reservacion = id_reservacion_vuelo
-                    AND RV.v_es_ida = 'F';
-
-                    out_(1,'se agarro la fecha_regreso:  ' || TO_CHAR(fecha_regreso));
-                    dbms_output.put_line(sys.diutil.bool_to_int(hay_regreso(id_reservacion_vuelo))); 
-                    OUT_BREAK;
-                    OUT_BREAK;
-                    OUT_BREAK;
-                    OUT_BREAK;
-
-                END IF;
-
-            --  AGREGACION DE RESERVAS DE ALOJAMIENTOS | PASO 3
-            -- Se guarda la fecha de reservacion del vuelo
-
-                SELECT FECHA_RESERVACION INTO fecha_reservacion_vuelo
-                FROM reservacion r 
-                WHERE id = id_reservacion_vuelo;
-
-            --  AGREGACION DE RESERVAS DE ALOJAMIENTOS | PASO 3
             -- Se elige el periodo de reserva del alojamiento
 
-                fecha_base := TIEMPO_PKG.EXTRAER(fecha_llegada_vuelo,'DATE');
+                fecha_reservacion := TIEMPO_PKG.random(rango);
+
+                fecha_base := TIMESTAMP '1000-01-01 00:00:00';
+
+                while fecha_base < fecha_reservacion LOOP
+                    OUT_(1,'while 1');
+                    fecha_base := TIEMPO_PKG.random(rango);
+
+                END LOOP;
+
+                fecha_regreso := TIMESTAMP '1000-01-01 00:00:00';
+
+                while fecha_regreso < fecha_base LOOP
+                   
+                    OUT_(1,'while 2');
+                    fecha_regreso := TIEMPO_PKG.random(rango);
+
+                END LOOP;
+
                 fecha_regreso := TIEMPO_PKG.EXTRAER(fecha_regreso,'DATE');
 
-                estadia := TO_CHAR(ROUND(DBMS_RANDOM.VALUE(1,10)));
+                dif_dias := TIEMPO_PKG.DIFF(rango.fecha_inicio,rango.fecha_fin,'DAY')/2;
 
-                --si hay vuelo de regreso se hace la estadia en base a la cantidad de dias
-                if fecha_regreso is not null THEN
-
-                    dif_dias := TIEMPO_PKG.DIFF(fecha_base, fecha_regreso, 'DAY');
-                    estadia := TO_CHAR(ROUND(DBMS_RANDOM.VALUE(1,dif_dias)));
-
-                END IF;
-
-                DBMS_OUTPUT.PUT_LINE('id reservacion: ' || id_reservacion_vuelo || ' id vuelo: ' || id_vuelo_no_iniciado || ' fecha base: ' || fecha_base || ' fecha regreso: ' || fecha_regreso || ' dif_dias: ' || dif_dias || ' estadia: ' || estadia);
-                OUT_BREAK;
-                OUT_BREAK;
+                estadia := TO_CHAR(ROUND(DBMS_RANDOM.VALUE(1,dif_dias)));
 
                 ini_estadia := fecha_base + INTERVAL '13' HOUR;
                 fin_estadia := fecha_base + numToDSInterval(estadia,'DAY');
@@ -283,17 +219,43 @@ BEGIN
                     VALUES('A',
                             get_precio_total(ini_estadia,fin_estadia,precio_habitacion),
                             'F',
-                            fecha_reservacion_vuelo,
+                            fecha_reservacion,
                             id_habitacion,
                             p,
                             id_reservacion_vuelo
                             );
 
         END LOOP;   
-END;
 
+END;
 
 -- EJECUCION
 BEGIN
-    sim_reservas_de_alojamientos();
+    sim_reservas_de_alojamientos_svnp(PERIODO(
+        TIMESTAMP '2019-05-19 11:24:50',
+        TIMESTAMP '2020-05-26 06:47:15'
+    ));
+END;
+
+-- prueba
+DECLARE
+    fechi TIMESTAMP;
+    fech TIMESTAMP;
+BEGIN
+
+    fechi := TIMESTAMP '2015-01-01 12:00:00';
+    fech := TIMESTAMP '1000-01-01 00:00:00';
+
+    while fech < fechi LOOP
+        OUT_(1,'while 1');
+        fech := TIEMPO_PKG.random(PERIODO(
+        TIMESTAMP '2014-05-19 11:24:50',
+        TIMESTAMP '2016-05-26 06:47:15'
+    ));
+
+    out_(1,fech);
+    OUT_BREAK;
+
+    END LOOP;
+
 END;
