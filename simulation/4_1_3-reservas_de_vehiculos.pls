@@ -36,6 +36,8 @@ IS
     p PERIODO;
     dif_dias NUMBER;
 
+    nombre_cliente VARCHAR2(150);
+
 BEGIN
    
     --  AGREGACION DE RESERVAS DE ALOJAMIENTOS | PASO 1
@@ -97,13 +99,6 @@ BEGIN
             --  AGREGACION DE RESERVAS DE ALOJAMIENTOS | PASO 3
             --  Si hay viaje de regreso, se guarda la fecha 
 
-                out_(1,'hay regreso?   ');
-                dbms_output.put_line(sys.diutil.bool_to_int(hay_regreso(id_reservacion_vuelo))); 
-                OUT_BREAK;
-                OUT_BREAK;
-                OUT_BREAK;
-                OUT_BREAK;
-
                 if hay_regreso(id_reservacion_vuelo) = TRUE THEN 
 
                     SELECT MAX(V.periodo_estimado.fecha_fin) INTO fecha_regreso
@@ -112,13 +107,6 @@ BEGIN
                     --AND RV.tipo = 'V' 
                     AND RV.fk_reservacion = id_reservacion_vuelo
                     AND RV.v_es_ida = 'F';
-
-                    out_(1,'se agarro la fecha_regreso:  ' || TO_CHAR(fecha_regreso));
-                    dbms_output.put_line(sys.diutil.bool_to_int(hay_regreso(id_reservacion_vuelo))); 
-                    OUT_BREAK;
-                    OUT_BREAK;
-                    OUT_BREAK;
-                    OUT_BREAK;
 
                 END IF;
 
@@ -142,10 +130,6 @@ BEGIN
                     alquiler := TO_CHAR(ROUND(DBMS_RANDOM.VALUE(1,dif_dias)));
 
                 END IF;
-
-                DBMS_OUTPUT.PUT_LINE('id reservacion: ' || id_reservacion_vuelo || ' id vuelo: ' || id_vuelo_no_iniciado || ' fecha base: ' || fecha_base || ' fecha regreso: ' || fecha_regreso || ' dif_dias: ' || dif_dias || ' alquiler: ' || alquiler);
-                OUT_BREAK;
-                OUT_BREAK;
 
                 ini_alquiler := fecha_base + INTERVAL '13' HOUR;
                 fin_alquiler := fecha_base + numToDSInterval(alquiler,'DAY');
@@ -301,7 +285,6 @@ BEGIN
 
                 --  AGREGACION DE RESERVAS DE VEHICULOS | PASO 6
                 -- Se inserta la reservacion
-                    out_(1, 'voy a insertar');
                     INSERT INTO RESERVACION(tipo,precio_total,esta_cancelada,fecha_reservacion,FK_RESERVACION, c_fk_vehiculo, c_fk_sucursal_inicio,c_periodo) 
                     VALUES('C',
                             get_precio_total(ini_alquiler,fin_alquiler,precio_vehiculo),
@@ -313,13 +296,16 @@ BEGIN
                             p
                             ) RETURNING id INTO id_reservacion_vehiculo;
 
-                    OUT_(1,id_reservacion_vehiculo || ' <- vuelo , cliente-> ' || id_cliente);
-                    OUT_BREAK;
-                    OUT_BREAK;
 
+                    SELECT id || ': ' || primer_nombre || ' ' || primer_apellido INTO nombre_cliente FROM CLIENTE WHERE id = id_cliente;
+                    OUT_(1,'RESERVA VEHICULO (ID: '||id_reservacion_vehiculo ||')');
+                    OUT_(3,'Cliente: ' || nombre_cliente);
+                    OUT_(3,'ID vehiculo: ' || id_vehiculo);
+                    OUT_(3,'Reservó el ' || fecha_reservacion_vuelo || ' para ' || p.fecha_inicio || ' hasta ' || p.fecha_fin);
 
                     INSERT INTO RESERVA(fk_reservacion,fk_cliente)
                     VALUES(id_reservacion_vehiculo,id_cliente);
+	                OUT_(0,'-----------------------------------------------------------------------');
         END LOOP;
 
 END;
