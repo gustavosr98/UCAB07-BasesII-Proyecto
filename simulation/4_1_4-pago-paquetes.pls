@@ -15,9 +15,10 @@ IS
     idUsuario NUMBER;
 
     CURSOR creservacion IS 
-        SELECT * FROM Reservacion
-        WHERE fk_reservacion IS NULL    
-            AND fecha_reservacion < fechas_base.fecha_fin;
+        SELECT r.* FROM Reservacion r
+        WHERE r.fk_reservacion IS NULL    
+            AND r.fecha_reservacion < fechas_base.fecha_fin
+            AND r.id NOT IN (SELECT p.fk_reservacion FROM Pago p);
     rreservacion Reservacion%ROWTYPE;
 
     CURSOR ccliente (idr Reserva.id%TYPE) IS 
@@ -49,8 +50,6 @@ BEGIN
 
             OUT_(2, 'RESERVACIÓN: ' || rreservacion.id || ' - Costo Total: ' || costo);
             OUT_BREAK;
-            OUT_(0,'-----------------------------------------------------------------------');
-            OUT_BREAK;
 
             WHILE ccliente%FOUND
                 LOOP
@@ -59,8 +58,6 @@ BEGIN
                     WHERE fk_cliente = rcliente.id;
 
                     OUT_(3, 'Usuario: ' || idUsuario || ' - Cliente: ' || rcliente.primer_nombre || ' ' || rcliente.primer_apellido);
-                    OUT_BREAK;
-                    OUT_(0,'-----------------------------------------------------------------------');
                     OUT_BREAK;
 
                     SELECT SUM(m.cantidad) into cantMillas
@@ -101,7 +98,7 @@ BEGIN
                             tarjD := buscarTarjeta('DEBITO',idUsuario);
 
                             porcentaje := DBMS_RANDOM.VALUE(0.1,0.9);
-                            costoC := costo * porcentaje;
+                            costoC := ROUND(costo * porcentaje, 2);
                             costoD := costo - costoD;
 
                             idPago := insertPago(costoC, idUsuario, tarjC.id, rreservacion.id);
