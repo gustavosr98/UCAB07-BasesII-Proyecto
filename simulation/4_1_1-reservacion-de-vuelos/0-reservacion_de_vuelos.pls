@@ -207,7 +207,7 @@ BEGIN
 					r_costo_total,
 					r_fecha_final
 				;
-			ElSE
+			ELSE
 				r_v1id := NULL;
 				r_v2id := NULL;
 				r_v3id := NULL;
@@ -284,7 +284,7 @@ BEGIN
 								IF ( r_v2id IS NOT NULL ) THEN
 									v_asiento := ASIENTO_RESERVAR(r_v2id,clase_de_asiento);
 									INSERT INTO RESERVACION (id,tipo, precio_total, esta_cancelada, fecha_reservacion, v_fk_vuelo, v_fk_asiento, fk_reservacion, v_es_ida) 
-										VALUES (DEFAULT, 'V', PRECIO_VUELO(v2id, clase_de_asiento, 1), 'F', fecha_reservacion, r_v2id, v_asiento.id, 
+										VALUES (DEFAULT, 'V', PRECIO_VUELO(r_v2id, clase_de_asiento, 1), 'F', fecha_reservacion, r_v2id, v_asiento.id, 
 										reserva_padre_id, 'F'
 									) RETURNING id INTO reservacion_id;
 									OUT_(4,'Asiento vuelo R_2: ' || SUBSTR(clase_de_asiento,0,3) ||'-' || v_asiento.fila || v_asiento.columna);
@@ -293,7 +293,7 @@ BEGIN
 									IF ( r_v3id IS NOT NULL ) THEN
 										v_asiento := ASIENTO_RESERVAR(r_v3id,clase_de_asiento);
 										INSERT INTO RESERVACION (id,tipo, precio_total, esta_cancelada, fecha_reservacion, v_fk_vuelo, v_fk_asiento, fk_reservacion, v_es_ida) 
-											VALUES (DEFAULT, 'V', PRECIO_VUELO(v3id, clase_de_asiento, 1), 'F', fecha_reservacion, r_v3id, v_asiento.id, 
+											VALUES (DEFAULT, 'V', PRECIO_VUELO(r_v3id, clase_de_asiento, 1), 'F', fecha_reservacion, r_v3id, v_asiento.id, 
 											reserva_padre_id , 'F'
 										) RETURNING id INTO reservacion_id;
 										OUT_(4,'Asiento vuelo R_3: ' || SUBSTR(clase_de_asiento,0,3) ||'-' || v_asiento.fila || v_asiento.columna);
@@ -308,7 +308,9 @@ BEGIN
 
 					-- PRINT IDA
 						OUT_(3, 'TRAYECTO IDA');
-						OUT_(4, 'Costo Total: ' || costo_total || ' | Fecha llegada final: ' || fecha_final );
+						OUT_(4, 'Costo Total: ');
+						OUT_(4,	costo_total );
+						OUT_(4,	'Fecha llegada final: ' || fecha_final );
 						OUT_(4, 'VUELO 1:');
 						OUT_(5,
 							origen1 || ' - ' ||
@@ -426,7 +428,7 @@ BEGIN
 			TIMESTAMP '2019-05-26 12:00:00'
 		),
 		PERIODO(
-				TIMESTAMP '2019-11-01 11:24:50',
+			TIMESTAMP '2019-11-01 11:24:50',
 			TIMESTAMP '2020-01-31 06:47:15'
 		)
 	);
