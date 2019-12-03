@@ -20,7 +20,7 @@ BEGIN
         TIEMPO_PKG.PRINT(v.periodo_estimado.fecha_fin,'HORA') || ' - ' || getLugar(lDestino.fk_lugar, 'CIUDAD'),
         TIEMPO_PKG.DIFF(v.periodo_estimado.fecha_inicio, v.periodo_estimado.fecha_fin, 'HOUR') || 'h ' ||
         TIEMPO_PKG.DIFF(v.periodo_estimado.fecha_inicio, v.periodo_estimado.fecha_fin, 'MINUTE') || 'm',
-        v.precio_base.cantidad || ' ' || getMoneda(v.precio_base.nombre)
+        ROUND(v.precio_base.cantidad, 2) || ' ' || getMoneda(v.precio_base.nombre)
         INTO logo, correo, vuelo, fechaSalida, fechaRegreso, salida, llegada, duracion, precio
     FROM Aerolinea ae, Avion av, Usuario u, Cliente cl, Reservacion r, Reserva s, Vuelo v, Trayecto t, Lugar lOrigen, 
         Lugar lDestino, Aeropuerto aOrigen, Aeropuerto aDestino
@@ -28,7 +28,7 @@ BEGIN
         AND v.fk_avion = av.id
         AND v.fk_trayecto = t.id
         AND r.v_fk_vuelo = v.id
-        AND r.id = s.fk_reservacion
+        AND (r.id = s.fk_reservacion OR r.fk_reservacion = s.fk_reservacion)
         AND cl.id = s.fk_cliente
         AND u.fk_cliente = cl.id
         AND t.fk_aeropuerto_origen = aOrigen.id

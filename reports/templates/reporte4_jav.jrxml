@@ -2,7 +2,7 @@
 <!-- Created with Jaspersoft Studio version 6.6.0.final using JasperReports Library version 6.6.0  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="reporte4" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="7a5c9b49-9dc5-422a-ac69-e92cf61ef530">
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="Oracle Adapter "/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="Oracle"/>
 	<style name="Title" forecolor="#FFFFFF" fontName="Times New Roman" fontSize="50" isBold="false"/>
 	<style name="SubTitle" forecolor="#CCCCCC" fontName="Times New Roman" fontSize="18" isBold="false"/>
 	<style name="Column header" forecolor="#666666" fontName="Times New Roman" fontSize="14" isBold="true"/>
@@ -22,11 +22,15 @@
 	<field name="FOTO" class="java.awt.Image">
 		<property name="com.jaspersoft.studio.field.label" value="FOTO"/>
 	</field>
-	<field name="PRIMER_NOMBRE" class="java.lang.String">
-		<property name="com.jaspersoft.studio.field.label" value="PRIMER_NOMBRE"/>
+	<field name="CL.PRIMER_NOMBRE||&apos;&apos;||CL.SEGUNDO_NOMBRE" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label">
+			<![CDATA[CL.PRIMER_NOMBRE||''||CL.SEGUNDO_NOMBRE]]>
+		</property>
 	</field>
-	<field name="PRIMER_APELLIDO" class="java.lang.String">
-		<property name="com.jaspersoft.studio.field.label" value="PRIMER_APELLIDO"/>
+	<field name="CL.PRIMER_APELLIDO||&apos;&apos;||CL.SEGUNDO_APELLIDO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label">
+			<![CDATA[CL.PRIMER_APELLIDO||''||CL.SEGUNDO_APELLIDO]]>
+		</property>
 	</field>
 	<field name="TELEFONO" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="TELEFONO"/>
@@ -47,7 +51,7 @@
 					<text><![CDATA[REPORTE 4]]></text>
 				</staticText>
 				<staticText>
-					<reportElement style="SubTitle" x="199" y="60" width="511" height="29" uuid="cfa21334-0634-4605-9ea7-aca4981f67e4"/>
+					<reportElement style="SubTitle" x="286" y="60" width="511" height="29" uuid="cfa21334-0634-4605-9ea7-aca4981f67e4"/>
 					<textElement textAlignment="Right">
 						<font size="22" isBold="false"/>
 					</textElement>
@@ -57,7 +61,7 @@
 			<frame>
 				<reportElement mode="Opaque" x="-1" y="95" width="801" height="32" forecolor="#000000" backcolor="#CC0000" uuid="b0c895f6-6dbd-477d-9858-9ad66af087e1"/>
 				<textField pattern="EEEEE dd MMMMM yyyy">
-					<reportElement x="553" y="12" width="144" height="20" forecolor="#FFFFFF" uuid="a33fce3b-20c1-4696-873a-fe134d1e7d88"/>
+					<reportElement x="649" y="6" width="144" height="20" forecolor="#FFFFFF" uuid="a33fce3b-20c1-4696-873a-fe134d1e7d88"/>
 					<textElement textAlignment="Right">
 						<font size="12"/>
 					</textElement>
@@ -130,24 +134,6 @@
 					<textFieldExpression><![CDATA[$F{CORREO}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement x="330" y="0" width="140" height="112" uuid="c5970536-d831-4e8d-9de3-24089c1c47aa">
-						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="391164c6-2cd5-4a53-90e1-67c5ff9a243e"/>
-					</reportElement>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font size="12"/>
-					</textElement>
-					<textFieldExpression><![CDATA[$F{PRIMER_NOMBRE}]]></textFieldExpression>
-				</textField>
-				<textField>
-					<reportElement x="490" y="1" width="150" height="111" uuid="dcba6de9-2f6c-4cde-8ea3-e68f1a02062f">
-						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="63e7329a-5dd2-429e-9bc4-80765a622541"/>
-					</reportElement>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font size="12"/>
-					</textElement>
-					<textFieldExpression><![CDATA[$F{PRIMER_APELLIDO}]]></textFieldExpression>
-				</textField>
-				<textField>
 					<reportElement x="656" y="1" width="146" height="111" uuid="553b0106-daf8-405a-a8bd-0b34a7fb94c6">
 						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="52d7f8f3-eb72-45c2-8354-9a5211cf138d"/>
 					</reportElement>
@@ -160,18 +146,29 @@
 					<reportElement x="160" y="1" width="150" height="111" uuid="dd59798b-84f5-479f-8998-8bc7640ff779"/>
 					<imageExpression><![CDATA[$F{FOTO}]]></imageExpression>
 				</image>
+				<textField>
+					<reportElement x="330" y="3" width="140" height="109" uuid="3e9969dc-bf89-48a0-be4f-6228e5029adf">
+						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="7af989d7-06f1-46a5-9dd2-32859c63333f"/>
+					</reportElement>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="12"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{CL.PRIMER_NOMBRE||''||CL.SEGUNDO_NOMBRE}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="490" y="3" width="150" height="109" uuid="f8e0d76e-64f1-40d9-b1dc-f32157b43a54">
+						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="ca33e58c-e9d8-4189-982e-f71e138134d5"/>
+					</reportElement>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="12"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{CL.PRIMER_APELLIDO||''||CL.SEGUNDO_APELLIDO}]]></textFieldExpression>
+				</textField>
 			</frame>
 		</band>
 	</detail>
 	<columnFooter>
-		<band height="7" splitType="Stretch">
-			<line>
-				<reportElement positionType="FixRelativeToBottom" x="0" y="3" width="555" height="1" uuid="501ac6c4-e9d4-43cb-ba6b-7f2f44394cf3"/>
-				<graphicElement>
-					<pen lineWidth="0.5" lineColor="#999999"/>
-				</graphicElement>
-			</line>
-		</band>
+		<band height="7" splitType="Stretch"/>
 	</columnFooter>
 	<pageFooter>
 		<band height="25" splitType="Stretch">
