@@ -5,11 +5,13 @@ IS
     id_usuario_a_reservar NUMBER;
     id_vuelo_no_iniciado NUMBER;
     id_reservacion_vuelo NUMBER;
+    id_reservacion_vehiculo NUMBER;
     fecha_llegada_vuelo TIMESTAMP;
     fecha_regreso TIMESTAMP;
     fecha_reservacion_vuelo TIMESTAMP;
     fecha_base TIMESTAMP;
 
+    id_cliente NUMBER;
     ini_alquiler TIMESTAMP;
     fin_alquiler TIMESTAMP;
     criterio NUMBER;
@@ -59,10 +61,10 @@ BEGIN
                 --  AGREGACION DE RESERVAS DE VEHICULOS | PASO 2
                 --  Se elige un usuario random
 
-            SELECT tabla.idu, tabla.idv, tabla.idr 
-					INTO id_usuario_a_reservar, id_vuelo_no_iniciado, id_reservacion_vuelo
+            SELECT tabla.idcl, tabla.idu, tabla.idv, tabla.idr 
+					INTO id_cliente, id_usuario_a_reservar, id_vuelo_no_iniciado, id_reservacion_vuelo
                 FROM (
-                    SELECT u.id idu, v.id idv, r.id idr
+                    SELECT cl.id idcl, u.id idu, v.id idv, r.id idr
                     FROM usuario u, reserva res, cliente cl, reservacion r, vuelo v
                     WHERE 
                         res.fk_reservacion = r.id
@@ -300,7 +302,7 @@ BEGIN
                 --  AGREGACION DE RESERVAS DE VEHICULOS | PASO 6
                 -- Se inserta la reservacion
                     out_(1, 'voy a insertar');
-                    INSERT INTO RESERVACION(tipo,precio_total,esta_cancelada,fecha_reservacion,FK_RESERVACION, c_fk_vehiculo, c_fk_sucursal_inicio,c_fk_sucursal_fin,c_periodo) 
+                    INSERT INTO RESERVACION(tipo,precio_total,esta_cancelada,fecha_reservacion,FK_RESERVACION, c_fk_vehiculo, c_fk_sucursal_inicio,c_periodo) 
                     VALUES('C',
                             get_precio_total(ini_alquiler,fin_alquiler,precio_vehiculo),
                             'F',
@@ -308,10 +310,16 @@ BEGIN
                             id_reservacion_vuelo,
                             id_vehiculo,
                             id_sucursal_ini,
-                            id_sucursal_fin,
                             p
-                            );
+                            ) RETURNING id INTO id_reservacion_vehiculo;
 
+                    OUT_(1,id_reservacion_vehiculo || ' <- vuelo , cliente-> ' || id_cliente);
+                    OUT_BREAK;
+                    OUT_BREAK;
+
+
+                    INSERT INTO RESERVA(fk_reservacion,fk_cliente)
+                    VALUES(id_reservacion_vehiculo,id_cliente);
         END LOOP;
 
 END;
