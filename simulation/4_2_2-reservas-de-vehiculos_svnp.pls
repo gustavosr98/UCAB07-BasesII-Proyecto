@@ -38,6 +38,9 @@ IS
 
     fecha_max TIMESTAMP;
 
+        nombre_cliente VARCHAR2(150);
+
+
 BEGIN
 
     --  AGREGACION DE RESERVAS DE ALOJAMIENTOS SVNP| PASO 1
@@ -77,7 +80,6 @@ BEGIN
                 fecha_base := TIMESTAMP '1000-01-01 00:00:00';
 
                 while fecha_base < fecha_reservacion LOOP
-                    OUT_(1,'while 1');
                     fecha_base := TIEMPO_PKG.random(rango);
 
                 END LOOP;
@@ -86,7 +88,6 @@ BEGIN
 
                 while fecha_regreso < fecha_base LOOP
                    
-                    OUT_(1,'while 2');
                     fecha_regreso := TIEMPO_PKG.random(rango);
 
                 END LOOP;
@@ -207,14 +208,16 @@ BEGIN
                             p
                             ) RETURNING id INTO id_reservacion_vehiculo;
 
-                    OUT_(1,id_reservacion_vehiculo || ' <- vuelo , cliente-> ' || id_cliente);
-                    OUT_BREAK;
-                    OUT_BREAK;
 
+                    SELECT id || ': ' || primer_nombre || ' ' || primer_apellido INTO nombre_cliente FROM CLIENTE WHERE id = id_cliente;
+                    OUT_(1,'RESERVA VEHICULO (ID: '||id_reservacion_vehiculo ||')');
+                    OUT_(3,'Cliente: ' || nombre_cliente);
+                    OUT_(3,'ID vehiculo: ' || id_vehiculo);
+                    OUT_(3,'Reservó el ' || fecha_reservacion || ' para ' || p.fecha_inicio || ' hasta ' || p.fecha_fin);
 
                     INSERT INTO RESERVA(fk_reservacion,fk_cliente)
                     VALUES(id_reservacion_vehiculo,id_cliente);
-                            
+	                OUT_(0,'-----------------------------------------------------------------------');                            
 
         END LOOP;   
 
