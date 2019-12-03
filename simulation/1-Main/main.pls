@@ -42,10 +42,11 @@ BEGIN
 	DELETE FROM PAGO;
 	DELETE FROM HISTORICO_MILLA;
 	DELETE FROM RESERVACION;
+	DELETE FROM VUELO;
 
 	SIM_CONFIGURACION(
 		reset => 0,
-		cant_users_a_reservar => 1
+		cant_users_a_reservar => 10
 	);
 	MAIN(
 		PERIODO(
