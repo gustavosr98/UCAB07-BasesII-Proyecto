@@ -133,18 +133,18 @@ BEGIN
                 FROM LUGAR 
                 WHERE ID = ciudad_llegada;
 
-                out_(1, 'CIUDAD LLEGADA: ' || ciudad_llegada || 'CIUDAD DESTINO' || id_ciudad_destino);
-                OUT_BREAK;
+                -- out_(1, 'CIUDAD LLEGADA: ' || ciudad_llegada || 'CIUDAD DESTINO' || id_ciudad_destino);
+                -- OUT_BREAK;
 				
             --  AGREGACION DE RESERVAS DE ALOJAMIENTOS | PASO 3
             --  Si hay viaje de regreso, se guarda la fecha 
 
-                out_(1,'hay regreso?   ');
-                dbms_output.put_line(sys.diutil.bool_to_int(hay_regreso(id_reservacion_vuelo))); 
-                OUT_BREAK;
-                OUT_BREAK;
-                OUT_BREAK;
-                OUT_BREAK;
+                -- out_(1,'hay regreso?   ');
+                -- dbms_output.put_line(sys.diutil.bool_to_int(hay_regreso(id_reservacion_vuelo))); 
+                -- OUT_BREAK;
+                -- OUT_BREAK;
+                -- OUT_BREAK;
+                -- OUT_BREAK;
 
                 if hay_regreso(id_reservacion_vuelo) = TRUE THEN 
 
@@ -155,12 +155,12 @@ BEGIN
                     AND RV.fk_reservacion = id_reservacion_vuelo
                     AND RV.v_es_ida = 'F';
 
-                    out_(1,'se agarro la fecha_regreso:  ' || TO_CHAR(fecha_regreso));
-                    dbms_output.put_line(sys.diutil.bool_to_int(hay_regreso(id_reservacion_vuelo))); 
-                    OUT_BREAK;
-                    OUT_BREAK;
-                    OUT_BREAK;
-                    OUT_BREAK;
+                    -- out_(1,'se agarro la fecha_regreso:  ' || TO_CHAR(fecha_regreso));
+                    -- dbms_output.put_line(sys.diutil.bool_to_int(hay_regreso(id_reservacion_vuelo))); 
+                    -- OUT_BREAK;
+                    -- OUT_BREAK;
+                    -- OUT_BREAK;
+                    -- OUT_BREAK;
 
                 END IF;
 
@@ -187,10 +187,10 @@ BEGIN
 
                 END IF;
 
-                OUT_BREAK;
-                DBMS_OUTPUT.PUT_LINE('id reservacion: ' || id_reservacion_vuelo || ' id vuelo: ' || id_vuelo_no_iniciado || ' fecha base: ' || fecha_base || ' fecha regreso: ' || fecha_regreso || ' dif_dias: ' || dif_dias || ' estadia: ' || estadia);
-                OUT_BREAK;
-                OUT_BREAK;
+                -- OUT_BREAK;
+                -- DBMS_OUTPUT.PUT_LINE('id reservacion: ' || id_reservacion_vuelo || ' id vuelo: ' || id_vuelo_no_iniciado || ' fecha base: ' || fecha_base || ' fecha regreso: ' || fecha_regreso || ' dif_dias: ' || dif_dias || ' estadia: ' || estadia);
+                -- OUT_BREAK;
+                -- OUT_BREAK;
 
                 ini_estadia := fecha_base + INTERVAL '13' HOUR;
                 fin_estadia := fecha_base + numToDSInterval(estadia,'DAY');
@@ -287,8 +287,8 @@ BEGIN
                             FROM alojamiento alo, lug_aloj la, habitacion h
                             WHERE alo.tipo = tipo_alojamiento_a_reservar
                             AND la.fk_alojamiento = alo.id
-                            AND h.fk_lug_aloj = la.id
-                            AND (SELECT FK_LUGAR FROM LUGAR WHERE ID = (SELECT FK_LUGAR FROM LUGAR WHERE ID = la.fk_lugar)) = pais_llegada; --la.fk_lugar IN (SELECT ID FROM LUGAR WHERE FK_LUGAR = ciudad_llegada)
+                            AND h.fk_lug_aloj = la.id;
+                            -- AND (SELECT FK_LUGAR FROM LUGAR WHERE ID = (SELECT FK_LUGAR FROM LUGAR WHERE ID = la.fk_lugar)) = pais_llegada; --la.fk_lugar IN (SELECT ID FROM LUGAR WHERE FK_LUGAR = ciudad_llegada)
 
                                 SELECT tabla.idHab, tabla.precioHab, tabla.fk_lugar INTO id_habitacion, precio_habitacion, lugar_hab
                                 FROM (SELECT  h.id as idHab, h.precio_base_noche as precioHab, la.FK_LUGAR
@@ -297,7 +297,7 @@ BEGIN
 																AND la.fk_alojamiento = alo.id
 																AND h.fk_lug_aloj = la.id
 																AND alo.fecha_fundacion = fecha_max
-                                                                AND la.fk_lugar IN (SELECT ID FROM LUGAR WHERE FK_LUGAR = ciudad_llegada)
+                                                                -- AND la.fk_lugar IN (SELECT ID FROM LUGAR WHERE FK_LUGAR = ciudad_llegada)
 																ORDER BY DBMS_RANDOM.VALUE
 														) tabla
                                 WHERE ROWNUM = 1;
@@ -351,10 +351,10 @@ BEGIN
                             id_reservacion_vuelo
                             ) RETURNING id INTO id_reservacion_alojamiento;
 
-                    OUT_BREAK;
-                    OUT_(1,id_reservacion_alojamiento || ' <- reservacion alojamiento , cliente-> ' || id_cliente);
-                    OUT_BREAK;
-                    OUT_BREAK;
+                    -- OUT_BREAK;
+                    -- OUT_(1,id_reservacion_alojamiento || ' <- reservacion alojamiento , cliente-> ' || id_cliente);
+                    -- OUT_BREAK;
+                    -- OUT_BREAK;
 
 
                     INSERT INTO RESERVA(fk_reservacion,fk_cliente)

@@ -73,7 +73,7 @@ BEGIN
                 fecha_base := TIMESTAMP '1000-01-01 00:00:00';
 
                 while fecha_base < fecha_reservacion LOOP
-                    OUT_(1,'while 1');
+                    -- OUT_(1,'while 1');
                     fecha_base := TIEMPO_PKG.random(rango);
 
                 END LOOP;
@@ -82,7 +82,7 @@ BEGIN
 
                 while fecha_regreso < fecha_base LOOP
                    
-                    OUT_(1,'while 2');
+                    -- OUT_(1,'while 2');
                     fecha_regreso := TIEMPO_PKG.random(rango);
 
                 END LOOP;
