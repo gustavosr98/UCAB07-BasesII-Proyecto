@@ -3,7 +3,7 @@ BEGIN
     INSERT INTO Usuario (
         id,foto,correo,contraseña,fk_cliente) 
     VALUES (
-        DEFAULT,
+        1,
         BFILENAME('DIR_IMG_PROYECTO','usuario/01-juana.jpg'),
         'juana@gmail.com',
         'ja1234',
@@ -13,7 +13,7 @@ BEGIN
     INSERT INTO Usuario (
         id,foto,correo,contraseña,fk_cliente) 
     VALUES (
-        DEFAULT,
+        2,
         BFILENAME('DIR_IMG_PROYECTO','usuario/02-josea.jpg'),
         'josea@gmail.com',
         'jose567',
@@ -23,7 +23,7 @@ BEGIN
     INSERT INTO Usuario (
         id,foto,correo,contraseña,fk_cliente) 
     VALUES (
-        DEFAULT,
+        3,
         BFILENAME('DIR_IMG_PROYECTO','usuario/03-fran.jpg'),
         'fran@gmail.com',
         'fll23',
@@ -33,7 +33,7 @@ BEGIN
     INSERT INTO Usuario (
         id,foto,correo,contraseña,fk_cliente) 
     VALUES (
-        DEFAULT,
+        4,
         BFILENAME('DIR_IMG_PROYECTO','usuario/04-anag.jpg'),
         'anag@gmail.com',
         'ag12345',
@@ -43,7 +43,7 @@ BEGIN
     INSERT INTO Usuario (
         id,foto,correo,contraseña,fk_cliente) 
     VALUES (
-        DEFAULT,
+        5,
         BFILENAME('DIR_IMG_PROYECTO','usuario/05-gabis.jpg'),
         'gabis@gmail.com',
         'gsosa99',
@@ -53,7 +53,7 @@ BEGIN
     INSERT INTO Usuario (
         id,foto,correo,contraseña,fk_cliente) 
     VALUES (
-        DEFAULT,
+        6,
         BFILENAME('DIR_IMG_PROYECTO','usuario/06-isas.jpg'),
         'isas@gmail.com',
         'sanchez234',
@@ -63,7 +63,7 @@ BEGIN
     INSERT INTO Usuario (
         id,foto,correo,contraseña,fk_cliente) 
     VALUES (
-        DEFAULT,
+        7,
         BFILENAME('DIR_IMG_PROYECTO','usuario/07-pedrito.jpg'),
         'pedrito@gmail.com',
         'p4565',
@@ -73,7 +73,7 @@ BEGIN
     INSERT INTO Usuario (
         id,foto,correo,contraseña,fk_cliente) 
     VALUES (
-        DEFAULT,
+        8,
         BFILENAME('DIR_IMG_PROYECTO','usuario/08-sara.jpg'),
         'sara@gmail.com',
         'rl01234',
@@ -83,7 +83,7 @@ BEGIN
     INSERT INTO Usuario (
         id,foto,correo,contraseña,fk_cliente) 
     VALUES (
-        DEFAULT,
+        9,
         BFILENAME('DIR_IMG_PROYECTO','usuario/09-silvia.jpg'),
         'silvia@gmail.com',
         's13579',
@@ -93,7 +93,7 @@ BEGIN
     INSERT INTO Usuario (
         id,foto,correo,contraseña,fk_cliente) 
     VALUES (
-        DEFAULT,
+        10,
         BFILENAME('DIR_IMG_PROYECTO','usuario/10-rosap.jpg'),
         'rosap@gmail.com',
         'hola567',
@@ -103,7 +103,7 @@ BEGIN
     INSERT INTO Usuario (
         id,foto,correo,contraseña,fk_cliente) 
     VALUES (
-        DEFAULT,
+        11,
         BFILENAME('DIR_IMG_PROYECTO','usuario/11-gerardo.jpg'),
         'gerardo@gmail.com',
         'gss63',
@@ -113,7 +113,7 @@ BEGIN
     INSERT INTO Usuario (
         id,foto,correo,contraseña,fk_cliente) 
     VALUES (
-        DEFAULT,
+        12,
         BFILENAME('DIR_IMG_PROYECTO','usuario/12-raquel.jpg'),
         'raquel@gmail.com',
         'david1',
@@ -123,7 +123,7 @@ BEGIN
     INSERT INTO Usuario (
         id,foto,correo,contraseña,fk_cliente) 
     VALUES (
-        DEFAULT,
+        13,
         BFILENAME('DIR_IMG_PROYECTO','usuario/13-mangel.jpg'),
         'mangel@gmail.com',
         'ma987',
@@ -133,7 +133,7 @@ BEGIN
     INSERT INTO Usuario (
         id,foto,correo,contraseña,fk_cliente) 
     VALUES (
-        DEFAULT,
+        14,
         BFILENAME('DIR_IMG_PROYECTO','usuario/14-mariofelix.jpg'),
         'mariofelix@gmail.com',
         'mf642',
@@ -143,7 +143,7 @@ BEGIN
     INSERT INTO Usuario (
         id,foto,correo,contraseña,fk_cliente) 
     VALUES (
-        DEFAULT,
+        15,
         BFILENAME('DIR_IMG_PROYECTO','usuario/15-amelia.jpg'),
         'amelia@gmail.com',
         'sofi874',
@@ -153,7 +153,7 @@ BEGIN
     INSERT INTO Usuario (
         id,foto,correo,contraseña,fk_cliente) 
     VALUES (
-        DEFAULT,
+        16,
         BFILENAME('DIR_IMG_PROYECTO','usuario/16-santiago.jpg'),
         'santiago@gmail.com',
         'contraseña',
@@ -163,7 +163,7 @@ BEGIN
     INSERT INTO Usuario (
         id,foto,correo,contraseña,fk_cliente) 
     VALUES (
-        DEFAULT,
+        17,
         BFILENAME('DIR_IMG_PROYECTO','usuario/17-hernando.jpg'),
         'hernando@gmail.com',
         'lv2',
@@ -173,7 +173,7 @@ BEGIN
     INSERT INTO Usuario (
         id,foto,correo,contraseña,fk_cliente) 
     VALUES (
-        DEFAULT,
+        18,
         BFILENAME('DIR_IMG_PROYECTO','usuario/18-vale12.jpg'),
         'vale12@gmail.com',
         'inf33',
@@ -183,7 +183,7 @@ BEGIN
     INSERT INTO Usuario (
         id,foto,correo,contraseña,fk_cliente) 
     VALUES (
-        DEFAULT,
+        19,
         BFILENAME('DIR_IMG_PROYECTO','usuario/19-angellucas.jpg'),
         'angellucas@gmail.com',
         'ivan57',

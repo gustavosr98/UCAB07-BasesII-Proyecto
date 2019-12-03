@@ -1,4 +1,4 @@
-CREATE OR REPLACE PROCEDURE insertar_tarjeta
+CREATE OR REPLACE PROCEDURE ins_tarjeta
 IS
     cant_user INTEGER DEFAULT 0;
     i_u INTEGER;

@@ -39,7 +39,7 @@ END;
 BEGIN
 	SIM_CONFIGURACION(
 		reset => 0,
-		cant_users_a_reservar => 10
+		cant_users_a_reservar => 1
 	);
 	MAIN(
 		PERIODO(

@@ -3,7 +3,7 @@ BEGIN
 	INSERT INTO Aseguradora (
 		id,logo,nombre) 
 	VALUES (
-		DEFAULT,
+		1,
 		BFILENAME('DIR_IMG_PROYECTO','aseguradora/01-Mapfre_Seguros.png'),
 		'Mapfre Seguros'
 	);
@@ -11,7 +11,7 @@ BEGIN
 	INSERT INTO Aseguradora (
 		id,logo,nombre) 
 	VALUES (
-		DEFAULT,
+		2,
 		BFILENAME('DIR_IMG_PROYECTO','aseguradora/02-Banesco_Seguros.jpg'),
 		'Banesco Seguros'
 	);
@@ -19,7 +19,7 @@ BEGIN
 	INSERT INTO Aseguradora (
 		id,logo,nombre) 
 	VALUES (
-		DEFAULT,
+		3,
 		BFILENAME('DIR_IMG_PROYECTO','aseguradora/03-Mercantil_Seguros.jpg'),
 		'Mercantil Seguros'
 	);
@@ -27,7 +27,7 @@ BEGIN
 	INSERT INTO Aseguradora (
 		id,logo,nombre) 
 	VALUES (
-		DEFAULT,
+		4,
 		BFILENAME('DIR_IMG_PROYECTO','aseguradora/04-Seguros_La_Previsora.png'),
 		'Seguros La Previsora'
 	);
@@ -35,7 +35,7 @@ BEGIN
 	INSERT INTO Aseguradora (
 		id,logo,nombre) 
 	VALUES (
-		DEFAULT,
+		5,
 		BFILENAME('DIR_IMG_PROYECTO','aseguradora/05-Seguros_Caracas_de_Liberty_Mutual.jpg'),
 		'Seguros Caracas de Liberty Mutual'
 	);
@@ -43,7 +43,7 @@ BEGIN
 	INSERT INTO Aseguradora (
 		id,logo,nombre) 
 	VALUES (
-		DEFAULT,
+		6,
 		BFILENAME('DIR_IMG_PROYECTO','aseguradora/06-Seguros_Horizonte.jpg'),
 		'Seguros Horizonte'
 	);
@@ -51,7 +51,7 @@ BEGIN
 	INSERT INTO Aseguradora (
 		id,logo,nombre) 
 	VALUES (
-		DEFAULT,
+		7,
 		BFILENAME('DIR_IMG_PROYECTO','aseguradora/07-Seguros_Universitas.png'),
 		'Seguros Universitas'
 	);
@@ -59,7 +59,7 @@ BEGIN
 	INSERT INTO Aseguradora (
 		id,logo,nombre) 
 	VALUES (
-		DEFAULT,
+		8,
 		BFILENAME('DIR_IMG_PROYECTO','aseguradora/08-Seguros_Qualitas.png'),
 		'Seguros Qualitas'
 	);
@@ -67,7 +67,7 @@ BEGIN
 	INSERT INTO Aseguradora (
 		id,logo,nombre) 
 	VALUES (
-		DEFAULT,
+		9,
 		BFILENAME('DIR_IMG_PROYECTO','aseguradora/09-Seguros_La_Occidental.jpg'),
 		'Seguros La Occidental'
 	);
@@ -75,7 +75,7 @@ BEGIN
 	INSERT INTO Aseguradora (
 		id,logo,nombre) 
 	VALUES (
-		DEFAULT,
+		10,
 		BFILENAME('DIR_IMG_PROYECTO','aseguradora/10-Seguros_Piramide.png'),
 		'Seguros Pirámide'
 	);
@@ -83,7 +83,7 @@ BEGIN
 	INSERT INTO Aseguradora (
 		id,logo,nombre) 
 	VALUES (
-		DEFAULT,
+		11,
 		BFILENAME('DIR_IMG_PROYECTO','aseguradora/11-Seguros_Altamira.png'),
 		'Seguros Altamira'
 	);
@@ -91,7 +91,7 @@ BEGIN
 	INSERT INTO Aseguradora (
 		id,logo,nombre) 
 	VALUES (
-		DEFAULT,
+		12,
 		BFILENAME('DIR_IMG_PROYECTO','aseguradora/12-Multinacional_de_Seguros.jpg'),
 		'Multinacional de Seguros'
 	);
@@ -99,7 +99,7 @@ BEGIN
 	INSERT INTO Aseguradora (
 		id,logo,nombre) 
 	VALUES (
-		DEFAULT,
+		13,
 		BFILENAME('DIR_IMG_PROYECTO','aseguradora/13-Seguros_Constitucion.png'),
 		'Seguros Constitución'
 	);
@@ -107,7 +107,7 @@ BEGIN
 	INSERT INTO Aseguradora (
 		id,logo,nombre) 
 	VALUES (
-		DEFAULT,
+		14,
 		BFILENAME('DIR_IMG_PROYECTO','aseguradora/14-Zurich_Insurance_Group.jpg'),
 		'Zurich Insurance Group'
 	);
@@ -115,7 +115,7 @@ BEGIN
 	INSERT INTO Aseguradora (
 		id,logo,nombre) 
 	VALUES (
-		DEFAULT,
+		15,
 		BFILENAME('DIR_IMG_PROYECTO','aseguradora/15-MetLife.png'),
 		'MetLife'
 	);
