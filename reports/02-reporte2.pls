@@ -12,13 +12,15 @@ BEGIN
 
     SELECT ae.logo, tabla.Nombre_TA, ta.foto ,tabla.Modelo_TA, tabla.Cant_Aviones, DBMS_LOB.SUBSTR(getAsientos(ae.id,ta.id),DBMS_LOB.GETLENGTH(getAsientos(ae.id,ta.id)),1) ASIENTOS
     INTO logo_aerolinea, nombre_avion, foto_avion, modelo_avion, cant_aviones, asientos_por_clase
-    FROM  AEROLINEA ae, TIPO_AVION ta, Avion av, (SELECT DISTINCT ae.id as ID_AEROLINEA, ta.id as ID_TIPO_AVION, ae.nombre, ta.nombre as Nombre_TA, ta.modelo as Modelo_TA, getCantAviones(ta.id,ae.id) AS Cant_Aviones
+    FROM  AEROLINEA ae, TIPO_AVION ta, (SELECT DISTINCT ae.id as ID_AEROLINEA, ta.id as ID_TIPO_AVION, ae.nombre, ta.nombre as Nombre_TA, ta.modelo as Modelo_TA, getCantAviones(ta.id,ae.id) AS Cant_Aviones
                                                 FROM AEROLINEA ae, TIPO_AVION ta, AVION av
                                                 WHERE av.fk_aerolinea = ae.id
                                                 AND av.fk_tipo_avion = ta.id) tabla
     WHERE ae.id = tabla.ID_AEROLINEA
     AND ta.id = tabla.ID_TIPO_AVION
     ;
+
+
 
 END;
 
@@ -98,29 +100,29 @@ BEGIN
     RETURN num_asientos;
 END;
 
--- -- Comprobaciones
+-- Comprobaciones
 
---     -- Cantidad de aviones en una aerolinea
+    -- Cantidad de aviones en una aerolinea
 
---         SELECT count(av.id)
---         FROM Avion av, Tipo_avion ta, Aerolinea ae
---         WHERE av.fk_tipo_avion = ta.id
---         AND av.fk_aerolinea = ae.id
---         AND ta.nombre = 'Boeing'
---         AND ta.modelo = '717-200'
---         AND ae.nombre = 'Laser Airlines';
+        SELECT count(av.id)
+        FROM Avion av, Tipo_avion ta, Aerolinea ae
+        WHERE av.fk_tipo_avion = ta.id
+        AND av.fk_aerolinea = ae.id
+        AND ta.nombre = 'Boeing'
+        AND ta.modelo = '717-200'
+        AND ae.nombre = 'Laser Airlines';
     
---     -- Cantidad de asientos de una clase en un avion de una aerolinea
+    -- Cantidad de asientos de una clase en un avion de una aerolinea
 
---         SELECT count(asi.id)
---         FROM asiento asi, tipo_avion ta, avion av, clase_aerolinea ca, aerolinea ae, clase cl
---         WHERE asi.fk_avion = av.id
---         AND av.fk_tipo_avion = ta.id
---         AND asi.fk_clase_aerolinea = ca.id
---         AND ca.fk_aerolinea = ae.id
---         AND ca.fk_clase = cl.id
+        SELECT count(asi.id)
+        FROM asiento asi, tipo_avion ta, avion av, clase_aerolinea ca, aerolinea ae, clase cl
+        WHERE asi.fk_avion = av.id
+        AND av.fk_tipo_avion = ta.id
+        AND asi.fk_clase_aerolinea = ca.id
+        AND ca.fk_aerolinea = ae.id
+        AND ca.fk_clase = cl.id
         
---         AND ae.nombre = 'Air Europa'
---         AND ta.modelo = '717-200'
---         AND cl.id = 1
---         ;
+        AND ae.nombre = 'Laser Airlines'
+        AND ta.modelo = '717-200'
+        AND cl.id = 3
+        ;
