@@ -1,10 +1,15 @@
 CREATE OR REPLACE PROCEDURE sim_reservas_de_alojamientos
 IS
     id_reservacion_vuelo NUMBER;
+    id_reservacion_alojamiento NUMBER;
     cant_usuarios_con_reservaciones_de_vuelo NUMBER;
     cant_usuarios_a_reservar NUMBER;
     id_usuario_a_reservar NUMBER;
     id_vuelo_no_iniciado NUMBER;
+    id_cliente NUMBER;
+    id_trayecto_vuelo NUMBER;
+    ciudad_llegada NUMBER;
+    id_ciudad_destino NUMBER;
 
     cant_alojamientos NUMBER;
     tipo_alojamiento_a_reservar VARCHAR2(20);
@@ -56,10 +61,10 @@ BEGIN
             --  AGREGACION DE RESERVAS DE ALOJAMIENTOS | PASO 2
             --  Se elige un usuario random
 
-                SELECT tabla.idu, tabla.idv, tabla.idr 
-					INTO id_usuario_a_reservar, id_vuelo_no_iniciado, id_reservacion_vuelo
+                SELECT tabla.idcl, tabla.idu, tabla.idv, tabla.idr 
+					INTO id_cliente, id_usuario_a_reservar, id_vuelo_no_iniciado, id_reservacion_vuelo
                 FROM (
-                    SELECT u.id idu, v.id idv, r.id idr
+                    SELECT cl.id idcl, u.id idu, v.id idv, r.id idr
                     FROM usuario u, reserva res, cliente cl, reservacion r, vuelo v
                     WHERE 
                         res.fk_reservacion = r.id
@@ -91,20 +96,32 @@ BEGIN
             --  AGREGACION DE RESERVAS DE ALOJAMIENTOS | PASO 3
             --  Se guarda la fecha de llegada del vuelo
 
-                SELECT v.periodo_estimado.fecha_fin INTO fecha_llegada_vuelo
+                SELECT v.periodo_estimado.fecha_fin, v.fk_trayecto INTO fecha_llegada_vuelo, id_trayecto_vuelo
                 FROM vuelo v
                 WHERE v.id = id_vuelo_no_iniciado;
 
                 IF hay_escala(id_vuelo_no_iniciado) THEN 
 
-                    SELECT V.periodo_estimado.fecha_fin INTO fecha_llegada_vuelo
+                    SELECT v.periodo_estimado.fecha_fin, v.fk_trayecto INTO fecha_llegada_vuelo, id_trayecto_vuelo
                     FROM Vuelo V, Reservacion RV
                     WHERE RV.v_fk_vuelo = V.id 
                     --AND RV.tipo = 'V' 
-                    AND RV.fk_reservacion = 8 
+                    AND RV.fk_reservacion = id_reservacion_vuelo 
                     AND RV.v_es_ida = 'T';
                     
                 END IF;
+
+            --  AGREGACION DE RESERVAS DE ALOJAMIENTOS | PASO 3
+            --  Se guarda el lugar de llegada del vuelo
+
+                SELECT lci.id INTO ciudad_llegada
+                FROM Trayecto t, Aeropuerto ae, Lugar lca, Lugar lci
+                WHERE t.id = id_trayecto_vuelo
+                    AND ae.id = t.fk_aeropuerto_destino
+                    AND lca.id = ae.fk_lugar
+                    AND lci.id = lca.fk_lugar;
+
+                SELECT FK_LUGAR INTO id_ciudad_destino FROM LUGAR WHERE ID = ciudad_llegada;
 				
             --  AGREGACION DE RESERVAS DE ALOJAMIENTOS | PASO 3
             --  Si hay viaje de regreso, se guarda la fecha 
@@ -181,6 +198,7 @@ BEGIN
                 if criterio = 1 THEN  -- Más barato
 
                         SELECT COUNT(*) into condi FROM RESERVACION WHERE tipo = 'A';
+                        
 
                         if condi = 0 THEN
 
@@ -191,9 +209,12 @@ BEGIN
                                 SELECT tabla.idHab, tabla.precioHab INTO id_habitacion, precio_habitacion
                                 FROM (SELECT  h.id as idHab, h.precio_base_noche as precioHab
                                     FROM alojamiento al, lug_aloj la, habitacion h
-                                    WHERE al.tipo = tipo_alojamiento_a_reservar
+                                    WHERE al.tipo = 'HOTEL'
                                     AND la.fk_alojamiento = al.id
                                     AND h.fk_lug_aloj = la.id
+                                    
+                                    AND la.fk_lugar IN (SELECT ID FROM LUGAR WHERE FK_LUGAR = 4760)
+
                                     ORDER BY DBMS_RANDOM.VALUE) tabla
                                     WHERE ROWNUM = 1;
 
@@ -209,6 +230,9 @@ BEGIN
 															WHERE a.tipo = tipo_alojamiento_a_reservar
 																AND la.fk_alojamiento = a.id
 																AND h.fk_lug_aloj = la.id
+
+                                                                AND la.fk_lugar IN (SELECT ID FROM LUGAR WHERE FK_LUGAR = id_ciudad_destino)
+
 																-- valida fecha
 																AND NOT EXISTS (
 																	SELECT r.id 
@@ -232,7 +256,8 @@ BEGIN
                             FROM alojamiento alo, lug_aloj la, habitacion h
                             WHERE alo.tipo = tipo_alojamiento_a_reservar
                             AND la.fk_alojamiento = alo.id
-                            AND h.fk_lug_aloj = la.id;
+                            AND h.fk_lug_aloj = la.id
+                            AND la.fk_lugar IN (SELECT ID FROM LUGAR WHERE FK_LUGAR = id_ciudad_destino);
 
                             SELECT tabla.idHab, tabla.precioHab INTO  id_habitacion, precio_habitacion
                             FROM (
@@ -242,35 +267,30 @@ BEGIN
 																AND la.fk_alojamiento = alo.id
 																AND h.fk_lug_aloj = la.id
 																AND alo.fecha_fundacion = fecha_max
+                                                                AND la.fk_lugar IN (SELECT ID FROM LUGAR WHERE FK_LUGAR = id_ciudad_destino)
 																ORDER BY DBMS_RANDOM.VALUE
 														) tabla
                             WHERE ROWNUM =1;
 
                         ELSE 
-                    
-                            SELECT  MAX(alo.fecha_fundacion) into fecha_max 
+
+                                SELECT h.id, h.precio_base_noche into id_habitacion, precio_habitacion 
                                 FROM alojamiento alo, lug_aloj la, habitacion h
                                 WHERE alo.tipo = tipo_alojamiento_a_reservar
                                 AND la.fk_alojamiento = alo.id
-                                AND h.fk_lug_aloj = la.id;
+                                AND h.fk_lug_aloj = la.id
+                                AND la.fk_lugar IN (SELECT ID FROM LUGAR WHERE FK_LUGAR = id_ciudad_destino)
 
-                                SELECT tabla.idHab, tabla.precioHab INTO  id_habitacion, precio_habitacion
-                                FROM (
-																	SELECT  h.id as idHab, h.precio_base_noche as precioHab   
-																	FROM alojamiento alo, lug_aloj la, habitacion h
-																	WHERE alo.tipo = tipo_alojamiento_a_reservar
-																		AND la.fk_alojamiento = alo.id
-																		AND h.fk_lug_aloj = la.id
-																		AND alo.fecha_fundacion = fecha_max
-																		AND NOT EXISTS (
-																			SELECT r.id 
-																			FROM reservacion r
-																			WHERE r.a_periodo.fecha_inicio < ini_estadia
-																				AND r.a_periodo.fecha_fin > fin_estadia
-																				AND r.a_fk_habitacion = h.id
-																		)
-																	ORDER BY DBMS_RANDOM.VALUE) tabla
-                                WHERE ROWNUM =1;
+                                AND NOT EXISTS (
+                                	SELECT r.id 
+                                	FROM reservacion r
+                                	WHERE r.a_periodo.fecha_inicio < ini_estadia
+                                		AND r.a_periodo.fecha_fin > fin_estadia
+                                		AND r.a_fk_habitacion = h.id
+                                )
+
+                                AND ROWNUM = 1
+                                order by alo.fecha_fundacion DESC;
 
                         END IF;
 
@@ -287,13 +307,22 @@ BEGIN
                             id_habitacion,
                             p,
                             id_reservacion_vuelo
-                            );
+                            ) RETURNING id INTO id_reservacion_alojamiento;
+
+                    OUT_(1,id_reservacion_alojamiento || ' <- reservacion alojamiento , cliente-> ' || id_cliente);
+                    OUT_BREAK;
+                    OUT_BREAK;
+
+
+                    INSERT INTO RESERVA(fk_reservacion,fk_cliente)
+                    VALUES(id_reservacion_alojamiento,id_cliente);
 
         END LOOP;   
-END;
+END;    
 
 
 -- EJECUCION
 BEGIN
+    DBMS_OUTPUT.ENABLE(null);
     sim_reservas_de_alojamientos();
 END;

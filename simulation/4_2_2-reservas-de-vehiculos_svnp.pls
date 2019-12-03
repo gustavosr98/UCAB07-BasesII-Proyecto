@@ -11,6 +11,8 @@ IS
     criterio NUMBER;    
     alojamiento_a_reservar habitacion%ROWTYPE;
 
+    id_cliente NUMBER;
+    id_reservacion_vehiculo NUMBER;
     id_vehiculo NUMBER;
     precio_vehiculo UNIDAD;
     condi NUMBER;
@@ -57,11 +59,12 @@ BEGIN
             --  AGREGACION DE RESERVAS DE ALOJAMIENTOS | PASO 2
             --  Se elige un usuario random
 
-                SELECT tabla.idu
-					INTO id_usuario_a_reservar
+                SELECT tabla.idu, tabla.idcl
+					INTO id_usuario_a_reservar, id_cliente
                 FROM (
-                    SELECT u.id idu
-                    FROM usuario u
+                    SELECT u.id idu, cl.id idcl
+                    FROM usuario u, cliente cl
+                    where u.fk_cliente = cl.id
                     ORDER BY DBMS_RANDOM.VALUE
 								) tabla
                 WHERE ROWNUM = 1;
@@ -202,7 +205,16 @@ BEGIN
                             id_vehiculo,
                             id_sucursal_ini,
                             p
-                            );
+                            ) RETURNING id INTO id_reservacion_vehiculo;
+
+                    OUT_(1,id_reservacion_vehiculo || ' <- vuelo , cliente-> ' || id_cliente);
+                    OUT_BREAK;
+                    OUT_BREAK;
+
+
+                    INSERT INTO RESERVA(fk_reservacion,fk_cliente)
+                    VALUES(id_reservacion_vehiculo,id_cliente);
+                            
 
         END LOOP;   
 
