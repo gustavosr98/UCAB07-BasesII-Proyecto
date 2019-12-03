@@ -42,5 +42,26 @@ BEGIN
   ;
 
 	RETURN v_asiento;
+
+EXCEPTION 
+  WHEN NO_DATA_FOUND THEN
+    SELECT * INTO v_asiento FROM ((
+      SELECT Asi.* -- ESTOS SON TODOS 
+      FROM Asiento Asi
+      WHERE 
+        Asi.fk_avion = avion_id
+    ) MINUS ( -- MENOS
+      SELECT Asi.* -- LOS OCUPADOS 
+      FROM Asiento Asi, Reservacion RV
+      WHERE 
+        RV.v_fk_asiento = Asi.id  
+        AND
+        Asi.fk_avion = avion_id AND
+        RV.v_fk_vuelo = vuelo_id
+    )) TABLITA WHERE ROWNUM = 1
+      ORDER BY fila, columna
+    ;
+    RETURN v_asiento;
+
 END;
 /
