@@ -6,6 +6,7 @@ IS
     id_vuelo_no_iniciado NUMBER;
     id_reservacion_vuelo NUMBER;
     fecha_llegada_vuelo TIMESTAMP;
+    fecha_regreso TIMESTAMP;
     fecha_reservacion_vuelo TIMESTAMP;
     fecha_base TIMESTAMP;
 
@@ -31,6 +32,7 @@ IS
     booly BOOLEAN;
 
     p PERIODO;
+    dif_dias NUMBER;
 
 BEGIN
    
@@ -54,24 +56,69 @@ BEGIN
 
         FOR i IN 1..cant_usuarios_a_reservar LOOP
 
-                --  AGREGACION DE RESERVAS DE ALOJAMIENTOS | PASO 2
+                --  AGREGACION DE RESERVAS DE VEHICULOS | PASO 2
                 --  Se elige un usuario random
 
-            SELECT tabla.idu, tabla.idv, tabla.idr INTO id_usuario_a_reservar, id_vuelo_no_iniciado, id_reservacion_vuelo
-            FROM (SELECT u.id idu, v.id idv, r.id idr
-                    FROM usuario u, pago p, reservacion r, vuelo v
-                    WHERE p.fk_usuario = u.id
-                    AND p.fk_reservacion = r.id
-                    AND r.v_fk_vuelo = v.id
-                    AND v.estatus = 'NO_INICIADO'
-                    ORDER BY DBMS_RANDOM.VALUE) tabla
-            WHERE ROWNUM = 1;
+            SELECT tabla.idu, tabla.idv, tabla.idr 
+					INTO id_usuario_a_reservar, id_vuelo_no_iniciado, id_reservacion_vuelo
+                FROM (
+                    SELECT u.id idu, v.id idv, r.id idr
+                    FROM usuario u, reserva res, cliente cl, reservacion r, vuelo v
+                    WHERE 
+                        res.fk_reservacion = r.id
+                        AND res.fk_cliente = cl.id
+                        AND u.fk_cliente = cl.id
+                        AND r.v_fk_vuelo = v.id
+                        AND r.fk_reservacion is NULL
+                        AND v.estatus = 'NO_INICIADO'
+                    ORDER BY DBMS_RANDOM.VALUE
+								) tabla
+                WHERE ROWNUM = 1;
 
             --  Se guarda la fecha de llegada del vuelo
 
                 SELECT v.periodo_estimado.fecha_fin INTO fecha_llegada_vuelo
                 FROM vuelo v
                 WHERE v.id = id_vuelo_no_iniciado;
+
+                IF hay_escala(id_vuelo_no_iniciado) THEN 
+
+                    SELECT V.periodo_estimado.fecha_fin, V.id INTO fecha_llegada_vuelo, id_vuelo_no_iniciado
+                    FROM Vuelo V, Reservacion RV
+                    WHERE RV.v_fk_vuelo = V.id 
+                    --AND RV.tipo = 'V' 
+                    AND RV.fk_reservacion = 8 
+                    AND RV.v_es_ida = 'T';
+                    
+                END IF;
+
+            --  AGREGACION DE RESERVAS DE ALOJAMIENTOS | PASO 3
+            --  Si hay viaje de regreso, se guarda la fecha 
+
+                out_(1,'hay regreso?   ');
+                dbms_output.put_line(sys.diutil.bool_to_int(hay_regreso(id_reservacion_vuelo))); 
+                OUT_BREAK;
+                OUT_BREAK;
+                OUT_BREAK;
+                OUT_BREAK;
+
+                if hay_regreso(id_reservacion_vuelo) = TRUE THEN 
+
+                    SELECT MAX(V.periodo_estimado.fecha_fin) INTO fecha_regreso
+                    FROM Vuelo V, Reservacion RV
+                    WHERE RV.v_fk_vuelo = V.id 
+                    --AND RV.tipo = 'V' 
+                    AND RV.fk_reservacion = id_reservacion_vuelo
+                    AND RV.v_es_ida = 'F';
+
+                    out_(1,'se agarro la fecha_regreso:  ' || TO_CHAR(fecha_regreso));
+                    dbms_output.put_line(sys.diutil.bool_to_int(hay_regreso(id_reservacion_vuelo))); 
+                    OUT_BREAK;
+                    OUT_BREAK;
+                    OUT_BREAK;
+                    OUT_BREAK;
+
+                END IF;
 
             -- Se guarda la fecha de reservacion del vuelo
 
@@ -82,15 +129,29 @@ BEGIN
             -- Se elige el periodo de reserva del vehiculo
 
                 fecha_base := TIEMPO_PKG.EXTRAER(fecha_llegada_vuelo,'DATE');
+                fecha_regreso := TIEMPO_PKG.EXTRAER(fecha_regreso,'DATE');
+
                 alquiler := TO_CHAR(ROUND(DBMS_RANDOM.VALUE(1,10)));
+
+                --si hay vuelo de regreso se hace la alquiler en base a la cantidad de dias
+                if fecha_regreso is not null THEN
+
+                    dif_dias := TIEMPO_PKG.DIFF(fecha_base, fecha_regreso, 'DAY');
+                    alquiler := TO_CHAR(ROUND(DBMS_RANDOM.VALUE(1,dif_dias)));
+
+                END IF;
+
+                DBMS_OUTPUT.PUT_LINE('id reservacion: ' || id_reservacion_vuelo || ' id vuelo: ' || id_vuelo_no_iniciado || ' fecha base: ' || fecha_base || ' fecha regreso: ' || fecha_regreso || ' dif_dias: ' || dif_dias || ' alquiler: ' || alquiler);
+                OUT_BREAK;
+                OUT_BREAK;
 
                 ini_alquiler := fecha_base + INTERVAL '13' HOUR;
                 fin_alquiler := fecha_base + numToDSInterval(alquiler,'DAY');
                 fin_alquiler := fin_alquiler + INTERVAL '11' HOUR;
 
                 p := PERIODO(
-                ini_alquiler,
-                fin_alquiler
+                    ini_alquiler,
+                    fin_alquiler
                 );
 
             --  Se elige un criterio random
@@ -238,7 +299,7 @@ BEGIN
 
                 --  AGREGACION DE RESERVAS DE VEHICULOS | PASO 6
                 -- Se inserta la reservacion
-
+                    out_(1, 'voy a insertar');
                     INSERT INTO RESERVACION(tipo,precio_total,esta_cancelada,fecha_reservacion,FK_RESERVACION, c_fk_vehiculo, c_fk_sucursal_inicio,c_fk_sucursal_fin,c_periodo) 
                     VALUES('C',
                             get_precio_total(ini_alquiler,fin_alquiler,precio_vehiculo),
