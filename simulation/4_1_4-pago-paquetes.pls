@@ -99,7 +99,7 @@ BEGIN
 
                             porcentaje := DBMS_RANDOM.VALUE(0.1,0.9);
                             costoC := ROUND(costo * porcentaje, 2);
-                            costoD := costo - costoD;
+                            costoD := costo - costoC;
 
                             idPago := insertPago(costoC, idUsuario, tarjC.id, rreservacion.id);
                             idPago := insertPago(costoD, idUsuario, tarjD.id, rreservacion.id);
