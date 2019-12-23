@@ -15,7 +15,7 @@ BEGIN
     SELECT ae.logo, u.correo, getLugar(lOrigen.fk_lugar, 'COMPLETO') || ' - ' || getLugar(lDestino.fk_lugar, 'COMPLETO') || 
         ' - ' || TIEMPO_PKG.PRINT(v.periodo_estimado.fecha_inicio,'MUY_HUMANO'), 
         TIEMPO_PKG.PRINT(v.periodo_estimado.fecha_inicio,'FECHA'), getRegreso(r.id), 
-        v.precio_base.cantidad || ' ' || getMoneda(v.precio_base.nombre), getFormaPago(p.id, u.id), getMonto(p.id)
+        ROUND(r.precio_total.cantidad, 2) || ' ' || getMoneda(r.precio_total.nombre), getFormaPago(p.id, u.id), getMonto(p.id)
         INTO logo, correo, vuelo, fechaSalida, fechaRegreso, precio, forma, monto
     FROM Aerolinea ae, Avion av, Usuario u, Cliente cl, Reservacion r, Reserva s, Vuelo v, Trayecto t, Lugar lOrigen, 
         Lugar lDestino, Aeropuerto aOrigen, Aeropuerto aDestino, Pago p
@@ -33,7 +33,32 @@ BEGIN
         AND lOrigen.id != lDestino.id
         AND p.fk_usuario = u.id
         AND p.fk_reservacion = r.id
-        AND r.id = idReserva;
+        AND r.id = idReserva
+    UNION ALL
+    SELECT ae.logo, u.correo, getLugar(lOrigen.fk_lugar, 'COMPLETO') || ' - ' || getLugar(lDestino.fk_lugar, 'COMPLETO') || 
+        ' - ' || TIEMPO_PKG.PRINT(v.periodo_estimado.fecha_inicio,'MUY_HUMANO'), 
+        TIEMPO_PKG.PRINT(v2.periodo_estimado.fecha_inicio,'FECHA'), getRegreso(r.fk_reservacion), 
+        ROUND(r.precio_total.cantidad, 2) || ' ' || getMoneda(r.precio_total.nombre), getFormaPago(p.id, u.id), getMonto(p.id)
+        INTO logo, correo, vuelo, fechaSalida, fechaRegreso, precio, forma, monto
+    FROM Aerolinea ae, Avion av, Usuario u, Cliente cl, Reservacion r, Reservacion r2, Reserva s, Vuelo v, Vuelo v2, Trayecto t, Lugar lOrigen, 
+        Lugar lDestino, Aeropuerto aOrigen, Aeropuerto aDestino, Pago p
+    WHERE ae.id = av.fk_aerolinea
+        AND v.fk_avion = av.id
+        AND v.fk_trayecto = t.id
+        AND r.v_fk_vuelo = v.id
+        AND r2.id = r.fk_reservacion
+        AND r2.v_fk_vuelo = v2.id
+        AND r.fk_reservacion = s.fk_reservacion
+        AND cl.id = s.fk_cliente
+        AND u.fk_cliente = cl.id
+        AND t.fk_aeropuerto_origen = aOrigen.id
+        AND aOrigen.fk_lugar = lOrigen.id
+        AND t.fk_aeropuerto_destino = aDestino.id
+        AND aDestino.fk_lugar = lDestino.id
+        AND lOrigen.id != lDestino.id
+        AND p.fk_usuario = u.id
+        AND p.fk_reservacion = r.fk_reservacion
+        AND r.fk_reservacion = idReserva;
 
 END;
 
