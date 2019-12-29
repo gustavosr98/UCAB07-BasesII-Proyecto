@@ -1,4 +1,4 @@
-CREATE OR REPLACE PROCEDURE reporte5 (cursor5 OUT SYS_REFCURSOR, correoUsuario IN VARCHAR2, fSalida IN TIMESTAMP, fRegreso IN TIMESTAMP)
+CREATE OR REPLACE PROCEDURE reporte5 (cursor5 OUT SYS_REFCURSOR, correoUsuario IN VARCHAR2 DEFAULT '', fSalida IN TIMESTAMP, fRegreso IN TIMESTAMP)
 IS
     logo BLOB;
     correo VARCHAR2(50);
@@ -36,9 +36,9 @@ BEGIN
         AND t.fk_aeropuerto_destino = aDestino.id
         AND aDestino.fk_lugar = lDestino.id
         AND lOrigen.id != lDestino.id
-        AND u.correo = correoUsuario
+        AND u.correo LIKE '%' || correoUsuario || '%'
         AND TIEMPO_PKG.PRINT(v.periodo_estimado.fecha_inicio,'FECHA') = TIEMPO_PKG.PRINT(fSalida,'FECHA')
-            AND getRegreso(r.id) = TIEMPO_PKG.PRINT(fRegreso,'FECHA');
+        AND getRegreso(r.id) = TIEMPO_PKG.PRINT(fRegreso,'FECHA');
     UNION ALL
     SELECT ae.logo, u.correo, getLugar(lOrigen.fk_lugar, 'COMPLETO') || ' - ' || getLugar(lDestino.fk_lugar, 'COMPLETO') || 
         ' - ' || TIEMPO_PKG.PRINT(v.periodo_estimado.fecha_inicio,'MUY_HUMANO'), 
@@ -65,7 +65,7 @@ BEGIN
         AND t.fk_aeropuerto_destino = aDestino.id
         AND aDestino.fk_lugar = lDestino.id
         AND lOrigen.id != lDestino.id
-        AND u.correo = correoUsuario;
+        AND u.correo LIKE '%' || correoUsuario || '%';
 
 END;
 

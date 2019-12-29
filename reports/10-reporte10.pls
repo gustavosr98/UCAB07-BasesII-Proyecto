@@ -1,4 +1,4 @@
-CREATE OR REPLACE PROCEDURE reporte10 (cursor10 OUT SYS_REFCURSOR, lug IN VARCHAR2, fechaInicio IN VARCHAR2, fechaFin IN VARCHAR2)
+CREATE OR REPLACE PROCEDURE reporte10 (cursor10 OUT SYS_REFCURSOR, lug IN VARCHAR2 DEFAULT '', fechaInicio IN VARCHAR2, fechaFin IN VARCHAR2)
 IS
     foto BLOB;
     nombre VARCHAR2(50);
@@ -23,7 +23,7 @@ BEGIN
             AND la.fk_alojamiento = al.id
             AND TIEMPO_PKG.PRINT(r.a_periodo.fecha_inicio,'FECHA_MM') = TIEMPO_PKG.PRINT(fechaInicio,'FECHA_MM')
             AND TIEMPO_PKG.PRINT(r.a_periodo.fecha_fin,'FECHA_MM') = TIEMPO_PKG.PRINT(fechaFin,'FECHA_MM')
-            AND al.nombre = lug
+            AND al.nombre LIKE '%' || lug || '%'
             AND ROWNUM <= 1
         GROUP BY al.id, TIEMPO_PKG.PRINT(r.a_periodo.fecha_inicio,'HUMANO'),
             TIEMPO_PKG.PRINT(r.a_periodo.fecha_fin,'MUY_HUMANO'), promedioPuntuaciones(al.id) || '/10'

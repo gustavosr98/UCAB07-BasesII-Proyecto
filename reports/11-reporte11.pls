@@ -1,4 +1,4 @@
-CREATE OR REPLACE PROCEDURE reporte11 (cursor11 OUT SYS_REFCURSOR, correoUsuario IN VARCHAR2, fechaInicio IN VARCHAR2, fechaFin IN VARCHAR2)
+CREATE OR REPLACE PROCEDURE reporte11 (cursor11 OUT SYS_REFCURSOR, correoUsuario IN VARCHAR2 DEFAULT '', fechaInicio IN VARCHAR2, fechaFin IN VARCHAR2)
 IS
     foto BLOB;
     marcaModelo VARCHAR2(50);
@@ -31,7 +31,7 @@ BEGIN
         AND sOrigen.fk_lugar = lOrigen.id
         AND r.c_fk_sucursal_fin = sLlegada.id
         AND sLlegada.fk_lugar = lLlegada.id
-        AND u.correo = correoUsuario
+        AND u.correo LIKE '%' || correoUsuario || '%'
         AND TIEMPO_PKG.PRINT(r.c_periodo.fecha_inicio,'FECHA_MM') = TIEMPO_PKG.PRINT(fechaInicio,'FECHA_MM')
         AND TIEMPO_PKG.PRINT(r.c_periodo.fecha_fin,'FECHA_MM') = TIEMPO_PKG.PRINT(fechaFin,'FECHA_MM');
 

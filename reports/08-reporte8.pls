@@ -1,4 +1,4 @@
-CREATE OR REPLACE PROCEDURE reporte8 (cursor8 OUT SYS_REFCURSOR, fechaInicio IN VARCHAR2, fechaFin IN VARCHAR2, lugarOrigen IN VARCHAR2, lugarDestino IN VARCHAR2)
+CREATE OR REPLACE PROCEDURE reporte8 (cursor8 OUT SYS_REFCURSOR, fechaInicio IN VARCHAR2, fechaFin IN VARCHAR2, lugarOrigen IN VARCHAR2 DEFAULT '', lugarDestino IN VARCHAR2 DEFAULT '')
 IS
     logo BLOB;
     fecha VARCHAR2(100);
@@ -28,8 +28,8 @@ BEGIN
             AND lOrigen.id != lDestino.id
             AND TIEMPO_PKG.PRINT(v.periodo_estimado.fecha_inicio,'FECHA_MM') >= TIEMPO_PKG.PRINT(fechaInicio,'FECHA_MM')
             AND TIEMPO_PKG.PRINT(v.periodo_estimado.fecha_fin,'FECHA_MM') <= TIEMPO_PKG.PRINT(fechaFin,'FECHA_MM')
-            AND getLugar(lOrigen.fk_lugar, 'CIUDAD') LIKE origen
-            AND getLugar(lDestino.fk_lugar, 'CIUDAD') LIKE 'Rio de Janeiro'
+            AND getLugar(lOrigen.fk_lugar, 'CIUDAD') LIKE '%' || lugarOrigen || '%'
+            AND getLugar(lDestino.fk_lugar, 'CIUDAD') LIKE '%' || lugarDestino || '%'
             AND ROWNUM <= 5
         GROUP BY ae.id, TIEMPO_PKG.PRINT(fechaInicio, 'FECHA_MM') || ' - ' || TIEMPO_PKG.PRINT(fechaFin, 'FECHA_MM'),
             getLugar(lOrigen.fk_lugar, 'CIUDAD'), getLugar(lDestino.fk_lugar, 'CIUDAD')
