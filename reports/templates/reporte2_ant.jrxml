@@ -13,8 +13,9 @@
 			<style mode="Opaque" backcolor="#F0EFEF"/>
 		</conditionalStyle>
 	</style>
+	<parameter name="nombreAerolinea" class="java.lang.String"/>
 	<queryString language="plsql">
-		<![CDATA[{CALL reporte2($P{ORACLE_REF_CURSOR})}]]>
+		<![CDATA[{CALL reporte2($P{ORACLE_REF_CURSOR}, $P{nombreAerolinea})}]]>
 	</queryString>
 	<field name="LOGO" class="java.awt.Image">
 		<property name="com.jaspersoft.studio.field.label" value="LOGO"/>
@@ -60,7 +61,7 @@
 			<frame>
 				<reportElement mode="Opaque" x="0" y="70" width="802" height="32" forecolor="#000000" backcolor="#CC0000" uuid="b0c895f6-6dbd-477d-9858-9ad66af087e1"/>
 				<textField pattern="EEEEE dd MMMMM yyyy">
-					<reportElement x="553" y="12" width="144" height="20" forecolor="#FFFFFF" uuid="a33fce3b-20c1-4696-873a-fe134d1e7d88"/>
+					<reportElement x="645" y="6" width="144" height="20" forecolor="#FFFFFF" uuid="a33fce3b-20c1-4696-873a-fe134d1e7d88"/>
 					<textElement textAlignment="Right">
 						<font size="12"/>
 					</textElement>
@@ -73,88 +74,103 @@
 		<band splitType="Stretch"/>
 	</pageHeader>
 	<columnHeader>
-		<band height="18" splitType="Stretch">
+		<band height="40" splitType="Stretch">
 			<staticText>
-				<reportElement x="652" y="0" width="100" height="18" uuid="79ebab0e-872d-4a6c-a2f3-a6536006bfae">
+				<reportElement x="570" y="4" width="220" height="30" uuid="79ebab0e-872d-4a6c-a2f3-a6536006bfae">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="b4fa1eca-c366-42e8-a601-7a23aecb5234"/>
 				</reportElement>
-				<text><![CDATA[ASIENTOS]]></text>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Asientos disponibles]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="40" y="0" width="100" height="18" uuid="168d1008-b01f-4b35-b8de-062ae9758369">
+				<reportElement x="15" y="4" width="100" height="30" uuid="168d1008-b01f-4b35-b8de-062ae9758369">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="5261d0d0-0bb4-4c17-809c-a0a8aa58bb1b"/>
 				</reportElement>
-				<text><![CDATA[LOGO]]></text>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Logo de Aerolínea]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="422" y="0" width="100" height="18" uuid="39501931-912b-47cf-a49c-7aaff4011882">
+				<reportElement x="461" y="4" width="100" height="30" uuid="39501931-912b-47cf-a49c-7aaff4011882">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="4f0fb344-6861-448b-b19c-d4e67ad49238"/>
 				</reportElement>
-				<text><![CDATA[CANT_AVIONES]]></text>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Cantidad de aviones]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="150" y="0" width="100" height="18" uuid="5f8a78e4-92d6-4eca-b9e7-d797236203ab">
+				<reportElement x="126" y="4" width="100" height="30" uuid="5f8a78e4-92d6-4eca-b9e7-d797236203ab">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="b5d194b2-e0ee-490e-b4ac-723764dd325e"/>
 				</reportElement>
-				<text><![CDATA[NOMBRE_TA]]></text>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Avión]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="329" y="0" width="100" height="18" uuid="50f5783c-0ed6-4890-bbfc-df7c02bef43c">
+				<reportElement x="350" y="4" width="100" height="30" uuid="50f5783c-0ed6-4890-bbfc-df7c02bef43c">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="72c8f722-1396-428c-a1b2-82cfc8d83981"/>
 				</reportElement>
-				<text><![CDATA[MODELO_TA]]></text>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Modelo]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="238" y="4" width="100" height="30" uuid="e878f955-f526-4fa7-a2ea-c2bfd940d913">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="b5d194b2-e0ee-490e-b4ac-723764dd325e"/>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Foto Avión]]></text>
 			</staticText>
 		</band>
 	</columnHeader>
 	<detail>
 		<band height="177" splitType="Stretch">
-			<frame>
-				<reportElement style="Row" mode="Opaque" x="0" y="0" width="797" height="18" uuid="34a2ae4b-4055-476b-8676-d499f6af510b"/>
-			</frame>
 			<textField>
-				<reportElement x="553" y="30" width="237" height="120" uuid="211237f4-50d3-4201-b38f-1ee5d810e4d1">
+				<reportElement x="570" y="30" width="220" height="120" uuid="211237f4-50d3-4201-b38f-1ee5d810e4d1">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="b4fa1eca-c366-42e8-a601-7a23aecb5234"/>
 				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{ASIENTOS}]]></textFieldExpression>
 			</textField>
-			<image>
-				<reportElement x="36" y="61" width="50" height="50" uuid="0d1dc528-87a7-4b34-8aa0-f752536308fa"/>
+			<image hAlign="Center" vAlign="Middle">
+				<reportElement x="15" y="30" width="100" height="120" uuid="0d1dc528-87a7-4b34-8aa0-f752536308fa"/>
 				<imageExpression><![CDATA[$F{LOGO}]]></imageExpression>
 			</image>
-			<image>
-				<reportElement x="210" y="61" width="50" height="50" uuid="33f90437-cb20-4fe0-a781-194231b43ef1"/>
+			<image hAlign="Center" vAlign="Middle">
+				<reportElement x="238" y="33" width="100" height="117" uuid="33f90437-cb20-4fe0-a781-194231b43ef1"/>
 				<imageExpression><![CDATA[$F{FOTO}]]></imageExpression>
 			</image>
 			<textField>
-				<reportElement x="440" y="60" width="100" height="30" uuid="222af950-2ada-4a9b-82ad-c35a1f48b13c">
+				<reportElement x="461" y="33" width="100" height="117" uuid="222af950-2ada-4a9b-82ad-c35a1f48b13c">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="4f0fb344-6861-448b-b19c-d4e67ad49238"/>
 				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{CANT_AVIONES}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="90" y="60" width="80" height="46" uuid="4fef4b42-19c3-49f1-8fd1-b979124198e1">
+				<reportElement x="126" y="30" width="100" height="120" uuid="4fef4b42-19c3-49f1-8fd1-b979124198e1">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="b5d194b2-e0ee-490e-b4ac-723764dd325e"/>
 				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{NOMBRE_TA}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="300" y="60" width="120" height="46" uuid="b35ae6a9-65de-4922-9bd2-9b8035c862b5">
+				<reportElement x="350" y="33" width="100" height="117" uuid="b35ae6a9-65de-4922-9bd2-9b8035c862b5">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="72c8f722-1396-428c-a1b2-82cfc8d83981"/>
 				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{MODELO_TA}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
-	<columnFooter>
-		<band height="145" splitType="Stretch">
-			<line>
-				<reportElement positionType="FixRelativeToBottom" x="0" y="3" width="555" height="1" uuid="501ac6c4-e9d4-43cb-ba6b-7f2f44394cf3"/>
-				<graphicElement>
-					<pen lineWidth="0.5" lineColor="#999999"/>
-				</graphicElement>
-			</line>
-		</band>
-	</columnFooter>
 	<pageFooter>
 		<band height="25" splitType="Stretch">
 			<frame>
@@ -171,14 +187,7 @@
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font size="10" isBold="false"/>
 					</textElement>
-					<textFieldExpression><![CDATA["Page "+$V{PAGE_NUMBER}+" of"]]></textFieldExpression>
-				</textField>
-				<textField pattern="EEEEE dd MMMMM yyyy">
-					<reportElement style="Column header" x="2" y="3" width="197" height="20" forecolor="#FFFFFF" uuid="0c9f7e91-d3f5-47f9-82b7-0b2b3a43a5d6"/>
-					<textElement verticalAlignment="Middle">
-						<font size="10" isBold="false"/>
-					</textElement>
-					<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+					<textFieldExpression><![CDATA["Página "+$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
 				</textField>
 			</frame>
 		</band>
