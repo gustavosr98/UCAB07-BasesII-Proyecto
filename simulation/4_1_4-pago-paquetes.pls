@@ -142,7 +142,7 @@ IS
 BEGIN
     INSERT INTO Pago (pagado,fk_usuario,fk_tarjeta,fk_reservacion)
         VALUES (
-            UNIDAD('DOLAR', 'DIVISA', costo),
+            UNIDAD('DIVISA', 'DOLAR', costo),
             idUsuario,
             idTarjeta,
             idReservacion)

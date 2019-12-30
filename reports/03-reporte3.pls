@@ -1,4 +1,4 @@
-CREATE OR REPLACE PROCEDURE reporte3 (cursor3 OUT SYS_REFCURSOR, avionNombre IN VARCHAR2, avionModelo IN VARCHAR2)
+CREATE OR REPLACE PROCEDURE reporte3 (cursor3 OUT SYS_REFCURSOR, avionNombre IN VARCHAR2 DEFAULT '', avionModelo IN VARCHAR2 DEFAULT '')
 IS
     logo BLOB;
     nombre VARCHAR2(50);
@@ -22,8 +22,8 @@ BEGIN
         FROM Tipo_Avion ta, Aerolinea ae, Avion av
         WHERE ta.id = av.fk_tipo_avion
             AND ae.id = av.fk_aerolinea
-            AND ta.nombre = avionNombre
-            AND ta.modelo = avionModelo) x
+            AND ta.nombre LIKE '%' || avionNombre || '%'
+            AND ta.modelo LIKE '%' || avionModelo || '%') x
     WHERE ta.id = x.idTipoAvion
         AND ae.id = x.idAerolinea;
 

@@ -89,6 +89,8 @@ CREATE OR REPLACE PACKAGE BODY tiempo_pkg AS
 				RETURN TO_CHAR(x, 'YYYY-MM-DD HH24:MI:SS');
 			ELSIF (formato = 'HORA') THEN
 				RETURN TO_CHAR(x, 'HH24:MI:SS');
+			ELSIF (formato = 'FECHA_MM') THEN
+				RETURN TO_CHAR(x, 'DD/MM/YYYY');
 			END IF;
 		END print;
 

@@ -1,4 +1,4 @@
-CREATE OR REPLACE PROCEDURE reporte2 (cursor2 OUT SYS_REFCURSOR)
+CREATE OR REPLACE PROCEDURE reporte2 (cursor2 OUT SYS_REFCURSOR, nombreAerolinea IN VARCHAR2 DEFAULT '')
 IS
     logo_aerolinea blob;
     nombre_avion varchar2(30);
@@ -17,10 +17,8 @@ BEGIN
                                                 WHERE av.fk_aerolinea = ae.id
                                                 AND av.fk_tipo_avion = ta.id) tabla
     WHERE ae.id = tabla.ID_AEROLINEA
-    AND ta.id = tabla.ID_TIPO_AVION
-    ;
-
-
+        AND ta.id = tabla.ID_TIPO_AVION
+        AND ae.nombre LIKE '%' || nombreAerolinea || '%'
 
 END;
 
