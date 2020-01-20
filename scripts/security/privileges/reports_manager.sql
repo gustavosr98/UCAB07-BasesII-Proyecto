@@ -1,0 +1,30 @@
+--reports_manager
+
+GRANT CREATE SESSION TO reports_manager;
+
+GRANT SELECT ON AEROLINEA TO reports_manager;
+GRANT SELECT ON AVION TO reports_manager;
+GRANT SELECT ON TIPO_AVION TO reports_manager;
+GRANT SELECT ON ASIENTO TO reports_manager;
+GRANT SELECT ON CLASE_AEROLINEA TO reports_manager;
+GRANT SELECT ON CLASE TO reports_manager;
+GRANT SELECT ON TRAYECTO TO reports_manager;
+GRANT SELECT ON VUELO TO reports_manager;
+GRANT SELECT ON AEROPUERTO TO reports_manager;
+GRANT SELECT ON ASEGURADORA TO reports_manager;
+GRANT SELECT ON SEGURO TO reports_manager;
+GRANT SELECT ON LUGAR TO reports_manager;
+GRANT SELECT ON CLIENTE TO reports_manager;
+GRANT SELECT ON USUARIO TO reports_manager;
+GRANT SELECT ON PAGO TO reports_manager;
+GRANT SELECT ON HISTORICO_MILLA TO reports_manager;
+GRANT SELECT ON TARJETA TO reports_manager;
+GRANT SELECT ON RESERVACION TO reports_manager;
+GRANT SELECT ON VEHICULO TO reports_manager;
+GRANT SELECT ON PROVEEDOR_VEHICULO TO reports_manager;
+GRANT SELECT ON SUCURSAL TO reports_manager;
+GRANT SELECT ON HABITACION TO reports_manager;
+GRANT SELECT ON MODELO_VEHICULO TO reports_manager;
+GRANT SELECT ON ALOJAMIENTO TO reports_manager;
+GRANT SELECT ON LUG_ALOJ TO reports_manager;
+
